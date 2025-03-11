@@ -1,0 +1,10 @@
+export const nameInput = document.querySelector("input#name");
+export const cepInput = document.querySelector("input#cep");
+export const numberInput = document.querySelector("input#number");
+export const neighborhoodInput = document.querySelector("input#neighborhood");
+export const addressObservationsInput = document.querySelector("textarea#observations");
+export const cityInput = document.querySelector("input#city");
+export const stateInput = document.querySelector("input#state");
+export const countryInput = document.querySelector("input#country");
+export const addressInput = document.querySelector("input#address");
+export const addressType = document.querySelector("select#address_type");

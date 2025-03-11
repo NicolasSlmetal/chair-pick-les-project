@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar endereço</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<h1 th:text="'Editar endereço de ' + ${customerName}"></h1>
+<main>
+    <a class="action__button" th:href="'/customers/' + ${customerId} + '/addresses' ">Voltar</a>
+    <form id="main">
+        <input type="hidden" name="id" id="id" th:value="${address.id}">
+        <input type="hidden" name="customerId" id="customerId" th:value="${customerId}">
+        <section class="cards__section">
+            <h3>Endereço</h3>
+            <label for="name">Nome do endereço</label>
+            <input type="text" name="name" id="name" th:value="${address.name}">
+            <label for="cep">CEP</label>
+            <input type="text" name="cep" id="cep" th:value="${address.cep}">
+            <label for="address">Logradouro</label>
+            <input type="text" name="address" id="address" th:value="${address.street}">
+            <label for="address_type">Tipo de Logradouro</label>
+            <select name="address_type" id="address_type">
+                <option th:each="type : ${T(com.chairpick.ecommerce.model.StreetType).values()}"
+                        th:value="${type}" th:text="${type.getName()}"
+                        th:selected="${type == address.streetType}"></option>
+            </select>
+            <label for="neighborhood">Bairro</label>
+            <input type="text" name="neighborhood" id="neighborhood" th:value="${address.neighborhood}">
+            <label for="number">Número</label>
+            <input type="number" name="number" id="number" min="0" th:value="${address.number}">
+            <label for="city">Cidade</label>
+            <input type="text" name="city" id="city" th:value="${address.city}">
+            <label for="state">Estado</label>
+            <input type="text" name="state" id="state" th:value="${address.state}">
+            <label for="country">País</label>
+            <input type="text" name="country" id="country" th:value="${address.country}">
+            <label for="observations">Observações</label>
+            <input type="text" name="observations" id="observations" th:value="${address.observations}">
+            <label th:unless="${address.isDefault}" for="default">Configurar como padrão
+                <input type="checkbox" name="default" id="default" value="true" th:checked="${address.isDefault}">
+                <span class="checkmark"></span>
+            </label>
+            <p th:if="${address.isDefault}">Cartão configurado como padrão</p>
+        </section>
+        <input th:if="${address.isDefault}" type="hidden" th:value="true" name="default">
+        <button class="disabled" type="submit" disabled>Atualizar</button>
+    </form>
+</main>
+<dialog class="error__dialog">
+    <h1>Erro ao atualizar</h1>
+    <p></p>
+    <button class="action__button dialog__ok">Ok</button>
+</dialog>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/inputmask.js" integrity="sha512-ALLDs6ZhqQxaXq3/BFeiYsBtvcu7VLAAybmG3BxcUXgCviCZgdFntIjfHF15c+KPMiGdhEyPhxdY6mTxW3p/lQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    Inputmask({"mask": "99999-999"}).mask(document.getElementById("cep"));
+</script>
+<script src="/js/addresses/edit/index.js" type="module"></script>
+</body>
+</html>

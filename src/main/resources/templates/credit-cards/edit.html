@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar cartão de crédito</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <main>
+        <h1 th:text="'Editar cartão de crédito de ' + ${customerName}"></h1>
+        <a class="action__button" th:href="'/customers/' + ${customerId} + '/credit-cards'">Voltar</a>
+        <form id="main">
+            <input type="hidden" name="customer_id" th:value="${customerId}">
+            <input type="hidden" name="id" th:value="${creditCard.id}">
+            <section class="cards__section">
+                <h3>Cartão de crédito</h3>
+                <label for="card_number">Número do cartão</label>
+                <input type="text" name="card_number" id="card_number" th:value="${creditCard.number}">
+                <label for="card_name">Nome impresso no cartão</label>
+                <input type="text" name="card_name" id="card_name" th:value="${creditCard.name}">
+                <label for="card_brand">Bandeira</label>
+                <select name="card_brand" id="card_brand">
+                    <option th:each="brand: ${T(com.chairpick.ecommerce.model.CreditCardBrand).values()}"
+                    th:value="${brand}" th:text="${brand.name()}"
+                    th:selected="${creditCard.brand == brand}"></option>
+
+                </select>
+                <label for="cvv">CVV</label>
+                <input type="text" name="cvv" id="cvv" maxlength="3" th:value="${creditCard.cvv}">
+                <label th:unless="${creditCard.isDefault}" for="default">Configurar como padrão
+                    <input type="checkbox" name="default" id="default" value="true" th:checked="${creditCard.isDefault}">
+                    <span class="checkmark"></span>
+                </label>
+                <p th:if="${creditCard.isDefault}">Cartão configurado como padrão</p>
+            </section>
+            <input th:if="${creditCard.isDefault}" type="hidden" th:value="true" name="default">
+            <button class="disabled" type="submit" disabled>Editar</button>
+        </form>
+    </main>
+    <dialog class="error__dialog">
+        <h1>Erro ao editar</h1>
+        <p></p>
+        <button class="action__button dialog__ok">Ok</button>
+    </dialog>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/inputmask.js" integrity="sha512-ALLDs6ZhqQxaXq3/BFeiYsBtvcu7VLAAybmG3BxcUXgCviCZgdFntIjfHF15c+KPMiGdhEyPhxdY6mTxW3p/lQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        Inputmask({"mask": "9999 9999 9999 9999"}).mask(document.getElementById("card_number"));
+        Inputmask({"mask": "999"}).mask(document.getElementById("cvv"));
+    </script>
+    <script src="/js/credit-cards/edit/index.js" type="module"></script>
+</body>
+</html>

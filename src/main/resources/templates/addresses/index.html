@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Endereços</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<h1 th:text="'Gerir endereços de ' + ${customer.name}"></h1>
+<input id="customer_id" type="hidden" name="customerId" th:value="${customer.id}">
+<main>
+    <div class="button__group">
+        <a class="action__button" href="/customers">Voltar</a>
+        <a class="action__button" th:href="'/customers/' + ${customer.id} + '/addresses/new?customerName=' + ${customer.name}">Cadastrar endereço</a>
+    </div>
+    <table class="table">
+        <thead>
+        <th>Nome</th>
+        <th>Logradouro</th>
+        <th>Tipo de logradouro</th>
+        <th>CEP</th>
+        <th>Bairro</th>
+        <th>Número</th>
+        <th>Cidade</th>
+        <th>Estado</th>
+        <th>País</th>
+        <th>Observações</th>
+        <th>Edição</th>
+        <th>Remover</th>
+        </thead>
+        <tr th:each="address : ${addresses}">
+
+            <input type="hidden" name="id" th:value="${address.id}">
+            <td th:text="${address.name}"></td>
+
+            <td th:text="${address.street}"></td>
+
+            <td th:text="${address.streetType.getName()}"></td>
+            <td th:text="${T(com.chairpick.ecommerce.utils.format.CepFormater).format(address.cep)}">
+
+            </td>
+            <td th:text="${address.neighborhood}">
+
+            </td>
+            <td th:text="${address.number}">
+
+            </td>
+            <td th:text="${address.city}">
+
+            </td>
+            <td th:text="${address.state}">
+
+            </td>
+            <td th:text="${address.country}">
+
+            </td>
+            <td th:text="${address.observations == null ? '' : address.observations}">
+
+            </td>
+
+            <td>
+                <a class="action__button" th:href="'/customers/' + ${customer.id} + '/addresses/edit/'  + ${address.id} + '?customerName=' + ${customer.name}">Editar</a>
+            </td>
+            <td>
+                <a class="action__button danger" th:classappend="${address.isDefault ? 'disabled' : ''}">Remover</a>
+            </td>
+        </tr>
+    </table>
+</main>
+<dialog id="remove__modal">
+    <div class="modal__content">
+        <h2>Remover Endereço</h2>
+        <p>Deseja realmente remover o endereço Casa?</p>
+        <div class="actions">
+            <button id="dialog__cancel__button" class="action__button">Cancelar</button>
+            <button id="dialog__confirm__button" class="action__button danger">Remover</button>
+        </div>
+    </div>
+</dialog>
+<dialog class="error__dialog">
+    <h1>Erro ao editar</h1>
+    <p></p>
+    <button class="action__button dialog__ok">Ok</button>
+</dialog>
+<script src="/js/addresses/index.js" type="module"></script>
+</body>
+</html>

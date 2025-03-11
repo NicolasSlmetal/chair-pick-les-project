@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/styles.css">
+    <title>Editar cliente</title>
+</head>
+<body>
+    <h1>Editar cliente</h1>
+    <main>
+        <a class="action__button" href="/customers">Voltar</a>
+        <form id="main">
+            <section class="cards__section">
+                <h3>Dados pessoais</h3>
+                <input type="hidden" name="id" th:value="${customer.id}">
+
+                <label for="name">Nome</label>
+                <input type="text" name="name" id="name" th:value="${customer.name}" required>
+
+                <label for="cpf">CPF</label>
+                <input type="text" name="cpf" id="cpf" maxlength="14" th:value="${customer.cpf}" required>
+
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email" th:value="${customer.user.email}" required>
+
+                <label for="phone">Telefone</label>
+                <input type="text" name="phone" id="phone" maxlength="15" th:value="${customer.phoneDDD != null and customer.phone != null ? customer.phoneDDD + customer.phone : ''}" required>
+
+                <label for="phone_type">Tipo de telefone</label>
+                <select name="phone_type" id="phone_type" required>
+                    <option th:each="type : ${T(com.chairpick.ecommerce.model.PhoneType).values()}"
+                            th:value="${type}"
+                            th:text="${type.name() == 'CELL_PHONE' ? 'Celular' : 'Fixo'}"
+                            th:selected="${type == customer.phoneType}">
+                    </option>
+                </select>
+
+                <label for="genre">Gênero</label>
+                <select name="genre" id="genre" required>
+                    <option th:each="genre : ${T(com.chairpick.ecommerce.model.Genre).values()}"
+                            th:value="${genre}"
+                            th:text="${genre.name() == 'MALE' ? 'Masculino' : 'Feminino'}"
+                            th:selected="${genre == customer.genre}">
+                    </option>
+                </select>
+
+                <label for="birthdate">Data de nascimento</label>
+                <input type="date" name="birthdate" id="birthdate" th:value="${#temporals.format(customer.bornDate, 'yyyy-MM-dd')}" required>
+            </section>
+            <button class="disabled" type="submit" disabled>Alterar</button> <!-- Botão desabilitado inicialmente -->
+        </form>
+    </main>
+    <dialog class="error__dialog">
+        <h1>Erro ao editar</h1>
+        <p></p>
+        <button class="action__button dialog__ok">Ok</button>
+    </dialog>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/inputmask.js" integrity="sha512-ALLDs6ZhqQxaXq3/BFeiYsBtvcu7VLAAybmG3BxcUXgCviCZgdFntIjfHF15c+KPMiGdhEyPhxdY6mTxW3p/lQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        Inputmask({"mask": "999.999.999-99"}).mask(document.getElementById("cpf"));
+        Inputmask({"mask": "(99) 99999-9999"}).mask(document.getElementById("phone"));
+        Inputmask({"mask": "99999-999"}).mask(document.getElementById("cep"));
+    </script>
+    <script src="/js/customers/edit/index.js" type="module"></script>
+</body>
+</html>

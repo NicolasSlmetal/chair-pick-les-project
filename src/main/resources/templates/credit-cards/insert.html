@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar cartão de crédito</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <main>
+        <h1 th:text="'Cadastrar cartão de crédito para ' + ${customerName}"></h1>
+        <a class="action__button" th:href="'/customers/' + ${customerId} + '/credit-cards'">Voltar</a>
+        <form id="main">
+            <input type="hidden" name="customer_id" th:value="${customerId}">
+            <section class="cards__section">
+                <h3>Cartão de crédito</h3>
+                <label for="card_number">Número do cartão</label>
+                <input type="text" name="card_number" id="card_number">
+                <label for="card_name">Nome impresso no cartão</label>
+                <input type="text" name="card_name" id="card_name">
+                <label for="card_brand">Bandeira</label>
+                <select name="card_brand" id="card_brand">
+                    <option value="visa">Visa</option>
+                    <option value="mastercard">Mastercard</option>
+                </select>
+                <label for="cvv">CVV</label>
+                <input type="text" name="cvv" id="cvv" maxlength="3">
+                <label for="default">Configurar como padrão
+                    <input type="checkbox" name="default" id="default" value="true">
+                    <span class="checkmark"></span>
+                </label>
+
+            </section>
+            <button class="disabled" type="submit" disabled>Cadastrar</button>
+        </form>
+    </main>
+    <dialog class="error__dialog">
+        <h1>Erro ao cadastrar</h1>
+        <p></p>
+        <button class="action__button dialog__ok">Ok</button>
+    </dialog>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/inputmask.js" integrity="sha512-ALLDs6ZhqQxaXq3/BFeiYsBtvcu7VLAAybmG3BxcUXgCviCZgdFntIjfHF15c+KPMiGdhEyPhxdY6mTxW3p/lQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        Inputmask({"mask": "9999 9999 9999 9999"}).mask(document.getElementById("card_number"));
+        Inputmask({"mask": "999"}).mask(document.getElementById("cvv"));
+    </script>
+    <script src="/js/credit-cards/insert/index.js" type="module"></script>
+</body>
+</html>

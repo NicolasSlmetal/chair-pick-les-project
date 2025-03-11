@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/styles.css">
+    <title>Home</title>
+</head>
+<body>
+<h1>Gerenciamento de clientes</h1>
+<main>
+    <div class="button__group">
+        <a class="action__button" th:href="'customers/new'">Cadastrar cliente</a>
+        <a class="action__button disabled">Dashboard</a>
+        <a class="action__button disabled">Sair</a>
+    </div>
+    <div class="search__container">
+        <img id="search_options" class="action__button" src="assets/dots.png" alt="Mais ações">
+        <div id="search_menu" class="menu search__menu" style="display: none;">
+            <p>Pesquisar</p>
+            <div class="search__input__container">
+                <label for="name">Nome</label>
+                <input type="text" id="name" class="search__checkbox">
+            </div>
+            <div class="search__input__container">
+                <label for="cpf">CPF</label>
+                <input type="text" id="cpf" class="search__checkbox">
+            </div>
+            <div class="search__input__container">
+                <label for="phone">Telefone</label>
+                <input type="text" id="phone" class="search__checkbox">
+            </div>
+            <div class="search__input__container">
+                <label for="genre">Gênero</label>
+                <select id="genre" class="search__checkbox">
+                    <option value="none">Selecione</option>
+                    <option value="male">Masculino</option>
+                    <option value="female">Feminino</option>
+                </select>
+            </div>
+            <div class="search__input__container">
+                <label for="birthdate">Data de nascimento</label>
+                <input type="date" id="birthdate" class="search__checkbox">
+            </div>
+            <div class="search__input__container">
+                <label for="email">Email</label>
+                <input type="text" id="email" class="search__checkbox">
+
+            </div>
+            <div class="search__button__container">
+
+                <button id="search" class="action__button search">Pesquisar</button>
+                <button id="clear" class="action__button danger">Limpar</button>
+            </div>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+        <th>Nome</th>
+        <th>CPF</th>
+        <th>Telefone</th>
+        <th>Gênero</th>
+        <th>Data de nascimento</th>
+        <th>Email</th>
+        <th>Ações</th>
+        <th>Edição</th>
+        <th>Remover</th>
+        </thead>
+        <tr th:each="customer : ${customers}">
+            <td th:text="${{customer.name}}">
+            </td>
+            <td th:text="${T(com.chairpick.ecommerce.utils.format.CpfFormater).format(customer.cpf)}">
+            </td>
+            <td th:text="'(' + ${customer.phoneDDD} + ') '
+            + ${T(com.chairpick.ecommerce.utils.format.PhoneFormater).format(customer.phone)} +
+            ' (' + ${customer.phoneType.getType()} + ')'">
+
+            </td>
+            <td th:text="${customer.genre.getName()}">
+            </td>
+            <td th:text="${#temporals.format(customer.bornDate, 'dd/MM/yyyy')}">
+            </td>
+            <td th:text="${customer.user.email}">
+            </td>
+            <td>
+                <img id="more_actions" src="assets/dots.png" alt="Mais ações" class="action__button">
+                <div id="actions_options" class="menu">
+                    <a class="option" th:href="'customers/' + ${customer.id} + '/addresses'">Gerir endereços</a>
+                    <a class="option" th:href="'customers/' + ${customer.id} + '/credit-cards'">Gerir cartões</a>
+                    <a class="option" th:href="'customers/' + ${customer.id} + '/transactions'">Consultar transações</a>
+                    <a class="option" th:href="'customers/' + ${customer.id} + '/alter-password'">Alterar senha</a>
+                </div>
+            </td>
+            <td>
+                <a class="action__button" th:href="'customers/edit/' + ${customer.id}">Editar</a>
+            </td>
+            <td>
+                <a id="remove_button" class="action__button danger"  th:attr="entity-id=${customer.id}, entity-name=${customer.name}">Remover</a>
+            </td>
+        </tr>
+    </table>
+</main>
+<dialog id="remove__modal">
+    <div class="modal__content">
+        <h2>Remover Cliente</h2>
+        <p></p>
+        <div class="actions">
+            <button id="dialog__cancel__button" class="action__button">Cancelar</button>
+            <button id="dialog__confirm__button" class="action__button danger">Remover</button>
+        </div>
+    </div>
+</dialog>
+<dialog id="error__modal">
+    <div class="modal__content">
+        <h2>Erro ao tentar remover o cliente</h2>
+        <p></p>
+        <button class="action__button dialog__ok">Ok</button>
+    </div>
+</dialog>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/inputmask.js" integrity="sha512-ALLDs6ZhqQxaXq3/BFeiYsBtvcu7VLAAybmG3BxcUXgCviCZgdFntIjfHF15c+KPMiGdhEyPhxdY6mTxW3p/lQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    Inputmask({"mask": "999.999.999-99"}).mask(document.getElementById("cpf"));
+    Inputmask({"mask": "(99) 99999-9999"}).mask(document.getElementById("phone"));
+</script>
+<script type="module" th:src="@{/js/customers/index.js}"></script>
+</body>
+</html>

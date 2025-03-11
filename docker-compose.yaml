@@ -1,0 +1,12 @@
+services:
+  dev-database:
+    container_name: dev-database
+    build:
+      dockerfile: Dockerfile
+      context: .
+    volumes:
+      - dev-database:/var/lib/postgresql/data/
+    ports:
+      - 5432:5432
+volumes:
+  dev-database:

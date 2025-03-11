@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/styles.css">
+    <title>Cadastrar clientes</title>
+</head>
+<body>
+<h1>Cadastrar cliente</h1>
+    <main>
+        <a class="action__button" th:href="'/customers'">Voltar</a>
+        <form id="main">
+            <section id="personal_section" class="cards__section">
+                <h3>Dados pessoais</h3>
+                <label for="name">Nome</label>
+                <input type="text" name="name" id="name">
+                <label for="cpf">CPF</label>
+                <input type="text" name="cpf" id="cpf" maxlength="14">
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email">
+                <label for="phone">Telefone</label>
+                <input type="text" name="phone" id="phone" maxlength="15">
+                <label for="phone_type">Tipo de telefone</label>
+                <select name="phone_type" id="phone_type">
+                    <option value="cell_phone">Celular</option>
+                    <option value="lane">Fixo</option>
+                </select>
+                <label for="genre">Gênero</label>
+                <select name="genre" id="genre">
+                    <option value="male">Masculino</option>
+                    <option value="female">Feminino</option>
+                </select>
+                <label for="birthdate">Data de nascimento</label>
+                <input type="date" name="birthdate" id="birthdate">
+            </section>
+            <section id="delivery_section" class="cards__section">
+                <h3>Endereços</h3>
+                <div class="cards"></div>
+                <label for="name_delivery">Nome do endereço</label>
+                <input type="text" name="name_delivery" id="name_delivery">
+                <label for="cep_delivery">CEP</label>
+                <input type="text" name="cep_delivery" id="cep_delivery">
+                <label for="address_delivery">Logradouro</label>
+                <input type="text" name="address_delivery" id="address_delivery">
+                <label for="address_delivery_type">Tipo de Logradouro</label>
+                <select id="address_delivery_type">
+                    <option value="street">Rua</option>
+                    <option value="avenue">Avenida</option>
+                    <option value="platter">Travessa</option>
+                    <option value="lane">Alameda</option>
+                    <option value="road">Estrada</option>
+                    <option value="highway">Rodovia</option>
+                    <option value="square">Praça</option>
+                    <option value="alley">Viela</option>
+                    <option value="Outro">Outro</option>
+                </select>
+                <label for="number_delivery">Número</label>
+                <input type="number" name="number_delivery" id="number_delivery" min="0">
+                <label for="neighborhood_delivery">Bairro</label>
+                <input type="text" name="neighborhood_delivery" id="neighborhood_delivery">
+                <label for="city_delivery">Cidade</label>
+                <input type="text" name="city_delivery" id="city_delivery">
+                <label for="state_delivery">Estado</label>
+                <input type="text" name="state_delivery" id="state_delivery">
+                <label for="country_delivery">País</label>
+                <input type="text" name="country_delivery" id="country_delivery">
+                <label for="delivery_observations">Observações do endereço</label>
+                <textarea type="text" name="delivery_observations" id="delivery_observations" maxlength="100"></textarea>
+                <p class="already_exists_alert"></p>
+                <button id="delivery" class="disabled" disabled type="button">Adicionar endereço</button>
+            </section>
+
+            <section id="credit_card_section" class="cards__section">
+                <h3>Cartões de crédito</h3>
+                <div class="cards"></div>
+                <label for="card_number">Número do cartão</label>
+                <input type="text" name="card_number" id="card_number">
+                <label for="card_name">Nome impresso no cartão</label>
+                <input type="text" name="card_name" id="card_name">
+                <label for="card_brand">Bandeira</label>
+                <select name="card_brand" id="card_brand">
+                    <option value="visa">Visa</option>
+                    <option value="mastercard">Mastercard</option>
+                    <option value="amex">American Express</option>
+                    <option value="diners">Diners Club</option>
+                </select>
+                <label for="cvv">CVV</label>
+                <input type="text" name="cvv" id="cvv" maxlength="3">
+                <p class="already_exists_alert"></p>
+                <button id="credit_card" class="disabled" disabled type="button">Adicionar cartão</button>
+            </section>
+            <section class="cards__section" id="password">
+                <h3>Senha</h3>
+                <p>A senha deve ter mínimo de 8 caracteres com letras maiúsculas, minúsculas, números e símbolos</p>
+                <label for="password">Senha</label>
+                <input type="password" name="password" id="password">
+                <label for="password_confirmation">Confirmação de senha</label>
+                <input type="password" name="password_confirmation" id="password_confirmation">
+            </section>
+            <button type="submit" class="disabled" disabled>Cadastrar</button>
+        </form>
+    </main>
+<dialog class="error__dialog">
+    <h1>Erro ao editar</h1>
+    <p></p>
+    <button class="action__button dialog__ok">Ok</button>
+</dialog>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/inputmask.js" integrity="sha512-ALLDs6ZhqQxaXq3/BFeiYsBtvcu7VLAAybmG3BxcUXgCviCZgdFntIjfHF15c+KPMiGdhEyPhxdY6mTxW3p/lQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    Inputmask({"mask": "999.999.999-99"}).mask(document.getElementById("cpf"));
+    Inputmask({"mask": "(99) 99999-9999"}).mask(document.getElementById("phone"));
+    Inputmask({"mask": "99999-999"}).mask(document.getElementById("cep_delivery"));
+    Inputmask({"mask": "9999 9999 9999 9999"}).mask(document.getElementById("card_number"));
+    Inputmask({"mask": "999"}).mask(document.getElementById("cvv"));
+
+</script>
+<script src="/js/customers/insert/index.js" type="module"></script>
+</body>
+</html>
