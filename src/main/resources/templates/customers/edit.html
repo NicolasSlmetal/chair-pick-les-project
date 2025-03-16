@@ -32,7 +32,7 @@
                     <option th:each="type : ${T(com.chairpick.ecommerce.model.PhoneType).values()}"
                             th:value="${type}"
                             th:text="${type.name() == 'CELL_PHONE' ? 'Celular' : 'Fixo'}"
-                            th:selected="${type == customer.phoneType}">
+                            th:selected="${type.name() == customer.phoneType.name()}">
                     </option>
                 </select>
 
