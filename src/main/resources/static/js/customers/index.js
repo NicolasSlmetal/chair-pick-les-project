@@ -92,7 +92,7 @@ export function prepareRemoveButton() {
             const name = button.getAttribute("entity-name");
             selectedClientId = id;
             const p = dialog.querySelector("p");
-            p.innerText = "Tem certeza que deseja remover o cliente " + name;
+            p.innerText = "Tem certeza que deseja remover o cliente " + name + "?";
             dialog.showModal();
         });
     });
