@@ -3,6 +3,7 @@ package com.chairpick.ecommerce.e2e.pages.customers;
 
 import com.chairpick.ecommerce.e2e.factories.WebDriverFactory;
 import com.chairpick.ecommerce.e2e.pageObjects.CreateCustomerPage;
+import com.chairpick.ecommerce.e2e.pageObjects.CustomerAlterPasswordPage;
 import com.chairpick.ecommerce.e2e.pageObjects.CustomerHomePage;
 import com.chairpick.ecommerce.e2e.pageObjects.EditCustomerPage;
 import com.chairpick.ecommerce.model.PhoneType;
@@ -26,6 +27,7 @@ import java.io.InputStreamReader;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Map;
+import java.util.Objects;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -103,14 +105,14 @@ public class CustomerTest implements TestWatcher {
     }
 
     @BeforeEach
-    public void setUp() throws IOException, InterruptedException {
+    public void setUp() {
         driver = WebDriverFactory.createWebDriver();
         driver.manage().window().maximize();
         wait = new WebDriverWait(driver, Duration.ofSeconds(15));
     }
 
     @AfterEach
-    public void tearDown() throws IOException, InterruptedException {
+    public void tearDown() {
         driver.quit();
         truncateTables();
     }
@@ -286,6 +288,37 @@ public class CustomerTest implements TestWatcher {
 
         valuesForLastRow = customerHomePage.getValuesForLastRow();
         Assertions.assertTrue(valuesForLastRow.isEmpty());
+    }
+
+    @Test
+    public void shouldAlterCustomerPassword() {
+        insertCustomerBeforeStart();
+        driver.get(BASE_URL);
+        wait.until(ExpectedConditions.urlToBe(BASE_URL));
+
+        CustomerHomePage customerHomePage = new CustomerHomePage(driver);
+        Map<String, Object> valuesForLastRow = customerHomePage.getValuesForLastRow();
+        Assertions.assertFalse(valuesForLastRow.isEmpty());
+
+        WebElement actionsButton = (WebElement) valuesForLastRow.get("actions");
+        Map<String, WebElement> actions = customerHomePage.openActionsForRow(actionsButton);
+        CustomerAlterPasswordPage alterPasswordPage = (CustomerAlterPasswordPage) customerHomePage.openOptionOfActionsButton(actions.get("alterPassword"), "alterPassword");
+
+        wait.until(ExpectedConditions.urlMatches(BASE_URL + "/([1-9]+)/alter-password"));
+        String expectedUrl = String.format("%s/([1-9]+)/alter-password", BASE_URL);
+        Assertions.assertTrue(Objects.requireNonNull(driver.getCurrentUrl()).matches(expectedUrl));
+
+        String newPassword = "Abcdedf12345@";
+
+        Assertions.assertEquals("Abcdedf12345@", alterPasswordPage.fillPassword(newPassword));
+        Assertions.assertEquals("Abcdedf12345@", alterPasswordPage.fillPasswordConfirmation(newPassword));
+        alterPasswordPage.submit();
+
+        wait.until(ExpectedConditions.urlToBe(BASE_URL));
+        Assertions.assertEquals(BASE_URL, driver.getCurrentUrl());
+
+        Map<String, Object> valuesForLastRowAfterEdit = customerHomePage.getValuesForLastRow();
+        Assertions.assertFalse(valuesForLastRowAfterEdit.isEmpty());
     }
 
     @AfterAll
