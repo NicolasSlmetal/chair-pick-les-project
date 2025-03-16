@@ -7,6 +7,13 @@ services:
     volumes:
       - test-database:/var/lib/postgresql/data/
     ports:
-      - 5432:5432
+      - "5432:5432"
+    networks:
+      test-network:
+        aliases:
+          - test-database
 volumes:
   test-database:
+networks:
+  test-network:
+    driver: bridge

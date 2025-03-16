@@ -7,6 +7,13 @@ services:
     volumes:
       - dev-database:/var/lib/postgresql/data/
     ports:
-      - 5432:5432
+      - "5432:5432"
+    networks:
+      dev-network:
+        aliases:
+          - dev-database
 volumes:
   dev-database:
+networks:
+  dev-network:
+    driver: bridge
