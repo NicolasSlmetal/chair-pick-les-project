@@ -98,6 +98,28 @@ public class CustomerHomePage extends PageObject {
         rowDeleteButton.click();
     }
 
+    public Map<String, WebElement> openActionsForRow(WebElement rowActionsButton) {
+        rowActionsButton.click();
+        WebElement actionsColumn = rowActionsButton.findElement(By.xpath("./.."));
+        List<WebElement> actionsForRow = actionsColumn.findElements(By.tagName("a"));
+        if (actionsForRow.isEmpty() || actionsForRow.size() < 4) {
+            throw new IllegalStateException("No actions found for this row");
+        }
+        return Map.of(
+                "addresses", actionsForRow.get(0),
+                "creditCards", actionsForRow.get(1),
+                "transactions", actionsForRow.get(2),
+                "alterPassword", actionsForRow.get(3)
+        );
+
+
+    }
+
+    public PageObject openOptionOfActionsButton(WebElement actionButton, String option) {
+        actionButton.click();
+        return ActionsPageMap.getInstance().getPage(option, driver);
+    }
+
     public String getTextFromDeleteConfirmDialog() {
         return driver.findElement(deleteConfirmDialog).findElement(By.tagName("p")).getText();
     }
