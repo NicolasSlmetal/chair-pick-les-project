@@ -1,0 +1,12 @@
+services:
+  test-database:
+    container_name: test-database
+    build:
+      dockerfile: Dockerfile
+      context: .
+    volumes:
+      - test-database:/var/lib/postgresql/data/
+    ports:
+      - 5432:5432
+volumes:
+  test-database:
