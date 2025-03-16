@@ -89,7 +89,7 @@
                     <a class="option" th:href="'customers/' + ${customer.id} + '/addresses'">Gerir endereços</a>
                     <a class="option" th:href="'customers/' + ${customer.id} + '/credit-cards'">Gerir cartões</a>
                     <a class="option" th:href="'customers/' + ${customer.id} + '/transactions'">Consultar transações</a>
-                    <a class="option" th:href="'customers/' + ${customer.id} + '/alter-password'">Alterar senha</a>
+                    <a data-test="alter-password" class="option" th:href="'customers/' + ${customer.id} + '/alter-password'">Alterar senha</a>
                 </div>
             </td>
             <td>
