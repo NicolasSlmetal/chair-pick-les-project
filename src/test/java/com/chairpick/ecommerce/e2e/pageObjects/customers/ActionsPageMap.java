@@ -1,6 +1,8 @@
-package com.chairpick.ecommerce.e2e.pageObjects;
+package com.chairpick.ecommerce.e2e.pageObjects.customers;
 
-import com.chairpick.ecommerce.e2e.factories.WebDriverFactory;
+import com.chairpick.ecommerce.e2e.pageObjects.PageObject;
+import com.chairpick.ecommerce.e2e.pageObjects.addresses.AddressHomePage;
+import com.chairpick.ecommerce.e2e.pageObjects.creditCards.CreditCardHomePage;
 import org.openqa.selenium.WebDriver;
 
 import java.util.HashMap;
@@ -15,6 +17,8 @@ public class ActionsPageMap {
     private ActionsPageMap() {
         pageMap = new HashMap<>();
         pageMap.put("alterPassword", CustomerAlterPasswordPage::new);
+        pageMap.put("creditCards", CreditCardHomePage::new);
+        pageMap.put("addresses", AddressHomePage::new);
     }
 
     public static ActionsPageMap getInstance() {
