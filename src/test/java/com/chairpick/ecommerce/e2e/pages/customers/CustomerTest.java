@@ -2,10 +2,12 @@ package com.chairpick.ecommerce.e2e.pages.customers;
 
 
 import com.chairpick.ecommerce.e2e.factories.WebDriverFactory;
-import com.chairpick.ecommerce.e2e.pageObjects.CreateCustomerPage;
-import com.chairpick.ecommerce.e2e.pageObjects.CustomerAlterPasswordPage;
-import com.chairpick.ecommerce.e2e.pageObjects.CustomerHomePage;
-import com.chairpick.ecommerce.e2e.pageObjects.EditCustomerPage;
+import com.chairpick.ecommerce.e2e.pageObjects.addresses.AddressHomePage;
+import com.chairpick.ecommerce.e2e.pageObjects.creditCards.CreditCardHomePage;
+import com.chairpick.ecommerce.e2e.pageObjects.customers.CreateCustomerPage;
+import com.chairpick.ecommerce.e2e.pageObjects.customers.CustomerAlterPasswordPage;
+import com.chairpick.ecommerce.e2e.pageObjects.customers.CustomerHomePage;
+import com.chairpick.ecommerce.e2e.pageObjects.customers.EditCustomerPage;
 import com.chairpick.ecommerce.model.PhoneType;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -118,7 +120,7 @@ public class CustomerTest implements TestWatcher {
     }
 
     @Test
-    public void shouldCreateACustomer()  {
+    public void shouldCreateACustomer() {
         driver.get(BASE_URL);
         wait.until(ExpectedConditions.urlToBe(BASE_URL));
 
@@ -146,7 +148,8 @@ public class CustomerTest implements TestWatcher {
         String expectedCountry = "Country";
         String expectedObservation = "Observation";
         String expectedCreditCardNumber = "1234 5678 9012 3456";
-        String expectedPassword = System.getenv("PASSWORD");
+        String envPassword = System.getenv("PASSWORD");
+        String expectedPassword = envPassword != null && !envPassword.isEmpty() ?  envPassword : "Abcdedf12345@";
 
         Assertions.assertEquals(name, createCustomerPage.fillName(name));
         Assertions.assertEquals(expectedCpf, createCustomerPage.fillCpf("91536735060"));
@@ -199,6 +202,55 @@ public class CustomerTest implements TestWatcher {
         Assertions.assertNotNull(valuesForLastRow.get("actions"));
         Assertions.assertNotNull(valuesForLastRow.get("edit"));
         Assertions.assertNotNull(valuesForLastRow.get("delete"));
+
+        WebElement actionsButton = (WebElement) valuesForLastRow.get("actions");
+        Map<String, WebElement> actions = customerHomePage.openActionsForRow(actionsButton);
+        CreditCardHomePage creditCardHomePage = (CreditCardHomePage) customerHomePage.openOptionOfActionsButton(actions.get("creditCards"), "creditCards");
+        String expectedUrl = String.format("%s/([1-9]+)/credit-cards", BASE_URL);
+        wait.until(ExpectedConditions.urlMatches(expectedUrl));
+        Assertions.assertTrue(Objects.requireNonNull(driver.getCurrentUrl()).matches(expectedUrl));
+
+        Map<String, Object> creditCardsLastRow = creditCardHomePage.getValuesForLastRow();
+        Assertions.assertFalse(creditCardsLastRow.isEmpty());
+        String expectedHiddenCreditCardNumber = "1234 **** **** ****";
+
+        Assertions.assertEquals(expectedHiddenCreditCardNumber, creditCardsLastRow.get("number"));
+        Assertions.assertEquals(name.toUpperCase(), creditCardsLastRow.get("name"));
+        Assertions.assertEquals("VISA", creditCardsLastRow.get("brand"));
+        Assertions.assertEquals(expectedCreditCardCvv, creditCardsLastRow.get("cvv"));
+        Assertions.assertEquals("Sim", creditCardsLastRow.get("default"));
+        Assertions.assertNotNull(creditCardsLastRow.get("edit"));
+        Assertions.assertNotNull(creditCardsLastRow.get("delete"));
+
+        creditCardHomePage.back();
+        driver.get(BASE_URL);
+        wait.until(ExpectedConditions.urlToBe(BASE_URL));
+        Assertions.assertEquals(BASE_URL, driver.getCurrentUrl());
+
+        valuesForLastRow = customerHomePage.getValuesForLastRow();
+        actionsButton = (WebElement) valuesForLastRow.get("actions");
+        actions = customerHomePage.openActionsForRow(actionsButton);
+        AddressHomePage addressHomePage = (AddressHomePage) customerHomePage.openOptionOfActionsButton(actions.get("addresses"), "addresses");
+
+        expectedUrl = String.format("%s/([1-9]+)/addresses", BASE_URL);
+        wait.until(ExpectedConditions.urlMatches(expectedUrl));
+        Assertions.assertTrue(Objects.requireNonNull(driver.getCurrentUrl()).matches(expectedUrl));
+
+        Map<String, Object> addressLastRow = addressHomePage.getValuesForLastRow();
+
+        Assertions.assertFalse(addressLastRow.isEmpty());
+        Assertions.assertEquals(expectedAddressName, addressLastRow.get("name"));
+        Assertions.assertEquals(expectedStreet, addressLastRow.get("street"));
+        Assertions.assertEquals("Rua", addressLastRow.get("streetType"));
+        Assertions.assertEquals(expectedCep, addressLastRow.get("cep"));
+        Assertions.assertEquals(expectedAddressNeighborhood, addressLastRow.get("neighborhood"));
+        Assertions.assertEquals(expectedAddressNumber, addressLastRow.get("number"));
+        Assertions.assertEquals(expectedAddressCity, addressLastRow.get("city"));
+        Assertions.assertEquals(expectedAddressState, addressLastRow.get("state"));
+        Assertions.assertEquals(expectedCountry, addressLastRow.get("country"));
+        Assertions.assertEquals(expectedObservation, addressLastRow.get("observations"));
+        Assertions.assertNotNull(addressLastRow.get("edit"));
+        Assertions.assertNotNull(addressLastRow.get("delete"));
     }
 
     @Test
