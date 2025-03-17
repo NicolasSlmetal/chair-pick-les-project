@@ -1,5 +1,6 @@
-package com.chairpick.ecommerce.e2e.pageObjects;
+package com.chairpick.ecommerce.e2e.pageObjects.customers;
 
+import com.chairpick.ecommerce.e2e.pageObjects.PageObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -62,7 +63,7 @@ public class CustomerHomePage extends PageObject {
     }
 
     public void submitSearch() {
-        driver.findElement(By.cssSelector("button#search")).click();
+        driver.findElement(searchSubmitButton).click();
     }
 
     public Map<String, Object> getValuesForLastRow() {

@@ -1,5 +1,6 @@
-package com.chairpick.ecommerce.e2e.pageObjects;
+package com.chairpick.ecommerce.e2e.pageObjects.customers;
 
+import com.chairpick.ecommerce.e2e.pageObjects.PageObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
