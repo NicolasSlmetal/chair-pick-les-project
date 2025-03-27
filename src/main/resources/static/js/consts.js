@@ -1,3 +1,5 @@
+export const $ = window.jQuery;
+
 export const dialog = document.querySelector("dialog");
 export const dialogConfirmButton = document.querySelector("#dialog__confirm__button");
 export const dialogCancelButton = document.querySelector("#dialog__cancel__button");

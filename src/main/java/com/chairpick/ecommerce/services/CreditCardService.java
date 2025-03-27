@@ -25,7 +25,11 @@ public class CreditCardService {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new EntityNotFoundException("Customer not found"));
 
-        return creditCardRepository.findByCustomer(customer);
+        List<CreditCard> creditCards = creditCardRepository.findByCustomer(customer);
+        if (creditCards.isEmpty()) {
+            throw new EntityNotFoundException("Credit cards not found");
+        }
+        return creditCards;
     }
 
     @Transactional

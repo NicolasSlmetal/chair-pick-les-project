@@ -29,7 +29,13 @@ public class AddressService {
     public List<Address> findAddressesByCustomerId(Long customerId) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new EntityNotFoundException("Customer not found"));
-        return addressRepository.findAllByCustomer(customer);
+        List<Address> addresses = addressRepository.findAllByCustomer(customer);
+
+        if (addresses.isEmpty()) {
+            throw new EntityNotFoundException("Addresses not found");
+        }
+
+        return addresses;
     }
 
     @Transactional

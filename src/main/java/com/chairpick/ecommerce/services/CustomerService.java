@@ -1,10 +1,7 @@
 package com.chairpick.ecommerce.services;
 
 import com.chairpick.ecommerce.exceptions.EntityNotFoundException;
-import com.chairpick.ecommerce.model.Customer;
-import com.chairpick.ecommerce.model.Genre;
-import com.chairpick.ecommerce.model.PhoneType;
-import com.chairpick.ecommerce.model.User;
+import com.chairpick.ecommerce.model.*;
 import com.chairpick.ecommerce.model.io.NewCustomerInput;
 import com.chairpick.ecommerce.model.io.NewPasswordInput;
 import com.chairpick.ecommerce.repositories.AddressRepository;
@@ -49,6 +46,7 @@ public class CustomerService {
         User user = User.builder()
                 .email(input.getEmail().trim())
                 .password(input.getPassword().trim())
+                .type(UserType.CUSTOMER)
                 .build();
         user.validate();
 
@@ -73,20 +71,13 @@ public class CustomerService {
         String salt = BCrypt.gensalt();
         customer.getUser().setPassword(BCrypt.hashpw(input.getPassword(), salt));
 
-        Customer savedCustomer = customerRepository.saveCustomer(customer);
-
-        savedCustomer.getAddresses().forEach(address -> address.setCustomer(savedCustomer));
-        savedCustomer.getCreditCards().forEach(creditCard -> creditCard.setCustomer(savedCustomer));
-        savedCustomer.getCreditCards().forEach(creditCardRepository::saveCreditCard);
-        savedCustomer.getAddresses().forEach(addressRepository::saveAddress);
-        return savedCustomer;
+        return customerRepository.saveCustomer(customer);
     }
 
     public Customer findById(Long id) {
         return customerRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
     }
 
-    @Transactional
     public Customer updateCustomer(Long id, NewCustomerInput input) {
         Customer customer = findById(id);
 
