@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+    <title>Home</title>
+
+</head>
+<body>
+<header class="header home">
+    <h1 class="title">Chair Pick</h1>
+    <div class="search__container home">
+        <input id="name_search" autocomplete="off" type="text" list="search" class="search__home" placeholder="Pesquise cadeiras por aqui" style="width: 100%;">
+        <a href="search.html" class="home_search"><img class="profile__image" th:src="@{/assets/search.png}"></a>
+    </div>
+    <div class="profile__container">
+        <a class="active" href="index.html"><img class="profile__image active" th:src="@{/assets/home.png}"></a>
+        <a class="login__button" href="login.html">
+            <img class="profile__image" th:src="@{/assets/user.png}">
+            <p>Faça login ou registre-se</p>
+        </a>
+    </div>
+</header>
+<main class="home">
+    <section class="main_section">
+        <aside class="enhanced__search">
+            <h2>Pesquisa avançada</h2>
+            <form id="main">
+                <label for="category">Categorias</label>
+                <select class="select2" id="category" name="category" multiple>
+                    <option value="gamer">Gamer</option>
+                    <option value="office">Escritório</option>
+                    <option value="beach">Praia</option>
+                    <option value="aud">Auditório</option>
+                </select>
+                <label>Preço</label>
+                <div class="min_max_group">
+                    <input type="number" id="min_price" name="min_price" placeholder="Mínimo">
+                    <input type="number" id="max_price" name="max_price" placeholder="Máximo">
+                </div>
+                <label>Comprimento</label>
+                <div class="min_max_group">
+                    <input type="number" id="min_lenght" name="min_lenght" placeholder="Mínimo">
+                    <input type="number" id="max_lenght" name="max_lenght" placeholder="Máximo">
+                </div>
+                <label>Largura</label>
+                <div class="min_max_group">
+                    <input type="number" id="min_width" name="min_width" placeholder="Mínimo">
+                    <input type="number" id="max_width" name="max_width" placeholder="Máximo">
+                </div>
+                <label >Altura</label>
+                <div class="min_max_group">
+                    <input type="number" id="min_height" name="min_height" placeholder="Mínimo">
+                    <input type="number" id="max_height" name="max_height" placeholder="Máximo">
+                </div>
+                <label for="rating">Avaliação</label>
+                <div class="min_max_group">
+                    <div>
+                        <p id="range_min_rating">Mínimo: 0</p>
+                        <input class="slider" type="range" id="min_rating" name="min_rating" min="0" max="5" step="0.1" value="0" oninput="document.getElementById('range_min_rating').innerHTML = `Mínimo: ${this.value}`">
+                    </div>
+                    <div>
+                        <p id="range_max_rating">Máximo: 5</p>
+                        <input class="slider" type="range" id="max_rating" name="max_rating" min="0" max="5" step="0.1" value="5" oninput="document.getElementById('range_max_rating').innerHTML = `Máximo: ${this.value}`">
+                    </div>
+                </div>
+                <div>
+                    <button id="search" class="action__button" style="width: 100%;">Buscar</button>
+                    <button id="clean" class="action__button danger">Limpar</button>
+                </div>
+            </form>
+        </aside>
+        <section class="products">
+            <h2>Produtos</h2>
+            <div class="products__container">
+                <a class="product_card" href="product.html">
+                    <img class="product_image" src="https://a-static.mlcdn.com.br/1500x1500/cadeira-gamer-otello-preto-e-vermelho/magazineluiza/237019000/b3fc5faf334ec8354d4177f54df4e87a.jpg" alt="Cadeira de escritório">
+                    <h3>Cadeira gamer</h3>
+                    <p>R$ 200,00</p>
+                </a>
+                <a class="product_card" href="product.html">
+                    <img class="product_image" src="https://dcf83otphg8a2.cloudfront.net/Custom/Content/Products/98/88/988852_cadeira-escritorio-presidente-base-cromada-preta-mb-c730-20028_m1_637626398061654943.webp" alt="Cadeira de escritório">
+                    <h3>Cadeira de escritório</h3>
+                    <p>R$ 200,00</p>
+                </a>
+                <a class="product_card" href="product.html">
+                    <img class="product_image" src="https://minipreco.vtexassets.com/arquivos/ids/186643/83087b82-7358-4a8f-a923-d81191e74efd.jpg?v=638289344578430000" alt="Cadeira de escritório">
+                    <h3>Cadeira de praia</h3>
+                    <p>R$ 200,00</p>
+                </a>
+                <a class="product_card" href="product.html">
+                    <img class="product_image" src="https://moveissaara.com.br/wp-content/uploads/2018/09/cadeira-auditorio-saara-001-1.jpg" alt="Cadeira de escritório">
+                    <h3>Cadeira de escritório</h3>
+                    <p>R$ 200,00</p>
+                </a>
+                <a class="product_card" href="product.html">
+                    <img class="product_image" src="https://www.longarinasmetalicas.com/assets/img/produtos/produto-28-cadeira-para-escritorio-elite-flex-plus-presidente-com-encosto-de-cabeca-assento-estofado-encosto-em-tela-cadeiras-home--239631.jpg" alt="Cadeira de escritório">
+                    <h3>Cadeira de escritório</h3>
+                    <p>R$ 200,00</p>
+                </a>
+            </div>
+            <div class="page">
+                <a class="active"> <strong><</strong> </a>
+                <a class="active">1</a>
+                <a>2</a>
+                <a>3</a>
+                <a><strong>></strong></a>
+            </div>
+        </section>
+    </section>
+    <hr>
+    <h2>Cadeiras de escritório</h2>
+    <section class="row">
+        <section class="products">
+            <a class="product_card" href="product.html">
+                <img class="product_image" src="https://a-static.mlcdn.com.br/1500x1500/cadeira-gamer-otello-preto-e-vermelho/magazineluiza/237019000/b3fc5faf334ec8354d4177f54df4e87a.jpg" alt="Cadeira de escritório">
+                <h3>Cadeira de escritório</h3>
+                <p>R$ 200,00</p>
+            </a>
+        </section>
+    </section>
+    <hr>
+    <h2>Cadeiras Gamer</h2>
+    <section class="row">
+        <section class="products">
+            <a class="product_card" href="product.html">
+                <img class="product_image" src="https://a-static.mlcdn.com.br/1500x1500/cadeira-gamer-otello-preto-e-vermelho/magazineluiza/237019000/b3fc5faf334ec8354d4177f54df4e87a.jpg" alt="Cadeira de escritório">
+                <h3>Cadeira de escritório</h3>
+                <p>R$ 200,00</p>
+            </a>
+        </section>
+    </section>
+    <hr>
+    <h2>Cadeiras de praia</h2>
+    <section class="row">
+        <section class="products">
+            <a class="product_card" href="product.html">
+                <img class="product_image" src="https://a-static.mlcdn.com.br/1500x1500/cadeira-gamer-otello-preto-e-vermelho/magazineluiza/237019000/b3fc5faf334ec8354d4177f54df4e87a.jpg" alt="Cadeira de escritório">
+                <h3>Cadeira de escritório</h3>
+                <p>R$ 200,00</p>
+            </a>
+        </section>
+    </section>
+    <hr>
+    <section class="chatbot_redirect">
+        <h2>Chatbot</h2>
+        <div>
+            <img class="profile__image" th:src="@{/assets/bot.png}">
+            <p>Converse com nosso chatbot para receber recomendações personalizadas de cadeiras.</p>
+        </div>
+        <a class="action__button" href="ia/index.html">Acesse o chatbot</a>
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="footer">
+        <p>© 2025 Chair Pick</p>
+    </div>
+</footer>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script th:src="@{/js/index/index.js}" type="module"></script>
+</body>
+</html>

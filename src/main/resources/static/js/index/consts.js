@@ -1,0 +1,1 @@
+export const productCards = document.querySelector(".product_cards");
