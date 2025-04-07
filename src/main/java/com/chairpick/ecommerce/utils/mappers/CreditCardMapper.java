@@ -1,15 +1,14 @@
 package com.chairpick.ecommerce.utils.mappers;
 
 import com.chairpick.ecommerce.model.CreditCard;
-import com.chairpick.ecommerce.model.CreditCardBrand;
+import com.chairpick.ecommerce.model.enums.CreditCardBrand;
 import com.chairpick.ecommerce.model.Customer;
-import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
-public class CreditCardMapper extends CustomRowMapper implements RowMapper<CreditCard> {
+public class CreditCardMapper extends CustomRowMapper<CreditCard> {
     public CreditCardMapper() {
         super("cre");
     }

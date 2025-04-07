@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resumo da compra</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header class="header home">
+    <div sec:authorize="isAnonymous()" th:replace="fragments/header-public :: header"></div>
+
+    <div sec:authorize="isAuthenticated()" th:replace="fragments/header-authenticated :: header"></div>
+</header>
+<main class="home" th:with="customer=${cart.keySet().iterator().next().customer}">
+    <section class="sale_summary">
+        <h2>Selecionar endereços</h2>
+        <h3 style="text-align: left;">Endereço de entrega</h3>
+        <div id="delivery_addresses" class="row x_scrollable" >
+            <div class="card selectable" th:each="address : ${customer.addresses}">
+                <input type="radio" name="delivery" th:value="${address.id}" th:checked="${address.isDefault}">
+                <p th:utext="'<strong>Nome:</strong>' + ${address.name}"></p>
+                <p th:utext="'<strong>Logradouro:</strong>' + ${address.street}"></p>
+                <p th:utext="'<strong>Bairro:</strong>' + ${address.neighborhood}"></p>
+                <p th:utext="'<strong>Cidade:</strong>' + ${address.city}"></p>
+                <p th:utext="'<strong>Estado:</strong>' + ${address.state}"></p>
+                <p th:utext="'<strong>País:</strong>' + ${address.country}"></p>
+                <p th:with="cep=${T(com.chairpick.ecommerce.utils.format.CepFormater).format(address.cep)}"
+                   th:utext="'<strong>CEP:</strong>' + ${cep}"></p>
+            </div>
+        </div>
+        <hr>
+        <h3 style="text-align: left;">Endereço de cobrança</h3>
+        <div id="billing_addresses" class="row">
+            <div class="card selectable" th:each="address : ${customer.addresses}">
+                <input type="radio" name="billing" th:value="${address.id}" th:checked="${address.isDefault}">
+                <p th:utext="'<strong>Nome:</strong>' + ${address.name}"></p>
+                <p th:utext="'<strong>Logradouro:</strong>' + ${address.street}"></p>
+                <p th:utext="'<strong>Bairro:</strong>' + ${address.neighborhood}"></p>
+                <p th:utext="'<strong>Cidade:</strong>' + ${address.city}"></p>
+                <p th:utext="'<strong>Estado:</strong>' + ${address.state}"></p>
+                <p th:utext="'<strong>País:</strong>' + ${address.country}"></p>
+                <p th:with="cep=${T(com.chairpick.ecommerce.utils.format.CepFormater).format(address.cep)}"
+                   th:utext="'<strong>CEP:</strong>' + ${cep}"></p>
+            </div>
+        </div>
+        <button id="address" class="product_action">Cadastrar novo endereço</button>
+    </section>
+    <section class="sale_summary">
+        <h2>Resumo da compra</h2>
+        <div class="row">
+            <div class="product_card without_cursor" th:each="cartItem : ${cart.keySet()}">
+                <input type="hidden" th:value="${cartItem.chair.id}" name="chair_id">
+                <img class="product_image" th:src="@{/images/chairs/{id}(id=${cartItem.chair.id})}" th:alt="${cartItem.chair.name}"/>
+                <h2 th:text="${cartItem.chair.name}">Cadeira Gamer</h2>
+                <h3 class="chair_value" th:text="${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(cartItem.price)}"></h3>
+                <h3 class="freight_value" th:with="freight=${cart.get(cartItem).freight.value}"
+                        th:text="'Frete:' + ${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(freight)}"></h3>
+                <p class="chair_amount" th:with="amount=${cartItem.amount}"
+                th:utext="'<strong>Unidades:</strong>' + ${amount}"></p>
+            </div>
+
+        </div>
+        <div class="sale_info" style="padding: 4px;">
+            <h2 id="subtotal" th:with="formattedTotal=${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(total)}"
+                    th:utext="'<strong>Subtotal: </strong>' + ${formattedTotal}"></h2>
+            <h2 id="freight_value" th:text="'Frete: ' + ${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(freight)}"></h2>
+            <h2 id="total_value" th:with="totalWithFreight=${total + freight}" th:text="'Total: ' + ${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(totalWithFreight)}"></h2>
+        </div>
+        <div class="action_product">
+            <form>
+                <input type="hidden" id="customer" name="customer_id"
+                th:value="${customer.id}">
+                <input type="hidden" id="total" name="total" th:value="${total}">
+                <input type="hidden" id="freight" name="freight" th:value="${freight}">
+                <a class="product_action" th:href="@{/customers/{customerId}/cart(customerId=${customerId})}">Voltar ao carrinho</a>
+                <button type="submit" id="buy" class="product_action">Finalizar compra</button>
+            </form>
+        </div>
+    </section>
+</main>
+<script src="/js/cart/confirm/index.js" type="module"></script>
+</body>
+</html>

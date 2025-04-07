@@ -1,5 +1,6 @@
 package com.chairpick.ecommerce.daos;
 
+import com.chairpick.ecommerce.daos.interfaces.GenericDAO;
 import com.chairpick.ecommerce.model.CreditCard;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -45,7 +46,18 @@ public class CreditCardDAO implements GenericDAO<CreditCard> {
 
     @Override
     public CreditCard update(CreditCard entity) {
-        return null;
+        String sql = """
+                UPDATE tb_credit_card SET cre_number = :cre_number, cre_holder = :cre_holder, cre_cvv = :cre_cvv, cre_default = :cre_default WHERE cre_id = :id;
+                """;
+        Map<String, Object> parameters = Map.of(
+                "cre_number", entity.getNumber(),
+                "cre_holder", entity.getName(),
+                "cre_cvv", entity.getCvv(),
+                "cre_default", entity.isDefault() ? 1 : 0,
+                "id", entity.getId()
+        );
+        jdbcTemplate.update(sql, parameters);
+        return entity;
     }
 
     @Override
@@ -78,18 +90,19 @@ public class CreditCardDAO implements GenericDAO<CreditCard> {
         for (Map.Entry<String, String> entry : parameters.entrySet()) {
             String operator = " ILIKE ";
             String value = "'%" + entry.getValue() + "%'";
-            if (entry.getValue().equalsIgnoreCase("cre_customer_id")) {
+            if (entry.getKey().equalsIgnoreCase("cre_customer_id")) {
                 operator = " = ";
                 value = entry.getValue();
             }
 
-            if (entry.getValue().equalsIgnoreCase("cre_default")) {
+            if (entry.getKey().equalsIgnoreCase("cre_default")) {
                 operator = " = ";
                 value = entry.getValue();
             }
 
             sqlBuilder.append(" AND ").append(entry.getKey()).append(operator).append(value);
         }
+        sqlBuilder.append(" ORDER BY cre_default DESC");
 
         return sqlBuilder.toString();
     }

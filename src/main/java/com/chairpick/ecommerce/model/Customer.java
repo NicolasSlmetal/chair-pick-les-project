@@ -1,5 +1,7 @@
 package com.chairpick.ecommerce.model;
 
+import com.chairpick.ecommerce.model.enums.Genre;
+import com.chairpick.ecommerce.model.enums.PhoneType;
 import com.chairpick.ecommerce.utils.ErrorCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 
 @Getter
@@ -185,5 +188,17 @@ public class Customer extends DomainEntity {
                 ", genre=" + genre +
                 ", user=" + user +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Customer customer = (Customer) o;
+        return Objects.equals(getCpf(), customer.getCpf());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getCpf());
     }
 }

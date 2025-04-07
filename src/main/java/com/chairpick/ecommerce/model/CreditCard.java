@@ -1,5 +1,6 @@
 package com.chairpick.ecommerce.model;
 
+import com.chairpick.ecommerce.model.enums.CreditCardBrand;
 import com.chairpick.ecommerce.utils.ErrorCode;
 import lombok.Builder;
 import lombok.Getter;

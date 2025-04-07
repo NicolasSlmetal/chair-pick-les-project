@@ -2,33 +2,52 @@ package com.chairpick.ecommerce.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityFilterChainConfig {
 
+    private final BeforeRequestFilter filter;
+
+    public SecurityFilterChainConfig(BeforeRequestFilter filter) {
+        this.filter = filter;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-       return http
-               .csrf(AbstractHttpConfigurer::disable)
-               .authorizeHttpRequests( auth ->
-                       auth
-                               .requestMatchers("/**")
-                               .permitAll()
-                               .requestMatchers(HttpMethod.POST, "/**")
-                               .permitAll()
-                               .requestMatchers(HttpMethod.PUT, "/**")
-                               .permitAll()
-                               .requestMatchers(HttpMethod.PATCH, "/**")
-                               .permitAll()
-                               .requestMatchers(HttpMethod.DELETE, "/**")
-                               .permitAll())
-               .formLogin(AbstractHttpConfigurer::disable).build();
+        return http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth ->
+                        auth.requestMatchers("/chairs/**, /login", "/customers/new")
+                                .permitAll()
+                                .requestMatchers("/customers/**")
+                                .authenticated()
+                                .requestMatchers("/admin/**")
+                                .hasAuthority("ADMIN")
+                                .anyRequest().permitAll()
+                )
+                .exceptionHandling(handler ->
+                        handler.authenticationEntryPoint((request, response, authException) -> {
+                            response.sendRedirect("/login");
+                        })
+                                .accessDeniedHandler(((request, response, accessDeniedException) ->
+                                        response.sendRedirect("/404"))))
+                .logout(logout -> logout.deleteCookies("token")
+                        .logoutSuccessUrl("/"))
+                .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
+                .build();
 
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
     }
 }

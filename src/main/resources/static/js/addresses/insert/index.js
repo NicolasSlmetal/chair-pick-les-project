@@ -2,6 +2,16 @@ import { nameInput, cepInput, numberInput, neighborhoodInput, addressObservation
 import { form, submitButton } from "../../consts.js";
 import { postAddress } from "./postAddress.js";
 
+const backButton = document.querySelector("#back-button");
+
+backButton.addEventListener("click", () => {
+    const lastActivity = window.history;
+    if (lastActivity) {
+        lastActivity.back();
+        return;
+    }
+    window.location.href = "/";
+});
 
 form.addEventListener("submit", async (event) => {
     event.preventDefault();

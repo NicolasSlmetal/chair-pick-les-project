@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<main>
+    <h1>Login</h1>
+    <a class="action__button" th:href="@{/}">Voltar</a>
+    <form>
+        <section class="cards__section password__section">
+            <label for="email">Email</label>
+            <input id="email" type="email" placeholder="Digite o email" name="email">
+            <label for="password">Senha</label>
+            <input id="password" type="password" placeholder="Digite a senha" name="password">
+            <div class="button__container">
+                <a class="action__button" th:href="@{/customers/new}">Cadastre-se</a>
+                <button id="forget" class="action__button">Esqueceu a senha?</button>
+            </div>
+        </section>
+        <button class="disabled" type="submit" disabled>Login</button>
+    </form>
+</main>
+<dialog id="forget__modal">
+    <div class="modal__content">
+        <h2>Esqueceu a senha?</h2>
+        <p>Digite o email para recuperar a senha</p>
+        <input class='input' type="email" id="forget__email" placeholder="Digite o email">
+        <div class="actions">
+            <button id="dialog__cancel__button" class="action__button">Cancelar</button>
+            <button id="dialog__confirm__button" class="action__button">Recuperar</button>
+        </div>
+    </div>
+
+</dialog>
+<script th:src="@{/js/login/index.js}" type="module"></script>
+</body>
+</html>

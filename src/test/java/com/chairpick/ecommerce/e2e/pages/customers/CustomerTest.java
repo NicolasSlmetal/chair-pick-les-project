@@ -8,7 +8,7 @@ import com.chairpick.ecommerce.e2e.pageObjects.customers.CreateCustomerPage;
 import com.chairpick.ecommerce.e2e.pageObjects.customers.CustomerAlterPasswordPage;
 import com.chairpick.ecommerce.e2e.pageObjects.customers.CustomerHomePage;
 import com.chairpick.ecommerce.e2e.pageObjects.customers.EditCustomerPage;
-import com.chairpick.ecommerce.model.PhoneType;
+import com.chairpick.ecommerce.model.enums.PhoneType;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestWatcher;

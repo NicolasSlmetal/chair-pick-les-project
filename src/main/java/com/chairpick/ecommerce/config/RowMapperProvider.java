@@ -1,13 +1,7 @@
 package com.chairpick.ecommerce.config;
 
-import com.chairpick.ecommerce.model.Address;
-import com.chairpick.ecommerce.model.CreditCard;
-import com.chairpick.ecommerce.model.Customer;
-import com.chairpick.ecommerce.model.User;
-import com.chairpick.ecommerce.utils.mappers.AddressMapper;
-import com.chairpick.ecommerce.utils.mappers.CreditCardMapper;
-import com.chairpick.ecommerce.utils.mappers.CustomerMapper;
-import com.chairpick.ecommerce.utils.mappers.UserMapper;
+import com.chairpick.ecommerce.model.*;
+import com.chairpick.ecommerce.utils.mappers.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.RowMapper;
@@ -17,12 +11,12 @@ public class RowMapperProvider {
 
     @Bean
     RowMapper<User> getRowMapperForUser() {
-        return new UserMapper();
+        return new UserRowMapper();
     }
 
     @Bean
     RowMapper<Customer> getRowMapperForCustomer() {
-        return new CustomerMapper();
+        return new CustomerRowMapper();
     }
 
     @Bean
@@ -32,6 +26,21 @@ public class RowMapperProvider {
 
     @Bean
     RowMapper<Address> getRowMapperForAddress() {
-        return new AddressMapper();
+        return new AddressRowMapper();
+    }
+
+    @Bean
+    RowMapper<Chair> getRowMapperForChair() {
+        return new ChairRowMapper();
+    }
+
+    @Bean
+    RowMapper<Item> getRowMapperForItem() {
+        return new ItemRowMapper();
+    }
+
+    @Bean
+    RowMapper<Cart> getRowMapperForCart() {
+        return new CartRowMapper();
     }
 }

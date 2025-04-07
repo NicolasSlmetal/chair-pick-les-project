@@ -1,6 +1,16 @@
 import { cardNumberInput, cardNameInput, cardVerificationCodeInput, cardBrandInput, submitButton, form } from "../../consts.js";
 import { postCreditCard } from "./postCreditCard.js";
 
+const backButton = document.querySelector("#back_button");
+
+backButton.addEventListener("click", () => {
+    const lastActivity = window.history;
+    if (lastActivity) {
+        lastActivity.back();
+        return;
+    }
+    window.location.href = `/`;
+});
 form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const data = Object.fromEntries(new FormData(form));

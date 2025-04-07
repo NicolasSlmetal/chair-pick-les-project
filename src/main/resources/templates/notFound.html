@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <title>Não encontrado</title>
@@ -8,7 +8,18 @@
 <body>
     <main>
         <h1>O recurso não foi encontrado</h1>
-        <a href="/customers" class="action__button" style="width:100%;">Voltar para a página inicial</a>
+        <a class="action__button" style="width:100%;">Voltar para a página inicial</a>
     </main>
+    <script>
+
+        document.querySelector('.action__button').addEventListener('click', function() {
+            const history = window.history;
+            if (history && document.referrer !== '/404') {
+                history.back();
+            } else {
+                window.location.href = '/';
+            }
+        });
+    </script>
 </body>
 </html>

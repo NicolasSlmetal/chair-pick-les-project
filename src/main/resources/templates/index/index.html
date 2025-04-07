@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,18 +9,9 @@
 </head>
 <body>
 <header class="header home">
-    <h1 class="title">Chair Pick</h1>
-    <div class="search__container home">
-        <input id="name_search" autocomplete="off" type="text" list="search" class="search__home" placeholder="Pesquise cadeiras por aqui" style="width: 100%;">
-        <a href="search.html" class="home_search"><img class="profile__image" th:src="@{/assets/search.png}"></a>
-    </div>
-    <div class="profile__container">
-        <a class="active" href="index.html"><img class="profile__image active" th:src="@{/assets/home.png}"></a>
-        <a class="login__button" href="login.html">
-            <img class="profile__image" th:src="@{/assets/user.png}">
-            <p>Faça login ou registre-se</p>
-        </a>
-    </div>
+    <div sec:authorize="isAnonymous()" th:replace="fragments/header-public :: header"></div>
+
+    <div sec:authorize="isAuthenticated()" th:replace="fragments/header-authenticated :: header"></div>
 </header>
 <main class="home">
     <section class="main_section">
@@ -73,10 +64,15 @@
         </aside>
         <section class="products">
             <h2>Produtos</h2>
-            <div class="products__container">
+            <div class="products__container" th:each="chair : ${chairs}">
+                <a class="product_card" th:href="@{/chairs/{id}(id=${chair.id})}">
+                    <img class="product_image" th:src="@{/images/chairs/{id}(id=${chair.id})}" th:alt="${chair.name}">
+                    <h3 class="product_title" th:text="${chair.name}"></h3>
+                    <p th:text="${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(chair.price)}"></p>
+                </a>
                 <a class="product_card" href="product.html">
                     <img class="product_image" src="https://a-static.mlcdn.com.br/1500x1500/cadeira-gamer-otello-preto-e-vermelho/magazineluiza/237019000/b3fc5faf334ec8354d4177f54df4e87a.jpg" alt="Cadeira de escritório">
-                    <h3>Cadeira gamer</h3>
+                    <h3 class="product_title">Cadeira gamer</h3>
                     <p>R$ 200,00</p>
                 </a>
                 <a class="product_card" href="product.html">
@@ -110,39 +106,19 @@
         </section>
     </section>
     <hr>
-    <h2>Cadeiras de escritório</h2>
-    <section class="row">
-        <section class="products">
-            <a class="product_card" href="product.html">
-                <img class="product_image" src="https://a-static.mlcdn.com.br/1500x1500/cadeira-gamer-otello-preto-e-vermelho/magazineluiza/237019000/b3fc5faf334ec8354d4177f54df4e87a.jpg" alt="Cadeira de escritório">
-                <h3>Cadeira de escritório</h3>
-                <p>R$ 200,00</p>
-            </a>
+    <div th:each="category : ${chairsByCategories.keySet()}" style="width: 100%;">
+        <h2 th:text="'Linha ' + ${category.getName()}"></h2>
+        <section class="row">
+            <section class="products" th:each="chair : ${chairsByCategories.get(category)}">
+                <a class="product_card" th:href="@{/chairs/{id}(id=${chair.id})}">
+                    <img class="product_image" th:src="@{/images/chairs/{id}(id=${chair.id})}" th:alt="${chair.name}">
+                    <h3 th:text="${chair.name}"></h3>
+                    <p th:text="${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(chair.price)}"></p>
+                </a>
+            </section>
         </section>
-    </section>
-    <hr>
-    <h2>Cadeiras Gamer</h2>
-    <section class="row">
-        <section class="products">
-            <a class="product_card" href="product.html">
-                <img class="product_image" src="https://a-static.mlcdn.com.br/1500x1500/cadeira-gamer-otello-preto-e-vermelho/magazineluiza/237019000/b3fc5faf334ec8354d4177f54df4e87a.jpg" alt="Cadeira de escritório">
-                <h3>Cadeira de escritório</h3>
-                <p>R$ 200,00</p>
-            </a>
-        </section>
-    </section>
-    <hr>
-    <h2>Cadeiras de praia</h2>
-    <section class="row">
-        <section class="products">
-            <a class="product_card" href="product.html">
-                <img class="product_image" src="https://a-static.mlcdn.com.br/1500x1500/cadeira-gamer-otello-preto-e-vermelho/magazineluiza/237019000/b3fc5faf334ec8354d4177f54df4e87a.jpg" alt="Cadeira de escritório">
-                <h3>Cadeira de escritório</h3>
-                <p>R$ 200,00</p>
-            </a>
-        </section>
-    </section>
-    <hr>
+        <hr>
+    </div>
     <section class="chatbot_redirect">
         <h2>Chatbot</h2>
         <div>

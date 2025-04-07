@@ -14,5 +14,11 @@ export async function postAddress(address) {
         dialog.showModal();
         return;
     }
-    window.location.href = `/customers/${address.customerId}/addresses`;
+    const lastActivity = window.history;
+    if (lastActivity) {
+        lastActivity.back();
+        return;
+    }
+
+    window.location.href = "/";
 }

@@ -1,12 +1,11 @@
 package com.chairpick.ecommerce.model;
 
 
+import com.chairpick.ecommerce.model.enums.StreetType;
 import com.chairpick.ecommerce.utils.ErrorCode;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @Setter

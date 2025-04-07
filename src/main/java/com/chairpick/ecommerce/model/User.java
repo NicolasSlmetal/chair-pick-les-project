@@ -1,16 +1,17 @@
 package com.chairpick.ecommerce.model;
 
+import com.chairpick.ecommerce.model.enums.UserType;
 import com.chairpick.ecommerce.utils.ErrorCode;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 public class User extends DomainEntity {
     private String email;
     private String password;

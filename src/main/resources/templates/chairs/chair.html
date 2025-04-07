@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${chair.name}"></title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header class="header home">
+    <div sec:authorize="isAnonymous()" th:replace="fragments/header-public :: header"></div>
+
+    <div sec:authorize="isAuthenticated()" th:replace="fragments/header-authenticated :: header"></div>
+</header>
+<main class="home">
+    <input type="hidden" id="chair_id" th:value="${chair.id}" name="chair_id"/>
+    <section class="product_info">
+        <img class="product_image expanded" th:src="@{/images/chairs/{id}(id=${chair.id})}" th:alt="${chair.name}"/>
+        <div class="product_summary">
+            <h1 th:text="${chair.name}"></h1>
+            <h2 th:text="${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(chair.sellPrice)}"></h2>
+            <p th:utext="'<strong>Unidades: </strong>' + ${chair.availableAmount}"></p>
+            <ul class="rating">
+                <h3>Avaliação: </h3>
+                <li class="star"><img th:classappend="${chair.averageRating >= 1 ? '' : 'not_filled'}" class="star" src="/assets/star.png"></li>
+                <li class="star"><img th:classappend="${chair.averageRating >= 2 ? '' : 'not_filled'}" class="star" src="/assets/star.png"></li>
+                <li class="star"><img th:classappend="${chair.averageRating >= 3 ? '' : 'not_filled'}" class="star" src="/assets/star.png"></li>
+                <li class="star"><img th:classappend="${chair.averageRating >= 4 ? '' : 'not_filled'}" class="star" src="/assets/star.png"></li>
+                <li class="star"><img th:classappend="${chair.averageRating >= 5 ? '' : 'not_filled'}" class="star" src="/assets/star.png"></li>
+            </ul>
+            <div id="action__product" class="action_product">
+
+            </div>
+        </div>
+    </section>
+    <section class="product_info">
+        <div>
+            <h2>Descrição</h2>
+            <p class="description" th:text="${chair.description}"></p>
+        </div>
+
+        <table class="product_table">
+            <tr>
+                <td>Comprimento</td>
+                <td th:text="${chair.length} + ' cm'"></td>
+            </tr>
+            <tr>
+                <td>Largura</td>
+                <td th:text="${chair.width} + ' cm'"></td>
+            </tr>
+            <tr>
+                <td>Altura</td>
+                <td th:text="${chair.height} + ' cm'"></td>
+            </tr>
+
+            <tr>
+                <td>Peso</td>
+                <td th:text="${chair.weight} + ' kg'"></td>
+            </tr>
+
+        </table>
+    </section>
+</main>
+<footer class="footer">
+    <div class="footer">
+        <p>© 2025 Chair Pick</p>
+    </div>
+</footer>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script th:src="@{/js/chairs/chair/index.js}" type="module"></script>
+</body>
+</html>

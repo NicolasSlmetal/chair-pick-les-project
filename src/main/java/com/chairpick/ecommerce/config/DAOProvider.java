@@ -1,18 +1,26 @@
 package com.chairpick.ecommerce.config;
 
 import com.chairpick.ecommerce.daos.*;
+import com.chairpick.ecommerce.daos.interfaces.GenericDAO;
+import com.chairpick.ecommerce.daos.interfaces.ProjectionDAO;
+import com.chairpick.ecommerce.daos.interfaces.WriteOnlyDAO;
 import com.chairpick.ecommerce.model.*;
+import com.chairpick.ecommerce.projections.CartItemSummaryProjection;
+import com.chairpick.ecommerce.projections.ChairAvailableProjection;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+
+import java.util.List;
 
 @Configuration
 public class DAOProvider {
 
     @Bean
-    GenericDAO<Chair> provideChairDAO() {
-        return new ChairDAO();
+    ProjectionDAO<Chair, ChairAvailableProjection> provideChairDAO(NamedParameterJdbcTemplate jdbcTemplate, ResultSetExtractor<List<Chair>> extractor) {
+        return new ChairDAO(jdbcTemplate, extractor);
     }
 
     @Bean
@@ -34,4 +42,25 @@ public class DAOProvider {
     GenericDAO<CreditCard> provideCreditCardDAO(NamedParameterJdbcTemplate jdbcTemplate, RowMapper<CreditCard> rowMapper) {
         return new CreditCardDAO(jdbcTemplate, rowMapper);
     }
+
+    @Bean
+    GenericDAO<Item> provideItemDAO(NamedParameterJdbcTemplate jdbcTemplate, RowMapper<Item> rowMapper) {
+        return new ItemDAO(jdbcTemplate, rowMapper);
+    }
+
+    @Bean
+    ProjectionDAO<Cart, CartItemSummaryProjection> provideCartDAO(NamedParameterJdbcTemplate jdbcTemplate, RowMapper<Cart> rowMapper) {
+        return new CartDAO(jdbcTemplate, rowMapper);
+    }
+
+    @Bean
+    GenericDAO<Order> provideOrderDAO(NamedParameterJdbcTemplate jdbcTemplate, ResultSetExtractor<List<Order>> extractor) {
+        return new OrderDAO(jdbcTemplate, extractor);
+    }
+
+    @Bean
+    WriteOnlyDAO<OrderItem> provideOrderItemDAO(NamedParameterJdbcTemplate jdbcTemplate) {
+        return new OrderItemDAO(jdbcTemplate);
+    }
+
 }

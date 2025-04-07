@@ -9,7 +9,7 @@
 <body>
     <main>
         <h1 th:text="'Cadastrar cartão de crédito para ' + ${customerName}"></h1>
-        <a class="action__button" th:href="'/customers/' + ${customerId} + '/credit-cards'">Voltar</a>
+        <a id="back_button" class="action__button">Voltar</a>
         <form id="main">
             <input type="hidden" name="customer_id" th:value="${customerId}">
             <section class="cards__section">
@@ -25,7 +25,7 @@
                 </select>
                 <label for="cvv">CVV</label>
                 <input type="text" name="cvv" id="cvv" maxlength="3">
-                <label for="default">Configurar como padrão
+                <label class="label_check" for="default">Configurar como padrão
                     <input type="checkbox" name="default" id="default" value="true">
                     <span class="checkmark"></span>
                 </label>

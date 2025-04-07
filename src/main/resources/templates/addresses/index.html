@@ -11,7 +11,7 @@
 <input id="customer_id" type="hidden" name="customerId" th:value="${customer.id}">
 <main>
     <div class="button__group">
-        <a data-test="back-button" class="action__button" href="/customers">Voltar</a>
+        <a id="back-button" data-test="back-button" class="action__button">Voltar</a>
         <a class="action__button" th:href="'/customers/' + ${customer.id} + '/addresses/new?customerName=' + ${customer.name}">Cadastrar endereço</a>
     </div>
     <table class="table">

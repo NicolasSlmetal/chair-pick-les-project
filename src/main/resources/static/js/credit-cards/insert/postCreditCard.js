@@ -16,5 +16,11 @@ export async function postCreditCard(data) {
         return;
     }
 
-    window.location.href = `/customers/${data.customer_id}/credit-cards`;
+    const lastActivity = window.history;
+    if (lastActivity) {
+        lastActivity.back();
+        return;
+    }
+
+    window.location.href = `/`
 }

@@ -9,9 +9,9 @@ import lombok.experimental.SuperBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
 @Setter
 @SuperBuilder
+@Getter
 public abstract class DomainEntity {
     private Long id;
     private final List<ErrorCode> errors = new ArrayList<>();
@@ -32,4 +32,8 @@ public abstract class DomainEntity {
     }
 
     public abstract void validate();
+
+    protected List<ErrorCode> getErrors() {
+        return errors;
+    }
 }

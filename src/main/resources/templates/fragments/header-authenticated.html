@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<header class="header home">
+
+    <input type="hidden" th:value="${customerId}" id="authenticated_customer_id">
+    <h1 class="title">Chair Pick</h1>
+    <div class="search__container home">
+        <input id="name_search" autocomplete="off" type="text" class="search__home" placeholder="Pesquise cadeiras por aqui" style="width: 100%; padding: 10px;">
+        <a href="search.html" class="home_search"><img class="profile__image" src="/assets/search.png"></a>
+    </div>
+
+    <div class="profile__container">
+        <a th:classappend="${pageTitle == 'Home' ? 'active' : ''}" th:href="@{/}"><img th:classappend="${pageTitle == 'Home' ? 'active' : ''}" class="profile__image" th:src="@{/assets/home.png}"></a>
+        <a th:href="@{/customers/{customerId}/cart(customerId=${customerId})}" th:classappend="${pageTitle == 'Cart' ? 'active' : ''}">
+            <span class="cart__counter"><strong>0</strong></span>
+            <img class="profile__image" src="/assets/cart.png">
+        </a>
+        <a th:href="@{/customers/{id}(id=${customerId})}"><img class="profile__image" src="/assets/user.png"></a>
+        <a th:href="@{/logout}"><img class="profile__image" src="/assets/logout.png"></a>
+    </div>
+</header>
+</body>
+</html>

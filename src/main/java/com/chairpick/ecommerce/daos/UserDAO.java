@@ -1,5 +1,6 @@
 package com.chairpick.ecommerce.daos;
 
+import com.chairpick.ecommerce.daos.interfaces.GenericDAO;
 import com.chairpick.ecommerce.model.User;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -7,6 +8,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class UserDAO implements GenericDAO<User> {
 
@@ -37,7 +39,21 @@ public class UserDAO implements GenericDAO<User> {
 
     @Override
     public User update(User entity) {
-        return null;
+
+        String sql = """
+                UPDATE tb_user
+                SET usr_email = :email, usr_password = :password
+                WHERE usr_id = :id
+                """;
+
+        Map<String, Object> parameters = Map.of(
+                "id", entity.getId(),
+                "email", entity.getEmail(),
+                "password", entity.getPassword()
+        );
+
+        jdbcTemplate.update(sql, parameters);
+        return entity;
     }
 
     @Override
@@ -61,11 +77,30 @@ public class UserDAO implements GenericDAO<User> {
 
     @Override
     public List<User> findBy(Map<String, String> parameters) {
-        return List.of();
+        String sql = parseParameters(parameters);
+
+        Map<String, Object> sqlParameters = parameters.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        return jdbcTemplate.query(sql, sqlParameters, rowMapper);
+    }
+
+    private String parseParameters(Map<String, String> parameters) {
+        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM tb_user WHERE 1 = 1");
+        for (Map.Entry<String, String> entry : parameters.entrySet()) {
+            String column = "usr_" + entry.getKey();
+            sqlBuilder.append(" AND ").append(column).append(" = :").append(entry.getKey());
+        }
+
+        return sqlBuilder.toString();
     }
 
     @Override
     public void delete(Long id) {
-
+        String sql = """
+                DELETE FROM tb_user WHERE usr_id = :id;
+                """;
+        Map<String, Object> parameters = Map.of("id", id);
+        jdbcTemplate.update(sql, parameters);
     }
 }

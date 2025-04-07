@@ -1,6 +1,6 @@
 package com.chairpick.ecommerce.repositories;
 
-import com.chairpick.ecommerce.daos.GenericDAO;
+import com.chairpick.ecommerce.daos.interfaces.GenericDAO;
 import com.chairpick.ecommerce.model.CreditCard;
 import com.chairpick.ecommerce.model.Customer;
 import org.springframework.stereotype.Repository;

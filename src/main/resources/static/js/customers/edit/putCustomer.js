@@ -19,5 +19,11 @@ export async function putCustomer(customer) {
         return;
     }
 
-    window.location.href = "/customers";
+    const lastActivity = window.history;
+    if (lastActivity) {
+        lastActivity.back();
+        return;
+    }
+
+    window.location.href = "/";
 }

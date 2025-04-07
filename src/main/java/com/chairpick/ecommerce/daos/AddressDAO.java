@@ -1,5 +1,6 @@
 package com.chairpick.ecommerce.daos;
 
+import com.chairpick.ecommerce.daos.interfaces.GenericDAO;
 import com.chairpick.ecommerce.model.Address;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;

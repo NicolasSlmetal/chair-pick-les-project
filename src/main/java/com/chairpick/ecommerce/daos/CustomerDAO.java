@@ -1,5 +1,6 @@
 package com.chairpick.ecommerce.daos;
 
+import com.chairpick.ecommerce.daos.interfaces.GenericDAO;
 import com.chairpick.ecommerce.model.Customer;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -101,6 +102,11 @@ public class CustomerDAO implements GenericDAO<Customer> {
             if (entry.getKey().equalsIgnoreCase("born_date")) {
                 value = "TO_DATE('" + entry.getValue() + "', 'YYYY-MM-DD')";
                 operator = "= ";
+            }
+
+            if (entry.getKey().contains("id")) {
+                operator = "= ";
+                value = entry.getValue();
             }
 
             if (entry.getKey().equalsIgnoreCase("genre")) {

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header class="header home">
+    <div sec:authorize="isAnonymous()" th:replace="fragments/header-public :: header"></div>
+
+    <div sec:authorize="isAuthenticated()" th:replace="fragments/header-authenticated :: header"></div>
+</header>
+<main class="home">
+    <section class="products">
+        <h2>Carrinho</h2>
+        <p class="message" style="display: none;">O carrinho está vazio</p>
+        <div class="row">
+            <div class="product_card without_cursor" th:each="cartItem : ${cart}">
+                <img class="product_image" th:src="@{/images/chairs/{id}(id=${cartItem.getChair().getId()})}" th:alt="${cartItem.getChair().getName()}" />
+                <div>
+                    <h3 th:text="${cartItem.chair.name}"></h3>
+                    <h4 th:text="${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(cartItem.price)}"></h4>
+                </div>
+                <div class="quantity_controll">
+                    <input type="hidden" th:value="${cartItem.chair.id}" name="chair_id">
+                    <input type="hidden" th:value="${cartItem.limit}" name="max_quantity">
+                    <input type="hidden" th:value="${cartItem.amount}" name="quantity">
+                    <p th:utext="'<strong>Quantidade: </strong>' + ${cartItem.amount}"></p>
+
+                    <button class="quantity down"><strong><</strong></button> <button class="quantity up"><strong>></strong></button>
+                </div>
+                <button class="action__button danger expanded">Remover</button>
+                <p class="update_status"></p>
+            </div>
+        </div>
+        <button class="product_action expanded" style="display: none;">Confirmar produtos</button>
+    </section>
+</main>
+<footer class="footer">
+    <div class="footer">
+        <p>© 2025 Chair Pick</p>
+    </div>
+</footer>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script src="/js/cart/index.js" type="module"></script>
+</body>
+</html>

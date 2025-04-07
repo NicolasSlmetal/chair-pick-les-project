@@ -2,8 +2,11 @@ package com.chairpick.ecommerce.services;
 
 import com.chairpick.ecommerce.exceptions.EntityNotFoundException;
 import com.chairpick.ecommerce.model.*;
-import com.chairpick.ecommerce.model.io.NewCustomerInput;
-import com.chairpick.ecommerce.model.io.NewPasswordInput;
+import com.chairpick.ecommerce.io.input.NewCustomerInput;
+import com.chairpick.ecommerce.io.input.NewPasswordInput;
+import com.chairpick.ecommerce.model.enums.Genre;
+import com.chairpick.ecommerce.model.enums.PhoneType;
+import com.chairpick.ecommerce.model.enums.UserType;
 import com.chairpick.ecommerce.repositories.AddressRepository;
 import com.chairpick.ecommerce.repositories.CreditCardRepository;
 import com.chairpick.ecommerce.repositories.CustomerRepository;

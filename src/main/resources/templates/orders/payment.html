@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forma de pagamento</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header class="header home">
+    <div sec:authorize="isAnonymous()" th:replace="fragments/header-public :: header"></div>
+
+    <div sec:authorize="isAuthenticated()" th:replace="fragments/header-authenticated :: header"></div>
+</header>
+<main class="home">
+    <section class="sale_summary">
+        <form id="main">
+            <h2>Forma de pagamento</h2>
+            <h3 style="text-align: left;">Cartões de crédito</h3>
+            <p>Obs: O cartão azul é o cartão padrão</p>
+            <div id="credit_cards" class="row x_scrollable">
+                <div class="card without_cursor selectable" th:each="card : ${creditCards}" th:classappend="${card.isDefault} ? 'default' : ''">
+                    <input type="hidden" name="cardId" th:value="${card.id}">
+                    <label for="credit_cards[]" class="label_check">
+                        <input type="checkbox" name="credit_cards[]" id="use1" th:checked="${card.isDefault}" th:value="${card.id}">
+                        <span class="checkmark"></span>
+                    </label>
+                    <br>
+                    <p th:with=number=${T(com.chairpick.ecommerce.utils.format.CreditCardNumberFormater).format(card.number)}
+                       th:utext="'<strong>Número:</strong>' + ${number}"></p>
+                    <p th:utext="'<strong>Nome:</strong>' + ${card.name}"></p>
+                    <p th:utext="'<strong>Bandeira:</strong>' + ${card.brand.name()}"></p>
+                    <p th:utext="'<strong>CVV:</strong>' + ${card.cvv}"></p>
+                    <input class="payment_value" type="text"
+                           th:name="'card_' + ${creditCards.indexOf(card) + 1} + 'value'"
+                           th:id="'card_' + ${creditCards.indexOf(card) + 1} + 'value'"
+                           placeholder="Valor"
+                           th:value="${card.isDefault} ? ${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(totalValue)} : ''">
+                </div>
+            </div>
+            <a class="product_action" th:href="@{/customers/{customerId}/credit-cards/new(customerId=${customerId})}">Cadastrar novo cartão</a>
+            <input type="hidden" name="customerId" th:value="${customerId}">
+            <input type="hidden" name="deliveryAddressId" th:value="${deliveryAddressId}">
+            <input type="hidden" name="billingAddressId" th:value="${billingAddressId}">
+            <p id="generate_swap_coupon_message" class="important"></p>
+            <button type="submit" class="product_action">Confirmar opções de pagamento</button>
+        </form>
+    </section>
+</main>
+<footer class="footer">
+    <div class="footer">
+        <p>© 2025 Chair Pick</p>
+    </div>
+</footer>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js"></script>
+<script src="/js/orders/payment/index.js" type="module"></script>
+</body>
+</html>

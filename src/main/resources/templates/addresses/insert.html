@@ -9,7 +9,7 @@
 <body>
 <h1 th:text="'Adicionar endereço para ' + ${customerName}"></h1>
 <main>
-    <a class="action__button" th:href="'/customers/' + ${customerId} + '/addresses'">Voltar</a>
+    <a id="back-button" class="action__button">Voltar</a>
     <form id="main">
         <input type="hidden" name="customerId" id="customerId" th:value="${customerId}">
         <section class="cards__section">
@@ -44,7 +44,7 @@
             <input type="text" name="country" id="country">
             <label for="observations">Observações</label>
             <input type="text" name="observations" id="observations">
-            <label for="default">Configurar como padrão
+            <label class="label_check" for="default">Configurar como padrão
                 <input type="checkbox" name="default" id="default" th:value="true">
                 <span class="checkmark"></span>
             </label>

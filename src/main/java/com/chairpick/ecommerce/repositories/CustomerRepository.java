@@ -1,18 +1,13 @@
 package com.chairpick.ecommerce.repositories;
 
-import com.chairpick.ecommerce.daos.GenericDAO;
+import com.chairpick.ecommerce.daos.interfaces.GenericDAO;
 import com.chairpick.ecommerce.model.Address;
 import com.chairpick.ecommerce.model.CreditCard;
 import com.chairpick.ecommerce.model.Customer;
 import com.chairpick.ecommerce.model.User;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.DataSource;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -60,6 +55,11 @@ public class CustomerRepository {
         });
 
         return savedCustomer;
+    }
+
+    public Optional<Customer> findByUser(User user) {
+        Map<String, String> params = Map.of("user_id", String.valueOf(user.getId()));
+        return customerDAO.findBy(params).stream().findFirst();
     }
 
     public Customer updatePassword(Customer customer) {
