@@ -86,7 +86,7 @@ CREATE TABLE tb_item (
     itm_amount      INTEGER NOT NULL,
     itm_unit_cost   NUMERIC(8,2) NOT NULL,
     itm_reserved    INTEGER NOT NULL DEFAULT 0,
-    itm_version     INTEGER NOT DEFAULT 0
+    itm_version     INTEGER NOT NULL DEFAULT 0,
     itm_chair_id    INTEGER NOT NULL,
     itm_supplier_id INTEGER NOT NULL
 );

@@ -20,7 +20,8 @@ export async function postCustomer(customer) {
     }
     const lastActivity = window.history;
     if (lastActivity) {
-        lastActivity.back();
+        
+        lastActivity.go(-2);
         return;
     }
     window.location.href = "/";
