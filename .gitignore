@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+images/*.jpg
+images/*.png
+images/*.gif
+images/*.jpeg
+images/*.svg
