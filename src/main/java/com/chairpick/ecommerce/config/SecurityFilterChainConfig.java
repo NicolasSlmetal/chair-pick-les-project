@@ -27,6 +27,8 @@ public class SecurityFilterChainConfig {
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/chairs/**, /login", "/customers/new")
                                 .permitAll()
+                                .requestMatchers("POST", "/customers")
+                                .permitAll()
                                 .requestMatchers("/customers/**")
                                 .authenticated()
                                 .requestMatchers("/admin/**")
