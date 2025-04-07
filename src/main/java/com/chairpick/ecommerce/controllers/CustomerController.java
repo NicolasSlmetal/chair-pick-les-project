@@ -88,7 +88,7 @@ public class CustomerController {
     @PostMapping("/customers")
     public ResponseEntity<Customer> createCustomer(@RequestBody NewCustomerInput input) {
         Customer createdCustomer = customerService.createCustomer(input);
-        TokenResponseDTO tokenResponseDTO = tokenService.generateToken(new AuthenticatedUser(createdCustomer.getUser()));
+        TokenResponseDTO tokenResponseDTO = tokenService.generateToken(new AuthenticatedUser(createdCustomer.getUser(), createdCustomer));
         ResponseCookie cookie = ResponseCookie.from("token", tokenResponseDTO.token())
                 .httpOnly(true)
                 .path("/")
