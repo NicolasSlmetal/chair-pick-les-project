@@ -11,6 +11,7 @@ import com.chairpick.ecommerce.services.TokenService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -21,7 +22,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 
-@RestController
+@Controller
 public class CustomerController {
 
     private final CustomerService customerService;
@@ -43,6 +44,16 @@ public class CustomerController {
         ModelAndView view = new ModelAndView();
         view.setViewName("customers/alter-password.html");
         view.addObject("customerId", id);
+        return view;
+    }
+
+    @GetMapping("/customers/{id}")
+    public ModelAndView redirectToCustomerProfile(@PathVariable Long id) {
+        Customer customer = customerService.findById(id);
+        ModelAndView view = new ModelAndView();
+        view.setViewName("customers/profile.html");
+        view.addObject("customer", customer);
+        view.addObject("pageTitle", "Profile");
         return view;
     }
 

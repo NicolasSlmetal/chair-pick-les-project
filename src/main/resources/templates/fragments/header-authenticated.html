@@ -20,7 +20,7 @@
             <span class="cart__counter"><strong>0</strong></span>
             <img class="profile__image" src="/assets/cart.png">
         </a>
-        <a th:href="@{/customers/{id}(id=${customerId})}"><img class="profile__image" src="/assets/user.png"></a>
+        <a th:classappend="${pageTitle == 'Profile' ? 'active' : ''}" th:href="@{/customers/{id}(id=${customerId})}"><img class="profile__image" src="/assets/user.png"></a>
         <a th:href="@{/logout}"><img class="profile__image" src="/assets/logout.png"></a>
     </div>
 </header>

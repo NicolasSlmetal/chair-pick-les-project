@@ -90,9 +90,18 @@ public class BeforeRequestFilter extends OncePerRequestFilter {
 
     private void verifyCustomerId(HttpServletRequest request, HttpServletResponse response, Long customerId) throws IOException {
         String requestPath = request.getServletPath();
-        if (requestPath.startsWith("/customers/") && !requestPath.startsWith("/customers/" + customerId + "/")) {
+        if (requestPath.startsWith("/customers/" + customerId + "/")) {
+            return;
+        }
+
+        if (requestPath.equals("/customers/" + customerId)) {
+            return;
+        }
+
+        if (requestPath.startsWith("/customers")) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.sendRedirect("/404");
         }
+
     }
 }
