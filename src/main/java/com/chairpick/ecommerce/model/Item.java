@@ -28,7 +28,7 @@ public class Item extends DomainEntity {
             getErrors().add(ErrorCode.CHAIR_REQUIRED);
         }
 
-        if (amount <= 0) {
+        if (amount < 0) {
             getErrors().add(ErrorCode.AMOUNT_REQUIRED);
         }
 
