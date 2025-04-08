@@ -1,6 +1,7 @@
 import { configureSearch } from "../utils/configureSearch.js";
 import { $ } from "../consts.js";
 import { productCards } from "./consts.js"
+import { countCart } from "../utils/countCart.js";
 
 
 const form = document.querySelector("form");
@@ -40,3 +41,5 @@ $(document).ready(function() {
     })
     configureSearch();
 });
+
+countCart();

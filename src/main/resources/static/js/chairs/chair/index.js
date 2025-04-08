@@ -1,4 +1,5 @@
 import { configureSearch } from "../../utils/configureSearch.js";
+import { countCart } from "../../utils/countCart.js";
 import { addItemToCartPost } from "./addItemToCartPost.js";
 import { verifyIfProductIsInCart } from "./verifyIfProductIsInCart.js";
 
@@ -8,8 +9,6 @@ const customerId = document.querySelector("#authenticated_customer_id");
 
 
 await verifyIfProductIsInCart(chairId, customerId);
-
-
 
 const idButtonActionMap = {
     "buy": async () => {
@@ -65,10 +64,4 @@ buttons.forEach(button => {
 
 configureSearch();
 
-function verifyIfIsAuthenticated() {
-    const tokenCookie = document.cookie.split('; ').find(row => row.startsWith('token='));
-
-    const token = tokenCookie.split('=')[1];
-    return !token || token === null || token === undefined || token === "";
-
-}
+countCart();

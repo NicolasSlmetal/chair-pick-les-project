@@ -63,7 +63,7 @@
         </div>
         <div class="sale_info" style="padding: 4px;">
             <h2 id="subtotal" th:with="formattedTotal=${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(total)}"
-                    th:utext="'<strong>Subtotal: </strong>' + ${formattedTotal}"></h2>
+                    th:utext="'Subtotal: ' + ${formattedTotal}"></h2>
             <h2 id="freight_value" th:text="'Frete: ' + ${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(freight)}"></h2>
             <h2 id="total_value" th:with="totalWithFreight=${total + freight}" th:text="'Total: ' + ${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(totalWithFreight)}"></h2>
         </div>

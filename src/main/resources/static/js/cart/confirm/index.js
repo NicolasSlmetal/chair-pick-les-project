@@ -1,6 +1,7 @@
 import { debounce } from "../debounceCartUpdate.js";
 import { getFreight } from "./getFreight.js";
 import { confirmPayment } from "./confirmPayment.js";
+import { countCart } from "../../utils/countCart.js";
 
 const addressNameElement = {
     "delivery":document.getElementById('delivery_addresses'),
@@ -109,3 +110,5 @@ function getAddressActiveForType(type) {
     const addressId = addressNameElement[type].querySelector('input[type="radio"]:checked');
     return addressId.value;
 }
+
+countCart();

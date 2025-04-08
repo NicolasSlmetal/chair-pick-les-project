@@ -42,6 +42,12 @@ public class CartController {
         return view;
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<Integer> getCartCount(@PathVariable Long customerId) {
+        int cartCount = cartService.findCartByCustomer(customerId).size();
+        return ResponseEntity.ok(cartCount);
+    }
+
     @GetMapping("/confirm")
     public ModelAndView redirectToConfirm(@PathVariable Long customerId) {
         Map<CartItemSummaryProjection, TotalValueDTO> totalAmountMap = cartService.showCartConfirmation(customerId);

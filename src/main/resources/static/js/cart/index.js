@@ -1,4 +1,5 @@
 import { configureSearch } from "../utils/configureSearch.js";
+import { countCart } from "../utils/countCart.js";
 import { debounce } from "./debounceCartUpdate.js";
 import { putCartItem } from "./putCartItem.js";
 import { removeCartItem } from "./removeCartItem.js";
@@ -83,6 +84,9 @@ removeButtons.forEach(button => {
             if (response.status === 204) {
                 updateStatusMessage.innerText = "Removido!";
                 parent.remove();
+                const cartCounter = document.querySelector('.cart__counter');
+                const cartCount = parseInt(cartCounter.innerText) - 1;
+                cartCounter.innerHTML = `<strong>${cartCount}</strong>`;
                 displayMessageIfCartIsEmpty();
             } else {
                 updateStatusMessage.innerText = "Erro ao remover!";
@@ -124,3 +128,4 @@ function enableConfirmButton() {
 configureSearch();
 
 displayMessageIfCartIsEmpty();
+countCart();

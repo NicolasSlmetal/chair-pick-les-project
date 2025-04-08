@@ -1,3 +1,4 @@
+import { countCart } from '../../utils/countCart.js';
 import { postOrder } from './postOrder.js';
 
 const $ = window.jQuery;
@@ -462,3 +463,4 @@ function applyCardValuesFromMap() {
 }
 
 distributeValuesPrecisely(totalValue, getSelectedCreditCards());
+countCart();

@@ -1,4 +1,5 @@
 import { configureSearch } from "../../utils/configureSearch.js";
+import { countCart } from "../../utils/countCart.js";
 import { getOrders } from "./getOrders.js";
 import { constructOrderSection } from "./orderSectionBuilder.js";
 import { constructPaginatedOrderSection } from "./orderSectionBuilder.js";
@@ -78,4 +79,5 @@ itemsIds.forEach(itemId => {
 
 window.onload = async () => {
     await getOrderAndBuildSection("PENDING");
+    await countCart();
 }

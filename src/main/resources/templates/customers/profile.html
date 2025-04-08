@@ -19,11 +19,11 @@
             <img class="profile__image large" th:src="@{/assets/user.png}" alt="Imagem de perfil">
             <div class="column">
                 <h2 th:text="${customer.name}"></h2>
-                <h2 th:utext="'<strong>Email:</strong>' + ${customer.user.email}"><strong></strong></h2>
+                <h2 th:utext="'Email: ' + ${customer.user.email}"><strong></strong></h2>
                 <h2 th:text="'CPF: ' + ${T(com.chairpick.ecommerce.utils.format.CpfFormater).format(customer.cpf)}"></h2>
                 <h2 th:with="formattedPhone=${T(com.chairpick.ecommerce.utils.format.PhoneFormater).format(customer.phone)}"
-                    th:utext="'<strong>Telefone:</strong> (' + ${customer.phoneDDD} + ') ' + ${formattedPhone}"></h2>
-                <h2 th:utext="'<strong>Tipo de telefone: </strong>' + ${customer.phoneType.getType()}"></h2>
+                    th:utext="'Telefone: (' + ${customer.phoneDDD} + ') ' + ${formattedPhone}"></h2>
+                <h2 th:utext="'Tipo de telefone: ' + ${customer.phoneType.getType()}"></h2>
             </div>
         </div>
         <div class="column border">
