@@ -82,6 +82,14 @@ header a:hover{
     color:#000000;
 }
 
+.bg_second {
+    background-color: var(--secondary-color);
+}
+
+.category_container {
+    margin-bottom: 1px;
+}
+
 a.active {
     padding: 2px;
     background-color: var(--text-color);

@@ -55,7 +55,7 @@ export function constructOrderSection(orders, title) {
             subtotal.innerText = `Subtotal: R$ ${item.value.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             textColumn.appendChild(subtotal);
             const total = document.createElement("h2");
-            total.innerText = `Total: R$ ${(item.value * item.amount + item.freightValue).toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            total.innerText = `Total: R$ ${(item.value + item.freightValue).toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             textColumn.appendChild(total);
             const status = document.createElement("h2");
             status.innerHTML = `Status: <span class='${classStatusMap[item.status]}'> ${statusMap[item.status]} </span>`;

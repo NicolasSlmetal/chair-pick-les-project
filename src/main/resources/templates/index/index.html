@@ -83,16 +83,16 @@
     <hr>
     <div th:each="category : ${chairsByCategories.keySet()}" style="width: 100%;">
         <h2 th:text="'Linha ' + ${category.getName()}"></h2>
-        <section class="products">
-            <section class="row">
+        <section class="category_container">
+            <section class="row bg_second">
                 <a class="product_card" th:each="chair : ${chairsByCategories.get(category)}" th:href="@{/chairs/{id}(id=${chair.id})}">
                     <img class="product_image" th:src="@{/images/chairs/{id}(id=${chair.id})}" th:alt="${chair.name}">
                     <h3 th:text="${chair.name}"></h3>
                     <p th:text="${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(chair.price)}"></p>
                 </a>
             </section>
+            <hr>
         </section>
-        <hr>
     </div>
     <section class="chatbot_redirect">
         <h2>Chatbot</h2>
