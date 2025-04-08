@@ -1,6 +1,7 @@
 package com.chairpick.ecommerce.utils.mappers;
 
 import com.chairpick.ecommerce.model.*;
+import com.chairpick.ecommerce.model.enums.OrderStatus;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
@@ -30,18 +31,23 @@ public class OrderRowMapper extends CustomRowMapper<Order> implements ResultSetE
             Order order = Order.builder()
                     .id(rs.getLong(getColumn("id")))
                     .totalAmount(rs.getInt(getColumn("total_amount")))
+                    .createdDate(rs.getDate(getColumn("created_date")).toLocalDate())
+                    .updatedDate(rs.getDate(getColumn("updated_date")).toLocalDate())
                     .customer(Customer
                             .builder()
                             .id(rs.getLong(getColumn("customer_id")))
                             .build())
                     .items(new ArrayList<>())
+                    .status(OrderStatus.valueOf(rs.getString(getColumn("status"))))
                     .totalValue(rs.getDouble(getColumn("total_value")))
                     .build();
+
             OrderItem orderItem = OrderItem.builder()
                     .id(rs.getLong(getRelatedTableColumn("item_id", "ori")))
-                    .order(order)
+                    .status(OrderStatus.valueOf(rs.getString(getRelatedTableColumn("status", "ori"))))
+                    .value(rs.getDouble(getRelatedTableColumn("sell_price", "ori")))
                     .amount(rs.getInt(getRelatedTableColumn("amount", "ori")))
-                    .freightValue(rs.getDouble(getColumn("freight_tax")))
+                    .freightValue(rs.getDouble(getRelatedTableColumn("freight_tax", "ori")))
                     .item(Item
                             .builder()
                             .id(rs.getLong(getRelatedTableColumn("id", "ori")))
@@ -63,6 +69,7 @@ public class OrderRowMapper extends CustomRowMapper<Order> implements ResultSetE
             }
             orders.add(order);
         }
+
         return orders.stream().toList();
     }
 }

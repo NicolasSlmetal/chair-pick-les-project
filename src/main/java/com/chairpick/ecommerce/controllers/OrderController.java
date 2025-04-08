@@ -30,9 +30,10 @@ public class OrderController {
         this.cartService = cartService;
     }
 
-    @PostMapping("customers/{customerId}/orders")
-    public ResponseEntity<Order> createOrder(@PathVariable Long customerId, @RequestBody OrderInput orderInput) {
-        return new ResponseEntity<>(orderService.createOrder(customerId, orderInput), HttpStatus.CREATED);
+    @GetMapping("customers/{customerId}/orders")
+    public ResponseEntity<List<Order>> findAllByCustomer(@PathVariable Long customerId, @RequestParam Map<String, String> params) {
+        List<Order> orders = orderService.findAllByCustomer(customerId, params);
+        return ResponseEntity.ok(orders);
     }
 
     @GetMapping("customers/{customerId}/orders/payment")
@@ -49,4 +50,11 @@ public class OrderController {
         view.addObject("totalValue", cartService.getTotalValueWithFreight(totalAmountMap));
         return view;
     }
+
+    @PostMapping("customers/{customerId}/orders")
+    public ResponseEntity<Order> createOrder(@PathVariable Long customerId, @RequestBody OrderInput orderInput) {
+        return new ResponseEntity<>(orderService.createOrder(customerId, orderInput), HttpStatus.CREATED);
+    }
+
+
 }

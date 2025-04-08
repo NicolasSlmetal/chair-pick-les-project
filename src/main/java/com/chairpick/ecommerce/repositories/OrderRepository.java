@@ -5,15 +5,14 @@ import com.chairpick.ecommerce.daos.interfaces.GenericDAO;
 import com.chairpick.ecommerce.daos.interfaces.OrderPaymentDAO;
 import com.chairpick.ecommerce.daos.interfaces.ProjectionDAO;
 import com.chairpick.ecommerce.daos.interfaces.WriteOnlyDAO;
-import com.chairpick.ecommerce.model.Cart;
-import com.chairpick.ecommerce.model.Item;
-import com.chairpick.ecommerce.model.Order;
-import com.chairpick.ecommerce.model.OrderItem;
+import com.chairpick.ecommerce.model.*;
+import com.chairpick.ecommerce.model.enums.OrderStatus;
 import com.chairpick.ecommerce.projections.CartItemSummaryProjection;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class OrderRepository {
@@ -57,5 +56,13 @@ public class OrderRepository {
         paymentDAO.save(order.getPayment(), order.getId());
 
         return order;
+    }
+
+    public List<Order> findAllByCustomer(Customer customer, Map<String, String> parameters) {
+        parameters.put("customer_id", customer.getId().toString());
+        if (parameters.containsKey("status")) {
+            parameters.put("status", parameters.get("status").toUpperCase());
+        }
+        return orderDAO.findBy(parameters);
     }
 }

@@ -1,4 +1,14 @@
-import { configureSearch } from "./configureSearch.js";
+import { configureSearch } from "../../utils/configureSearch.js";
+import { getOrders } from "./getOrders.js";
+import { constructOrderSection } from "./orderSectionBuilder.js";
+import { constructPaginatedOrderSection } from "./orderSectionBuilder.js";
+
+const statusMap = {
+    "PENDING": "Pedidos em processamento",
+    "APPROVED": "Pedidos aprovados",
+    "DELIVERING": "Pedidos em entrega",
+    "DELIVERED": "Pedidos entregues",
+}
 
 const dialog = document.querySelector("dialog");
 const confirmButton = dialog.querySelector("#confirm__button");
@@ -7,12 +17,12 @@ const cancelOrderButton = document.querySelector("#cancel_order");
 const deleteAccountButton = document.querySelector("#delete_account");
 const $ = window.jQuery;
 
-cancelOrderButton.addEventListener("click", () => {
-    configureModalAction(() => {
-        $(dialog).modal(":hide")
-        alert("Pedido cancelado com sucesso!");
-    }, "Cancelar pedido", "Tem certeza que deseja cancelar o pedido?");
-});
+//cancelOrderButton.addEventListener("click", () => {
+//    configureModalAction(() => {
+//        $(dialog).modal(":hide")
+//        alert("Pedido cancelado com sucesso!");
+//    }, "Cancelar pedido", "Tem certeza que deseja cancelar o pedido?");
+//});
 
 deleteAccountButton.addEventListener("click", () => {
     configureModalAction(() => {
@@ -24,6 +34,19 @@ deleteAccountButton.addEventListener("click", () => {
 
 configureSearch()
 
+async function getOrderAndBuildSection(status) {
+   const response = await getOrders(`status=${status}`);
+   if (response.status !== 200) {
+        return;
+   }
+    const orders = await response.json();
+    console.log({orders});
+    if (orders.length === 0) {
+        return;
+    }
+    constructOrderSection(orders, statusMap[status]);
+
+}
 
 function configureModalAction(action, title, message) {
     const dialogTitle = dialog.querySelector("h2");
@@ -52,3 +75,7 @@ itemsIds.forEach(itemId => {
         , "Tem certeza que deseja solicitar a troca do produto?")
     })
 })
+
+window.onload = async () => {
+    await getOrderAndBuildSection("PENDING");
+}

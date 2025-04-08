@@ -45,7 +45,7 @@
                     <input type="number" id="min_height" name="min_height" placeholder="Mínimo">
                     <input type="number" id="max_height" name="max_height" placeholder="Máximo">
                 </div>
-                <label for="rating">Avaliação</label>
+                <label>Avaliação</label>
                 <div class="min_max_group">
                     <div>
                         <p id="range_min_rating">Mínimo: 0</p>
@@ -64,36 +64,11 @@
         </aside>
         <section class="products">
             <h2>Produtos</h2>
-            <div class="products__container" th:each="chair : ${chairs}">
+            <div class="products__container top" th:each="chair : ${chairs}">
                 <a class="product_card" th:href="@{/chairs/{id}(id=${chair.id})}">
                     <img class="product_image" th:src="@{/images/chairs/{id}(id=${chair.id})}" th:alt="${chair.name}">
                     <h3 class="product_title" th:text="${chair.name}"></h3>
                     <p th:text="${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(chair.price)}"></p>
-                </a>
-                <a class="product_card" href="product.html">
-                    <img class="product_image" src="https://a-static.mlcdn.com.br/1500x1500/cadeira-gamer-otello-preto-e-vermelho/magazineluiza/237019000/b3fc5faf334ec8354d4177f54df4e87a.jpg" alt="Cadeira de escritório">
-                    <h3 class="product_title">Cadeira gamer</h3>
-                    <p>R$ 200,00</p>
-                </a>
-                <a class="product_card" href="product.html">
-                    <img class="product_image" src="https://dcf83otphg8a2.cloudfront.net/Custom/Content/Products/98/88/988852_cadeira-escritorio-presidente-base-cromada-preta-mb-c730-20028_m1_637626398061654943.webp" alt="Cadeira de escritório">
-                    <h3>Cadeira de escritório</h3>
-                    <p>R$ 200,00</p>
-                </a>
-                <a class="product_card" href="product.html">
-                    <img class="product_image" src="https://minipreco.vtexassets.com/arquivos/ids/186643/83087b82-7358-4a8f-a923-d81191e74efd.jpg?v=638289344578430000" alt="Cadeira de escritório">
-                    <h3>Cadeira de praia</h3>
-                    <p>R$ 200,00</p>
-                </a>
-                <a class="product_card" href="product.html">
-                    <img class="product_image" src="https://moveissaara.com.br/wp-content/uploads/2018/09/cadeira-auditorio-saara-001-1.jpg" alt="Cadeira de escritório">
-                    <h3>Cadeira de escritório</h3>
-                    <p>R$ 200,00</p>
-                </a>
-                <a class="product_card" href="product.html">
-                    <img class="product_image" src="https://www.longarinasmetalicas.com/assets/img/produtos/produto-28-cadeira-para-escritorio-elite-flex-plus-presidente-com-encosto-de-cabeca-assento-estofado-encosto-em-tela-cadeiras-home--239631.jpg" alt="Cadeira de escritório">
-                    <h3>Cadeira de escritório</h3>
-                    <p>R$ 200,00</p>
                 </a>
             </div>
             <div class="page">

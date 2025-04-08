@@ -122,4 +122,19 @@ public class Order extends DomainEntity {
     public int hashCode() {
         return Objects.hash(getCustomer(), getTotalAmount(), getTotalValue(), getDeliveryAddress(), getBillingAddress(), getCreatedDate());
     }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "customer=" + customer +
+                ", totalAmount=" + totalAmount +
+                ", status=" + status +
+                ", totalValue=" + totalValue +
+                ", billingAddress=" + billingAddress +
+                ", deliveryAddress=" + deliveryAddress +
+                ", payment=" + payment +
+                ", createdDate=" + createdDate +
+                ", updatedDate=" + updatedDate +
+                '}';
+    }
 }

@@ -192,4 +192,11 @@ public class OrderService {
                 .coupons(coupons)
                 .build();
     }
+
+    public List<Order> findAllByCustomer(Long customerId, Map<String, String> parameters) {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new EntityNotFoundException("Customer not found"));
+
+        return orderRepository.findAllByCustomer(customer, parameters);
+    }
 }

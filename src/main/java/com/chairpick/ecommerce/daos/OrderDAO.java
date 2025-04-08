@@ -2,6 +2,7 @@ package com.chairpick.ecommerce.daos;
 
 import com.chairpick.ecommerce.daos.interfaces.GenericDAO;
 import com.chairpick.ecommerce.model.Order;
+import com.chairpick.ecommerce.utils.query.*;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -59,7 +60,41 @@ public class OrderDAO implements GenericDAO<Order> {
 
     @Override
     public List<Order> findBy(Map<String, String> parameters) {
-        return List.of();
+        QueryResult sql = parseParameters(parameters);
+
+        return jdbcTemplate.query(sql.query(), sql.parameters(), extractor);
+    }
+
+    public QueryResult parseParameters(Map<String, String> parameters) {
+        SelectTable selectTable = SqlQueryBuilder
+                .create()
+                .selectingAllFromTable("tb_order");
+        selectTable.join("tb_order_item")
+                .innerJoinOn("ord_id", "ori_order_id")
+                .joinDifferentTables("tb_order_item", "tb_item")
+                .innerJoinOn("ori_item_id", "itm_id")
+                .joinDifferentTables("tb_item", "tb_chair")
+                .innerJoinOn("itm_chair_id", "chr_id");
+        Where where = selectTable.where();
+        int size = parameters.size();
+        for (Map.Entry<String, String> entry : parameters.entrySet()) {
+            String key = "ord_"+entry.getKey();
+            String value = entry.getValue();
+
+            if (key.equals("ord_status")) {
+                where.equalString("ord_status", value);
+            }
+
+            if (key.equals("ord_customer_id")) {
+                where.equals("ord_customer_id", value);
+            }
+
+            if (--size > 0) {
+                where = where.and();
+            }
+        }
+        EndingOptions endingOptions = where.end().endingOptions();
+        return endingOptions.build();
     }
 
     @Override

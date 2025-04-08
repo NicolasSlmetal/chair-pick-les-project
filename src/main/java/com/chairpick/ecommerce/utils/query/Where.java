@@ -17,6 +17,15 @@ public class Where {
         return this;
     }
 
+    public Where equalString(String column, String value) {
+        selectTable.append(column)
+                .append(" = ")
+                .append(String.format(":%s", column))
+                .append("");
+        selectTable.appendValue(column, value);
+        return this;
+    }
+
     public Where like(String column, String value) {
         selectTable.append(column)
                 .append(" LIKE '%")
