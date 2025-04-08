@@ -64,8 +64,8 @@
         </aside>
         <section class="products">
             <h2>Produtos</h2>
-            <div class="products__container top" th:each="chair : ${chairs}">
-                <a class="product_card" th:href="@{/chairs/{id}(id=${chair.id})}">
+            <div class="products__container" >
+                <a class="product_card" th:each="chair : ${chairs}" th:href="@{/chairs/{id}(id=${chair.id})}">
                     <img class="product_image" th:src="@{/images/chairs/{id}(id=${chair.id})}" th:alt="${chair.name}">
                     <h3 class="product_title" th:text="${chair.name}"></h3>
                     <p th:text="${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(chair.price)}"></p>
@@ -83,9 +83,9 @@
     <hr>
     <div th:each="category : ${chairsByCategories.keySet()}" style="width: 100%;">
         <h2 th:text="'Linha ' + ${category.getName()}"></h2>
-        <section class="row">
-            <section class="products" th:each="chair : ${chairsByCategories.get(category)}">
-                <a class="product_card" th:href="@{/chairs/{id}(id=${chair.id})}">
+        <section class="products">
+            <section class="row">
+                <a class="product_card" th:each="chair : ${chairsByCategories.get(category)}" th:href="@{/chairs/{id}(id=${chair.id})}">
                     <img class="product_image" th:src="@{/images/chairs/{id}(id=${chair.id})}" th:alt="${chair.name}">
                     <h3 th:text="${chair.name}"></h3>
                     <p th:text="${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(chair.price)}"></p>

@@ -23,7 +23,6 @@ public class IndexController {
     public ModelAndView redirectToIndex(HttpServletRequest request) {
         AvailableChairDTO availableChairs = chairService.findAllChairsAvailableGroupingByCategory();
 
-
         ModelAndView view = new ModelAndView("index/index.html");
         view.addObject("pageTitle", "Home");
         if (request.getAttribute("customerId") != null) {

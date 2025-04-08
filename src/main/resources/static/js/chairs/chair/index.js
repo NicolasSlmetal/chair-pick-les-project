@@ -42,7 +42,7 @@ const idButtonActionMap = {
         if (response.status !== 201) {
             return;
         }
-        window.location.href = `/customers/${customerIdValue}/cart/confirm`;
+        window.location.href = `/customers/${customerIdValue}/cart`;
     },
     "continue_shopping": () => {
         if (!customerId) {

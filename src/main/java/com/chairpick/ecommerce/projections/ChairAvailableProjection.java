@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Objects;
 
 @Builder
 @Getter
@@ -22,5 +23,17 @@ public class ChairAvailableProjection {
                 ", price=" + price +
                 ", categories=" + categories +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        ChairAvailableProjection that = (ChairAvailableProjection) o;
+        return Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
     }
 }

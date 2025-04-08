@@ -58,20 +58,23 @@ export function constructOrderSection(orders, title) {
             total.innerText = `Total: R$ ${(item.value * item.amount + item.freightValue).toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             textColumn.appendChild(total);
             const status = document.createElement("h2");
-            status.innerHtml = `Status: <span class='${classStatusMap[item.status]}'> ${statusMap[item.status]} </span>`;
+            status.innerHTML = `Status: <span class='${classStatusMap[item.status]}'> ${statusMap[item.status]} </span>`;
             textColumn.appendChild(status);
             divRowBorder.appendChild(textColumn);
             cardRow.appendChild(divRowBorder);
         }
         const subtotalOrder = document.createElement("h2");
-        subtotalOrder.innerText = `Subtotal: ${orderTotalValue.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        subtotalOrder.innerText = `Subtotal: R$ ${(orderTotalValue - orderTotalFreight).toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
         cardRow.appendChild(subtotalOrder);
         const freightOrder = document.createElement("h2");
-        freightOrder.innerText = `Frete: ${orderTotalFreight.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        freightOrder.innerText = `Frete: R$ ${orderTotalFreight.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
         cardRow.appendChild(freightOrder);
         const totalOrder = document.createElement("h2");
         totalOrder.innerText = `Total: R$ ${(orderTotalValue).toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        const statusOrder = document.createElement("h2");
+        statusOrder.innerHTML = `Status: <span class='${classStatusMap[order.status]}'> ${statusMap[order.status]} </span> `;
         cardRow.appendChild(totalOrder);
+        cardRow.appendChild(statusOrder);
         columnDiv.appendChild(cardRow);
     }
     section.appendChild(columnDiv);
