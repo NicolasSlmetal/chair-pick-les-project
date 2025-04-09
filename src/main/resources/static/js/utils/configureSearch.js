@@ -1,5 +1,31 @@
 import { $ } from "../consts.js";
 
+const searchButton = document.querySelector(".home_search");
+const searchInput = document.querySelector("#name_search");
+
+searchButton.addEventListener("click", () => {
+    const nameValue = searchInput.value;
+    const data = {}
+    if (nameValue) {
+        data["name"] = nameValue;
+    }
+    const form = document.querySelector("form#main");
+    if (form) {
+        const formData = new FormData(form);
+        const objectFormData = Object.fromEntries(formData);
+        const nonEmptyFields = Object.keys(objectFormData)
+        .filter(key => objectFormData[key] !== undefined && objectFormData[key] !== null && objectFormData[key])
+
+        nonEmptyFields.forEach(key => data[key] = objectFormData[key]);
+        if (data["min_rating"] == "0" && data["max_rating"] == "5") {
+            delete data["min_rating"];
+            delete data["max_rating"];
+        }
+    }
+    if (Object.keys(data).length > 0) {
+        searchButton.href = `/search?${new URLSearchParams(data)}`;
+    }
+})
 
 export function configureSearch() {
     var products = [

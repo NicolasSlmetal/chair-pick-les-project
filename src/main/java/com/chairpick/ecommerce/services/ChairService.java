@@ -8,6 +8,7 @@ import com.chairpick.ecommerce.io.output.AvailableChairDTO;
 import com.chairpick.ecommerce.projections.ChairAvailableProjection;
 import com.chairpick.ecommerce.io.output.ChairDTO;
 import com.chairpick.ecommerce.repositories.ChairRepository;
+import com.chairpick.ecommerce.utils.pagination.PageInfo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -61,5 +62,10 @@ public class ChairService {
                 .description(chair.getDescription())
                 .availableAmount(totalAmount - totalReservedAmount)
                 .build();
+    }
+
+    public PageInfo<ChairDTO> searchForChairs(Map<String, String> parameters) {
+
+        return null;
     }
 }

@@ -12,11 +12,28 @@ form.addEventListener("submit", (event) => {
     console.log(data);
 });
 
+const nameSearchInput = document.querySelector("#name_search");
+
 const searchButton = document.querySelector("#search");
 searchButton.addEventListener("click", () => {
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
-    window.location.href = `search.html?${new URLSearchParams(data)}`;
+    const name = nameSearchInput.value;
+    if (name) {
+        data["name"] = name;
+    }
+    const nonEmptyKeys = Object.keys(data).filter(key => data[key] !== undefined && data[key] !== "" && data[key] !== null);
+    const filteredObject = {}
+    nonEmptyKeys.forEach(key => filteredObject[key] = data[key]);
+    if (filteredObject["min_rating"] == "0" && filteredObject["max_rating"] == "5") {
+        delete filteredObject["min_rating"];
+        delete filteredObject["max_rating"];
+    }
+    if (Object.keys(filteredObject).length > 0) {
+         window.location.href = `/search?${new URLSearchParams(filteredObject)}`;
+        return;
+    }
+    window.location.href = `/search`;
 });
 
 const cleanButton = document.querySelector("#clean");

@@ -9,7 +9,7 @@
     <h1 class="title">Chair Pick</h1>
     <div class="search__container home">
         <input id="name_search" autocomplete="off" type="text" class="search__home" placeholder="Pesquise cadeiras por aqui" style="width: 100%;">
-        <a href="search.html" class="home_search"><img class="profile__image" th:src="@{/assets/search.png}"></a>
+        <a th:href="@{/search}" class="home_search"><img class="profile__image" th:src="@{/assets/search.png}"></a>
     </div>
     <div class="profile__container">
         <a th:classappend="${pageTitle == 'Home' ? 'active' : ''}" th:href="@{/}"><img th:classappend="${pageTitle == '/' ? 'active' : ''}" class="profile__image" th:src="@{/assets/home.png}"></a>

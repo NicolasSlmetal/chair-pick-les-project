@@ -41,5 +41,10 @@ public class IndexController {
         return view;
     }
 
+    @GetMapping("/search")
+    public ModelAndView redirectToSearch() {
+        return new ModelAndView("chairs/search.html");
+    }
+
 
 }

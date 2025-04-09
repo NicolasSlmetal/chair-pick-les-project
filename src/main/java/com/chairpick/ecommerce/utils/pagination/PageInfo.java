@@ -1,5 +1,7 @@
 package com.chairpick.ecommerce.utils.pagination;
 
-public record PageInfo(Long totalPages) {
+import java.util.List;
+
+public record PageInfo<T>(Long totalPages, List<T> entitiesInPage) {
 
 }

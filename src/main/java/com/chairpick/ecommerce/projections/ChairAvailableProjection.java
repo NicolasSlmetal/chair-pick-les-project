@@ -15,6 +15,7 @@ public class ChairAvailableProjection {
     private String name;
     private double price;
     private List<Category> categories;
+    private int totalResults;
 
     @Override
     public String toString() {

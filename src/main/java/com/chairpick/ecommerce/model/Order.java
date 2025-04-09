@@ -3,6 +3,7 @@ package com.chairpick.ecommerce.model;
 import com.chairpick.ecommerce.model.enums.OrderStatus;
 import com.chairpick.ecommerce.model.payment.strategy.PaymentStrategy;
 import com.chairpick.ecommerce.utils.ErrorCode;
+import com.google.common.base.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -78,11 +79,11 @@ public class Order extends DomainEntity {
             getErrors().add(ErrorCode.VALUE_REQUIRED);
         }
 
-        List<ErrorCode> errorsFromPayment = payment
+        List<ErrorCode> errorsFromPayment = Optional.of(payment
                 .validatePayment(totalValue)
                 .stream()
                 .filter(error -> error != ErrorCode.REQUIRE_GENERATE_SWAP_COUPON)
-                .toList();
+                .toList()).or(List.of());
 
         getErrors().addAll(errorsFromPayment);
 
