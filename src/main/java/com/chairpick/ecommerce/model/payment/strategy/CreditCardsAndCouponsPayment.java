@@ -2,37 +2,54 @@ package com.chairpick.ecommerce.model.payment.strategy;
 
 import com.chairpick.ecommerce.model.Coupon;
 import com.chairpick.ecommerce.model.CreditCard;
-import com.chairpick.ecommerce.model.DomainEntity;
 import com.chairpick.ecommerce.model.Order;
 import com.chairpick.ecommerce.utils.ErrorCode;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @Getter
 @Setter
-@SuperBuilder
-public class CreditCardsAndCouponsPayment extends DomainEntity implements PaymentStrategy {
+@Builder
+public class CreditCardsAndCouponsPayment implements PaymentStrategy {
 
     private Order order;
     private Map<CreditCard, Double> creditCardPayments;
     private List<Coupon> coupons;
 
-
     @Override
     public List<ErrorCode> validatePayment(double orderTotalValue) {
-        creditCardPayments.forEach(((creditCard, value) -> {
-            if (value < 0.00) {
-                getErrors().add(ErrorCode.INVALID_PAYMENT_VALUE_FOR_CREDIT_CARD);
-            }
+        List<ErrorCode> errors = new ArrayList<>();
 
-            if (value > orderTotalValue) {
-                getErrors().add(ErrorCode.INVALID_PAYMENT_VALUE_FOR_CREDIT_CARD);
+        if (creditCardPayments == null || creditCardPayments.isEmpty()) {
+            errors.add(ErrorCode.CREDIT_CARD_REQUIRED);
+            return errors;
+        }
+
+        if (coupons == null || coupons.isEmpty()) {
+            errors.add(ErrorCode.COUPON_REQUIRED);
+            return errors;
+        }
+
+        for (CreditCard creditCard : creditCardPayments.keySet()) {
+            if (creditCard == null) {
+                errors.add(ErrorCode.CREDIT_CARD_REQUIRED);
+                break;
             }
-        }));
+            double value = creditCardPayments.get(creditCard);
+            if (value <= 0.00) {
+                errors.add(ErrorCode.INVALID_PAYMENT_VALUE_FOR_CREDIT_CARD);
+                break;
+            }
+            if (value > orderTotalValue) {
+                errors.add(ErrorCode.INVALID_PAYMENT_VALUE_FOR_CREDIT_CARD);
+                break;
+            }
+        }
 
         double totalValueCreditCards = creditCardPayments.values().stream()
                 .mapToDouble(Double::doubleValue)
@@ -42,16 +59,12 @@ public class CreditCardsAndCouponsPayment extends DomainEntity implements Paymen
                 .mapToDouble(Coupon::getValue)
                 .sum();
 
-        if (totalValueCreditCards + totalValueCoupons > orderTotalValue) {
-            getErrors().add(ErrorCode.INVALID_PAYMENT_VALUE_FOR_COUPON);
+        if (totalValueCreditCards + totalValueCoupons != orderTotalValue) {
+            errors.add(ErrorCode.INVALID_PAYMENT_VALUE_FOR_COUPON);
         }
 
-        return getErrors();
+        return errors;
 
     }
 
-    @Override
-    public void validate() {
-        verifyIfHasErrors();
-    }
 }

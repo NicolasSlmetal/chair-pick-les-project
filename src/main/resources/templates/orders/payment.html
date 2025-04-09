@@ -18,6 +18,7 @@
             <h2>Forma de pagamento</h2>
             <h3 style="text-align: left;">Cartões de crédito</h3>
             <p>Obs: O cartão azul é o cartão padrão</p>
+            <span class="warning"></span>
             <div id="credit_cards" class="row x_scrollable">
                 <div class="card without_cursor selectable" th:each="card : ${creditCards}" th:classappend="${card.isDefault} ? 'default' : ''">
                     <input type="hidden" name="cardId" th:value="${card.id}">
@@ -52,6 +53,13 @@
         <p>© 2025 Chair Pick</p>
     </div>
 </footer>
+<dialog id="error__modal">
+    <div class="modal__content">
+        <h2>Erro ao confirmar pagamento</h2>
+        <p id="errors"></p>
+        <button class="dialog__ok">Ok</button>
+    </div>
+</dialog>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />

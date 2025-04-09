@@ -10,11 +10,11 @@ const swapCoupons = document.querySelectorAll('#swap_coupons .card');
 const couponGenerateMessage = document.querySelector('#generate_swap_coupon_message');
 const checkboxes = document.querySelectorAll('#credit_cards .card input[type="checkbox"]');
 const form = document.querySelector('form');
+const pAdvice = document.querySelector('.warning');
 
 let totalValue = calculateOriginalValue();
 
 let lastRadio = null;
-
 
 const cardCentsMap = new Map();
 
@@ -113,6 +113,7 @@ function toggleCheckbox(checkbox) {
 }
 
 function handleCheckboxChange() {
+    pAdvice.innerText = '';
     const selectedPromoCoupons = getSelectedPromoCoupon();
     const selectedSwapCoupons = getSelectedSwapCoupons();
     const parent = this.closest('.card');
@@ -224,6 +225,8 @@ function handleSwapCouponSelection(swapCoupon, check) {
 function handlePaymentValueChange(input) {
     const cardElement = input.parentElement;
     const selectedCards = getSelectedCreditCards();
+    const coupons = getSelectedPromoCoupon();
+    const swapCoupons = getSelectedSwapCoupons();
     if (selectedCards.indexOf(cardElement) === -1) {
         return;
     }
@@ -238,6 +241,14 @@ function handlePaymentValueChange(input) {
     const customValue = parseFloat(rawValue);
 
     if (!customValue || customValue > totalValue || customValue < 0) {
+        pAdvice.innerText = 'Valor inválido';
+        distributeValuesPrecisely(totalValue, selectedCards);
+        applyCardValuesFromMap();
+        return;
+    }
+
+    if (selectedCards.length > 1 && customValue < 10 && coupons.length === 0 && swapCoupons.length === 0) {
+        pAdvice.innerText = 'Valor mínimo de R$ 10,00 para cada cartão';
         distributeValuesPrecisely(totalValue, selectedCards);
         applyCardValuesFromMap();
         return;

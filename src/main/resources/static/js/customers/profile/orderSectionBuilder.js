@@ -63,6 +63,9 @@ export function constructOrderSection(orders, title) {
             divRowBorder.appendChild(textColumn);
             cardRow.appendChild(divRowBorder);
         }
+        const orderId = document.createElement("h2");
+        orderId.innerText = `Pedido: ${order.id}`;
+        cardRow.appendChild(orderId);
         const subtotalOrder = document.createElement("h2");
         subtotalOrder.innerText = `Subtotal: R$ ${(orderTotalValue - orderTotalFreight).toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
         cardRow.appendChild(subtotalOrder);

@@ -1,50 +1,58 @@
 package com.chairpick.ecommerce.model.payment.strategy;
 
 import com.chairpick.ecommerce.model.CreditCard;
-import com.chairpick.ecommerce.model.DomainEntity;
-import com.chairpick.ecommerce.model.Order;
 import com.chairpick.ecommerce.utils.ErrorCode;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @Getter
 @Setter
-@SuperBuilder
-public class CreditCardsPayment extends DomainEntity implements PaymentStrategy {
+@Builder
+public class CreditCardsPayment implements PaymentStrategy {
 
+    public static final double MIN_VALUE_FOR_MANY_CARDS = 10.00;
     private Map<CreditCard, Double> creditCardPayments;
 
     @Override
     public List<ErrorCode> validatePayment(double orderTotalValue) {
-        double minValue = creditCardPayments.size() > 1 ? 10.00 : 0.00;
+        List<ErrorCode> errors = new ArrayList<>();
 
-        creditCardPayments.forEach((creditCardPayments, value) -> {
-            if (value < minValue) {
-                getErrors().add(ErrorCode.INVALID_PAYMENT_VALUE_FOR_CREDIT_CARD);
+        if (creditCardPayments == null || creditCardPayments.isEmpty()) {
+            errors.add(ErrorCode.CREDIT_CARD_REQUIRED);
+            return errors;
+        }
+
+        double minValue = creditCardPayments.size() > 1 ? MIN_VALUE_FOR_MANY_CARDS : 0.00;
+
+        for (CreditCard creditCard : creditCardPayments.keySet()) {
+            if (creditCard == null) {
+                errors.add(ErrorCode.CREDIT_CARD_REQUIRED);
+                break;
             }
-
+            double value = creditCardPayments.get(creditCard);
+            if (value <= minValue) {
+                errors.add(ErrorCode.INVALID_PAYMENT_VALUE_FOR_CREDIT_CARD);
+                break;
+            }
             if (value > orderTotalValue) {
-                getErrors().add(ErrorCode.INVALID_PAYMENT_VALUE_FOR_CREDIT_CARD);
+                errors.add(ErrorCode.INVALID_PAYMENT_VALUE_FOR_CREDIT_CARD);
+                break;
             }
-        });
+        }
 
         double totalValue = creditCardPayments.values().stream()
                 .mapToDouble(Double::doubleValue)
                 .sum();
         if (totalValue != orderTotalValue) {
-            getErrors().add(ErrorCode.INVALID_PAYMENT_VALUE_FOR_CREDIT_CARD);
+            errors.add(ErrorCode.INVALID_PAYMENT_VALUE_FOR_CREDIT_CARD);
         }
 
-        return getErrors();
-    }
-
-    @Override
-    public void validate() {
-        verifyIfHasErrors();
+        return errors;
     }
 }
 

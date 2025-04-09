@@ -1,4 +1,3 @@
-
 const errorMessageMap = new Map();
 
 errorMessageMap.set("INVALID_CPF", "CPF inválido");
@@ -28,11 +27,36 @@ errorMessageMap.set("INVALID_CARD_HOLDER", "Nome do titular do cartão inválido
 errorMessageMap.set("ADDRESS_DEFAULT_REQUIRED", "Endereço padrão é obrigatório");
 errorMessageMap.set("INVALID_PASSWORD", "Senha inválida");
 errorMessageMap.set("INVALID_EMAIL", "E-mail inválido");
-
+errorMessageMap.set("INVALID_USER", "Usuário inválido");
+errorMessageMap.set("CUSTOMER_REQUIRED", "Cliente é obrigatório");
+errorMessageMap.set("AMOUNT_REQUIRED", "Quantidade é obrigatória");
+errorMessageMap.set("ITEM_REQUIRED", "Item é obrigatório");
+errorMessageMap.set("CART_STATUS_REQUIRED", "Status do carrinho é obrigatório");
+errorMessageMap.set("INVALID_ENTRY_DATE", "Data de entrada inválida");
+errorMessageMap.set("AMOUNT_EXCEEDS_LIMIT", "Quantidade excede o limite disponível");
+errorMessageMap.set("INVALID_LIMIT", "Limite inválido");
+errorMessageMap.set("INVALID_PAYMENT_VALUE_FOR_CREDIT_CARD", "Valor de pagamento inválido para cartão de crédito");
+errorMessageMap.set("INVALID_PAYMENT_VALUE_FOR_COUPON", "Valor de pagamento inválido para cupom");
+errorMessageMap.set("REQUIRE_GENERATE_SWAP_COUPON", "É necessário gerar um cupom de troca");
+errorMessageMap.set("ORDER_STATUS_REQUIRED", "Status do pedido é obrigatório");
+errorMessageMap.set("INVALID_UPDATED_DATE", "Data de atualização inválida");
+errorMessageMap.set("INVALID_CREATED_DATE", "Data de criação inválida");
+errorMessageMap.set("BILLING_ADDRESS_REQUIRED", "Endereço de cobrança é obrigatório");
+errorMessageMap.set("DELIVERY_ADDRESS_REQUIRED", "Endereço de entrega é obrigatório");
+errorMessageMap.set("PAYMENT_REQUIRED", "Pagamento é obrigatório");
+errorMessageMap.set("VALUE_REQUIRED", "Valor é obrigatório");
+errorMessageMap.set("FREIGHT_REQUIRED", "Frete é obrigatório");
+errorMessageMap.set("ORDER_REQUIRED", "Pedido é obrigatório");
+errorMessageMap.set("CHAIR_REQUIRED", "Cadeira é obrigatória");
+errorMessageMap.set("UNIT_COST_REQUIRED", "Custo unitário é obrigatório");
+errorMessageMap.set("RESERVED_AMOUNT_REQUIRED", "Quantidade reservada é obrigatória");
+errorMessageMap.set("RESERVED_AMOUNT_EXCEEDS_LIMIT", "Quantidade reservada excede o limite disponível");
+errorMessageMap.set("CREDIT_CARD_REQUIRED", "Cartão de crédito é obrigatório");
+errorMessageMap.set("COUPON_REQUIRED", "Cupom é obrigatório");
 
 export function parseErrorMessages(errorCodes) {
-  return errorCodes ? errorCodes.split("\n").map(code => {
-
-    return errorMessageMap.get(code) || "Erro desconhecido";
-  }) : "Erro desconhecido";
+  return errorCodes
+    ? errorCodes.split("\n").map(code => errorMessageMap.get(code) || "Erro desconhecido")
+    .join("<br>")
+    : "Erro desconhecido";
 }

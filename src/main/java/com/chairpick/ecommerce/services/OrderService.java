@@ -12,6 +12,7 @@ import com.chairpick.ecommerce.model.payment.strategy.CreditCardsAndCouponsPayme
 import com.chairpick.ecommerce.model.payment.strategy.CreditCardsPayment;
 import com.chairpick.ecommerce.model.payment.strategy.PaymentStrategy;
 import com.chairpick.ecommerce.repositories.*;
+import com.chairpick.ecommerce.utils.ErrorCode;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -42,6 +43,7 @@ public class OrderService {
     }
 
     public Order createOrder(Long customerId, OrderInput orderInput) {
+
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new EntityNotFoundException("Customer not found"));
 
@@ -128,22 +130,21 @@ public class OrderService {
                             .freightValue(freightMap.get(item.getId()))
                             .order(order)
                             .status(OrderStatus.PENDING)
-                            .value(item.getChair().getSellPrice() * itemAmountMap.get(item.getId()))
+                            .value(item.getChair().getSellPrice())
                             .item(item)
                             .build();
                 }).toList();
 
         order.setItems(orderItems);
         order.validate();
-
         return orderRepository.saveOrderAndUpdateStock(order, cartList);
     }
 
 
     private PaymentStrategy getPaymentStrategy(List<Object> paymentMethods, Map<Long, Double> paymentValues) {
-        Predicate<Object> isCreditCard = object -> object instanceof CreditCard card;
-        Predicate<Object> isCoupon = object -> object instanceof Coupon coupon;
-        Predicate<Object> isCreditCardAndCoupon = object -> object instanceof CreditCard card || object instanceof Coupon coupon;
+        Predicate<Object> isCreditCard = object -> object instanceof CreditCard;
+        Predicate<Object> isCoupon = object -> object instanceof Coupon;
+        Predicate<Object> isCreditCardAndCoupon = object -> object instanceof CreditCard || object instanceof Coupon;
 
         if (paymentMethods.stream().allMatch(isCreditCard)) {
             Map<CreditCard, Double> creditCardPayments = paymentMethods

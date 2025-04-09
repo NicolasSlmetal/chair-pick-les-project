@@ -385,6 +385,17 @@ ul.rating {
     width: 100%;
 }
 
+.dialog__ok {
+    padding: 5px;
+    border-radius: 4px;
+    background-color: var(--blue-color);
+    margin-bottom: 10px;
+    color: white;
+    cursor: pointer;
+    border: none;
+    font-size: 1.2em;
+}
+
 .search__container select {
     padding: 5px;
     border-radius: 4px;

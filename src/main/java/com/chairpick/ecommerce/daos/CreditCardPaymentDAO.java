@@ -7,8 +7,6 @@ import com.chairpick.ecommerce.model.payment.strategy.PaymentStrategy;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.util.Map;
-import java.util.Objects;
-
 
 public class CreditCardPaymentDAO implements OrderPaymentDAO {
 
