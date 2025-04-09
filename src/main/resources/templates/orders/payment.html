@@ -44,6 +44,7 @@
             <input type="hidden" name="deliveryAddressId" th:value="${deliveryAddressId}">
             <input type="hidden" name="billingAddressId" th:value="${billingAddressId}">
             <p id="generate_swap_coupon_message" class="important"></p>
+            <h3 th:text="'Total: R$ ' + ${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(totalValue)} "></h3>
             <button type="submit" class="product_action">Confirmar opções de pagamento</button>
         </form>
     </section>

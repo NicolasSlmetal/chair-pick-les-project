@@ -93,7 +93,7 @@ public class OrderDAO implements GenericDAO<Order> {
                 where = where.and();
             }
         }
-        EndingOptions endingOptions = where.end().endingOptions();
+        EndingOptions endingOptions = where.end().endingOptions().orderByDescending("ord_id");
         return endingOptions.build();
     }
 
