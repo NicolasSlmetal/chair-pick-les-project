@@ -60,7 +60,7 @@ public class ChairDAO implements PaginatedProjectionDAO<Chair, ChairAvailablePro
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("id", id);
         List<Chair> chairs = jdbcTemplate.query(sql, parameters, extractor);
-        return chairs.isEmpty() ? Optional.empty() : Optional.of(chairs.getFirst());
+        return chairs == null || chairs.isEmpty() ? Optional.empty() : Optional.of(chairs.getFirst());
     }
 
     @Override
@@ -72,8 +72,7 @@ public class ChairDAO implements PaginatedProjectionDAO<Chair, ChairAvailablePro
     @Override
     public List<ChairAvailableProjection> findAndMapForProjection(Map<String, String> parameters) {
         QueryResult sql = projectionQueryMapper.parseParameters(parameters);
-        System.out.println(sql.query());
-        System.out.println(sql.parameters());
+
         return jdbcTemplate.query(sql.query(), sql.parameters(), (rs) -> {
             Set<ChairAvailableProjection> projections = new HashSet<>();
             while (rs.next()) {
