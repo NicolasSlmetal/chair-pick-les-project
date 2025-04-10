@@ -59,6 +59,45 @@ public class Having {
         return this;
     }
 
+    public Having countLowerOrEqual(String column, String value) {
+        String sanitizedColumn = column.replace(" ", "_");
+        endingOptions.append("COUNT(")
+                .append(column)
+                .append(")")
+                .append(" <= ")
+                .append("CAST( ")
+                .append(String.format(":%s", sanitizedColumn))
+                .append(" AS INTEGER)");
+        endingOptions.appendValue(sanitizedColumn, value);
+        return this;
+    }
+
+    public Having countLowerThan(String column, String value) {
+        String sanitizedColumn = column.replace(" ", "_");
+        endingOptions.append("COUNT(")
+                .append(column)
+                .append(")")
+                .append(" < ")
+                .append("CAST( ")
+                .append(String.format(":%s", sanitizedColumn))
+                .append(" AS INTEGER)");
+        endingOptions.appendValue(sanitizedColumn, value);
+        return this;
+    }
+
+    public Having countEqual(String column, String value) {
+        String sanitizedColumn = column.replace(" ", "_");
+        endingOptions.append("COUNT(")
+                .append(column)
+                .append(")")
+                .append(" = ")
+                .append("CAST( ")
+                .append(String.format(":%s", sanitizedColumn))
+                .append(" AS INTEGER)");
+        endingOptions.appendValue(sanitizedColumn, value);
+        return this;
+    }
+
     public EndingOptions end() {
         return endingOptions;
     }

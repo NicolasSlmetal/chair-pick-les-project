@@ -15,7 +15,6 @@ import java.util.List;
 @Builder
 public class CouponsPayment implements PaymentStrategy {
 
-    private Order order;
     private List<Coupon> couponList;
 
     @Override

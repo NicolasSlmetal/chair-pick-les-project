@@ -2,10 +2,7 @@ package com.chairpick.ecommerce.utils.query.mappers;
 
 import com.chairpick.ecommerce.projections.ChairAvailableProjection;
 import com.chairpick.ecommerce.utils.pagination.PageOptions;
-import com.chairpick.ecommerce.utils.query.QueryResult;
-import com.chairpick.ecommerce.utils.query.SelectTable;
-import com.chairpick.ecommerce.utils.query.SqlQueryBuilder;
-import com.chairpick.ecommerce.utils.query.Where;
+import com.chairpick.ecommerce.utils.query.*;
 import com.chairpick.ecommerce.utils.query.mappers.interfaces.GeneralObjectQueryMapper;
 import org.springframework.stereotype.Component;
 
@@ -140,14 +137,21 @@ public class ChairAvailableProjectionQueryMapper implements GeneralObjectQueryMa
         }
         selectTable = where.end();
         if (with == null) {
-            with = selectTable
+            Having having = selectTable
                     .endingOptions()
                     .groupBy("chr_id")
                     .having()
                     .sumHigherThan("itm_amount", "0")
                     .and()
-                    .sumHigherThanOtherColumn("itm_amount", "SUM(itm_reserved)")
-                    .end().build();
+                    .sumHigherThanOtherColumn("itm_amount", "SUM(itm_reserved)");
+            if (parameters.containsKey("categories")) {
+                String[] joinedCategories = parameters.get("categories").split(",");
+                having
+                .and()
+                .countEqual("DISTINCT chc_category_id", String.valueOf(joinedCategories.length));
+
+            }
+            with = having.end().build();
         }
         SqlQueryBuilder nextQueryBuilder = SqlQueryBuilder.create();
         SelectTable nextTable = nextQueryBuilder.withClause().with("sub_query", with).end()

@@ -205,7 +205,6 @@ public class Where {
         for (String val : value) {
             String identifierValue = column.concat(String.valueOf(length--));
             subQueryBuilder.append(":")
-                    .append(column)
                     .append(identifierValue);
             selectTable.appendValue(identifierValue, val);
             if (length > 0) {

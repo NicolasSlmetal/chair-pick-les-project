@@ -317,6 +317,7 @@ img.star.not_filled {
 ul.rating {
     display: flex;
     flex-direction: row;
+    align-items: center;
     gap: 5px;
 }
 

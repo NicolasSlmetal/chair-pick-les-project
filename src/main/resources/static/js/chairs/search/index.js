@@ -1,4 +1,4 @@
-import { configureSearch} from "../../utils/configureSearch.js";
+import { configureSearch } from "../../utils/configureSearch.js";
 import { searchChairs } from "./searchChairs.js";
 import { buildChairsCards } from "./buildChairsCards.js";
 
@@ -20,6 +20,7 @@ export async function getAndBuildChairs() {
         "min_rating": urlParams.get("min_rating"),
         "max_rating": urlParams.get("max_rating"),
         "name": urlParams.get("name"),
+        "categories": urlParams.get("categories")
     }
 
     const providedParams = Object.fromEntries(Object.entries(availableParams).filter(([key, value]) => value !== null && value !== ""));
@@ -57,5 +58,5 @@ async function fetchChairs(data) {
 
 window.onload = async () => {
     await getAndBuildChairs();
-
+    configureSearch()
 }

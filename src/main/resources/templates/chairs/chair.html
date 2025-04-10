@@ -22,6 +22,7 @@
             <p th:utext="'<strong>Unidades: </strong>' + ${chair.availableAmount}"></p>
             <ul class="rating">
                 <h3>Avaliação: </h3>
+                <p th:text="${chair.averageRating}"></p>
                 <li class="star"><img th:classappend="${chair.averageRating >= 1 ? '' : 'not_filled'}" class="star" src="/assets/star.png"></li>
                 <li class="star"><img th:classappend="${chair.averageRating >= 2 ? '' : 'not_filled'}" class="star" src="/assets/star.png"></li>
                 <li class="star"><img th:classappend="${chair.averageRating >= 3 ? '' : 'not_filled'}" class="star" src="/assets/star.png"></li>

@@ -18,21 +18,80 @@
         <p th:if="${param.size() > 0}" th:utext="'<strong>Mostrando resultados para:</strong>'"></p>
         <p th:unless="${param.size() > 0}" th:utext="'<strong>Mostrando todos os resultados:</strong>'"></p>
         <p th:if="${param.name != null}" th:with="name=${param.name}" th:utext="'<strong>Nome: </strong>' + ${name}"></p>
+        <p th:if="${param.categories != null}"
+           th:with="categories=${param.categories}"
+           th:utext="'<strong>Categorias: </strong>' + ${categories}"></p>
         <div><p style="display:inline;" th:if="${param.min_price != null || param.max_price != null}"
            th:utext="'<strong>Preço:</strong>'">
              <p style="display:inline;" th:if="${param.min_price != null}"
                    th:with="min=${T(java.lang.Double).parseDouble(param.min_price)}"
                    th:text="' A partir de ' + ${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(min)}">
 
+                <p style="display:inline;"
+                   th:if="${param.max_price != null}"
+                   th:with="max=${T(java.lang.Double).parseDouble(param.max_price)}"
+                   th:text="' Até ' + ${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(max)}"></p>
+                </p>
+            </p>
+
+        </div>
+        <div>
+            <p style="display:inline;" th:if="${param.min_length != null || param.max_length != null}"
+                th:utext="'<strong>Comprimento:</strong>'">
+            <p style="display:inline;" th:if="${param.min_length != null}"
+               th:with="min=${param.min_length}"
+               th:text="' A partir de ' + ${min}">
+
+                <p style="display:inline;"
+                   th:if="${param.max_length != null}"
+                   th:with="max=${param.max_length}"
+                   th:text="' Até ' + ${max}"></p>
+                </p>
+            </p>
+
+        </div>
+        <div><p style="display:inline;" th:if="${param.min_height != null || param.max_height != null}"
+                th:utext="'<strong>Altura:</strong>'">
+            <p style="display:inline;" th:if="${param.min_height != null}"
+               th:with="min=${param.min_height}"
+               th:text="' A partir de ' + ${min}">
+
             <p style="display:inline;"
-               th:if="${param.max_price != null}"
-               th:with="max=${T(java.lang.Double).parseDouble(param.max_price)}"
-               th:text="' Até ' + ${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(max)}"></p>
+               th:if="${param.max_height != null}"
+               th:with="max=${param.max_height}"
+               th:text="' Até ' + ${max}"></p>
             </p>
             </p>
 
         </div>
+        <div><p style="display:inline;" th:if="${param.min_width != null || param.max_width != null}"
+                th:utext="'<strong>Largura:</strong>'">
+            <p style="display:inline;" th:if="${param.min_width != null}"
+               th:with="min=${param.min_width}"
+               th:text="' A partir de ' + ${min}">
 
+            <p style="display:inline;"
+               th:if="${param.max_width != null}"
+               th:with="max=${param.max_width}"
+               th:text="' Até ' + ${max}"></p>
+            </p>
+            </p>
+
+        </div>
+        <div><p style="display:inline;" th:if="${param.min_rating != null || param.max_rating != null}"
+                th:utext="'<strong>Avaliação:</strong>'">
+            <p style="display:inline;" th:if="${param.min_rating != null}"
+               th:with="min=${param.min_rating}"
+               th:text="' A partir de ' + ${min} + ' estrela(s)'">
+
+            <p style="display:inline;"
+               th:if="${param.max_rating != null}"
+               th:with="max=${param.max_rating}"
+               th:text="' Até ' + ${max} + ' estrela(s)'"></p>
+            </p>
+            </p>
+
+        </div>
         <p id="results"></p>
     </div>
     <section class="products search">

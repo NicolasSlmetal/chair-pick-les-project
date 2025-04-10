@@ -20,10 +20,11 @@
             <form id="main">
                 <label for="category">Categorias</label>
                 <select class="select2" id="category" name="category" multiple>
-                    <option value="gamer">Gamer</option>
-                    <option value="office">Escritório</option>
-                    <option value="beach">Praia</option>
-                    <option value="aud">Auditório</option>
+                    <option th:each="category: ${chairsByCategories.keySet()}"
+                    th:text="${category.getName()}"
+                    th:id="${category.getName()}"
+                    th:value="${category.getName()}"
+                    ></option>
                 </select>
                 <label>Preço</label>
                 <div class="min_max_group">

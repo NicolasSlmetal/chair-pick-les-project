@@ -17,7 +17,6 @@ import java.util.Map;
 @Builder
 public class CreditCardsAndCouponsPayment implements PaymentStrategy {
 
-    private Order order;
     private Map<CreditCard, Double> creditCardPayments;
     private List<Coupon> coupons;
 

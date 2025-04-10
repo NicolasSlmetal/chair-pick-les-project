@@ -29,8 +29,15 @@ searchButton.addEventListener("click", () => {
         delete filteredObject["min_rating"];
         delete filteredObject["max_rating"];
     }
+    const selectedCategories = $("#category").select2('data');
+    if (selectedCategories && selectedCategories.length > 0) {
+        filteredObject["categories"] = selectedCategories.map(cat => cat.text).join(",");
+
+    }
+    delete filteredObject["category"]
+
     if (Object.keys(filteredObject).length > 0) {
-         window.location.href = `/search?${new URLSearchParams(filteredObject)}`;
+        window.location.href = `/search?${new URLSearchParams(filteredObject)}`;
         return;
     }
     window.location.href = `/search`;
@@ -39,6 +46,13 @@ searchButton.addEventListener("click", () => {
 const cleanButton = document.querySelector("#clean");
 cleanButton.addEventListener("click", () => {
     form.reset();
+    $("#category").val(null).trigger('change');
+    const min_rating = document.querySelector("#range_min_rating");
+    const input_min_rating = document.querySelector("#min_rating");
+    const input_max_rating = document.querySelector("#max_rating");
+    const max_rating = document.querySelector("#range_max_rating");
+    min_rating.innerHTML = `Mínimo: ${input_min_rating.value}`;
+    max_rating.innerHTML = `Máximo: ${input_max_rating.value}`;
 });
 
 $(document).ready(function() {
