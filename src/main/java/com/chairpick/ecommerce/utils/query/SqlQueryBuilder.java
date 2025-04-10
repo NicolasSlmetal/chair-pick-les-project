@@ -23,6 +23,10 @@ public class SqlQueryBuilder {
         return new SelectTable(this, table);
     }
 
+    public With withClause() {
+        return new With(this);
+    }
+
     public SelectTable selectingColumnsFromTable(String table, String... columns) {
         query.append("SELECT ");
         for (int i = 0; i < columns.length; i++) {
@@ -54,5 +58,13 @@ public class SqlQueryBuilder {
 
     void appendWithValue(String column, String value) {
         parameters.put(column, value);
+    }
+
+    public long countParameterOccurrences(String parameter) {
+        return parameters
+                .keySet()
+                .stream()
+                .filter(key -> key.startsWith(parameter))
+                .count();
     }
 }

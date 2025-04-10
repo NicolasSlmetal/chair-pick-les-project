@@ -1,6 +1,7 @@
 package com.chairpick.ecommerce.controllers;
 
 import com.chairpick.ecommerce.io.output.ChairDTO;
+import com.chairpick.ecommerce.projections.ChairAvailableProjection;
 import com.chairpick.ecommerce.services.ChairService;
 import com.chairpick.ecommerce.services.FreightCalculatorService;
 import com.chairpick.ecommerce.utils.pagination.PageInfo;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -26,9 +28,8 @@ public class ChairController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> searchForChairs(Map<String, String> parameters) {
-        PageInfo<ChairDTO> chairsInPage = chairService.searchForChairs(parameters);
-        return null;
+    public ResponseEntity<PageInfo<ChairAvailableProjection>> searchForChairs(@RequestParam Map<String, String> parameters) {
+        return ResponseEntity.ok(chairService.searchForChairs(parameters));
     }
 
     @GetMapping("/{id}")

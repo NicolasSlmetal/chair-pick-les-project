@@ -64,8 +64,15 @@ public class ChairService {
                 .build();
     }
 
-    public PageInfo<ChairDTO> searchForChairs(Map<String, String> parameters) {
+    public PageInfo<ChairAvailableProjection> searchForChairs(Map<String, String> parameters) {
+        if (!parameters.containsKey("limit")) {
+            parameters.put("limit", "5");
 
-        return null;
+        }
+        if (!parameters.containsKey("page")) {
+            parameters.put("page", "1");
+        }
+
+        return chairRepository.searchForPaginatedChairs(parameters);
     }
 }

@@ -27,7 +27,7 @@ public class ChairImageLocatorService {
                             .toString()
                             .split("\\.")
                             [0]
-                            .contains(chairId.toString()))
+                            .endsWith(chairId.toString()))
                     .findFirst().orElse(Path.of(BASE_DIR + IMAGE_DIR + "default.png"));
         } catch (IOException exception) {
             exception.printStackTrace();

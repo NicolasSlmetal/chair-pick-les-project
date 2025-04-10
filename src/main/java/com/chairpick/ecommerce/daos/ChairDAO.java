@@ -1,15 +1,18 @@
 package com.chairpick.ecommerce.daos;
 
+import com.chairpick.ecommerce.daos.interfaces.PaginatedProjectionDAO;
 import com.chairpick.ecommerce.daos.interfaces.ProjectionDAO;
 import com.chairpick.ecommerce.model.Category;
 import com.chairpick.ecommerce.model.Chair;
 import com.chairpick.ecommerce.model.Item;
 import com.chairpick.ecommerce.projections.ChairAvailableProjection;
+import com.chairpick.ecommerce.utils.pagination.PageInfo;
 import com.chairpick.ecommerce.utils.pagination.PageOptions;
 import com.chairpick.ecommerce.utils.query.QueryResult;
 import com.chairpick.ecommerce.utils.query.SelectTable;
 import com.chairpick.ecommerce.utils.query.SqlQueryBuilder;
 import com.chairpick.ecommerce.utils.query.Where;
+import com.chairpick.ecommerce.utils.query.mappers.interfaces.GeneralObjectQueryMapper;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -18,14 +21,16 @@ import org.springframework.stereotype.Repository;
 import java.util.*;
 
 @Repository
-public class ChairDAO implements ProjectionDAO<Chair, ChairAvailableProjection> {
+public class ChairDAO implements PaginatedProjectionDAO<Chair, ChairAvailableProjection> {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final ResultSetExtractor<List<Chair>> extractor;
+    private final GeneralObjectQueryMapper<ChairAvailableProjection> projectionQueryMapper;
 
-    public ChairDAO(NamedParameterJdbcTemplate jdbcTemplate, ResultSetExtractor<List<Chair>> extractor) {
+    public ChairDAO(NamedParameterJdbcTemplate jdbcTemplate, ResultSetExtractor<List<Chair>> extractor, GeneralObjectQueryMapper<ChairAvailableProjection> projectionQueryMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.extractor = extractor;
+        this.projectionQueryMapper = projectionQueryMapper;
     }
 
     @Override
@@ -66,157 +71,11 @@ public class ChairDAO implements ProjectionDAO<Chair, ChairAvailableProjection> 
 
     @Override
     public List<ChairAvailableProjection> findAndMapForProjection(Map<String, String> parameters) {
-        StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append(
-                """
-        WITH paginated_chairs AS (
-            SELECT 
-                chr_id, 
-                chr_name, 
-                chr_sell_price, 
-                cat_name, 
-                COUNT(*) OVER () AS total_count,  
-                SUM(itm_amount) as total_amount
-            FROM tb_chair
-            INNER JOIN tb_item ON chr_id = itm_chair_id
-            INNER JOIN tb_chair_category ON chr_id = chc_chair_id
-            INNER JOIN tb_category ON chc_category_id = cat_id
-            
-                        """
-        );
-
-        Map<String, Object> parsedParameters = new HashMap<>();
-        int size = parameters.size();
-        for (Map.Entry<String, String> entry : parameters.entrySet()) {
-            String key = "chr" + entry.getKey();
-            String value = entry.getValue();
-            String operator = " = ";
-            if (entry.getKey().startsWith("itm")) {
-                key = entry.getKey();
-            }
-
-            if (entry.getKey().startsWith("cat")) {
-                key = entry.getKey();
-            }
-
-            if (key.equals("chr_min_price")) {
-                key = "chr_sell_price";
-                operator = " >= ";
-                value = String.format(":%s", key);
-                parsedParameters.put(key, Double.parseDouble(entry.getValue()));
-            }
-
-            if (key.equals("chr_max_price")) {
-                key = "chr_sell_price";
-                operator = " <= ";
-                value = String.format(":%s", key);
-                parsedParameters.put(key, Double.parseDouble(entry.getValue()));
-            }
-
-            if (key.equals("chr_min_length")) {
-                key = "chr_length";
-                operator = " >= ";
-                value = String.format(":%s", key);
-                parsedParameters.put(key, Double.parseDouble(entry.getValue()));
-            }
-
-            if (key.equals("chr_max_length")) {
-                key = "chr_length";
-                operator = " <= ";
-                value = String.format(":%s", key);
-                parsedParameters.put(key, Double.parseDouble(entry.getValue()));
-            }
-
-            if (entry.getKey().equals("limit")) {
-                size--;
-                continue;
-            }
-
-            if (entry.getKey().equals("page")) {
-                size--;
-                continue;
-            }
-
-            if (key.equals("chr_min_height")) {
-                key = "chr_height";
-                operator = " >= ";
-                value = String.format(":%s", key);
-                parsedParameters.put(key, Double.parseDouble(entry.getValue()));
-            }
-
-            if (key.equals("chr_max_height")) {
-                key = "chr_height";
-                operator = " <= ";
-                value = String.format(":%s", key);
-                parsedParameters.put(key, Double.parseDouble(entry.getValue()));
-            }
-
-            if (key.equals("chr_min_rating")) {
-                key = "chr_average_rating";
-                operator = " <= ";
-                value = String.format(":%s", key);
-                parsedParameters.put(key, Double.parseDouble(entry.getValue()));
-            }
-
-            if (key.equals("chr_max_rating")) {
-                key = "chr_average_rating";
-                operator = " >= ";
-                value = String.format(":%s", key);
-                parsedParameters.put(key, Double.parseDouble(entry.getValue()));
-            }
-
-            if (key.equals("chr_categories")) {
-                operator = " IN ";
-                key = "cat_name";
-                String[] categoriesArray = value.split(",");
-                StringBuilder keysNames = new StringBuilder();
-                for (String cat : categoriesArray) {
-                    String sanitizedCategory = cat.replace(" ", "");
-                    String parameter = key + sanitizedCategory;
-                    keysNames.append(":").append(parameter).append(",");
-                    parameters.put(parameter, sanitizedCategory);
-                }
-                value = keysNames.substring(0, keysNames.length() - 1).toString();
-            }
-            queryBuilder.append(" WHERE ").append(key).append(operator).append(value);
-            if (--size > 0) {
-                queryBuilder.append(" AND ");
-            }
-        }
-
-        queryBuilder.append("""
-                GROUP BY cat_name, chr_id HAVING SUM(itm_amount) > 0 AND SUM(itm_amount) > SUM(itm_reserved) 
-                """);
-
-        if (parameters.containsKey("limit") && parameters.containsKey("page")) {
-            int limit = Integer.parseInt(parameters.get("limit"));
-            int page = Integer.parseInt(parameters.get("page"));
-            PageOptions pageOptions = PageOptions
-                    .builder()
-                    .size(limit)
-                    .page(page)
-                    .build();
-            queryBuilder.append(" LIMIT :limit OFFSET :offset");
-            parsedParameters.put("limit", limit);
-            parsedParameters.put("offset", pageOptions.getOffset());
-        }
-        queryBuilder.append(")");
-
-        queryBuilder.append("""
-                SELECT 
-                    chr_id, 
-                    chr_name, 
-                    chr_sell_price, 
-                    cat_name, 
-                    total_count
-                FROM paginated_chairs
-                WHERE total_amount > 0  
-                GROUP BY chr_id, chr_name, chr_sell_price, cat_name, total_count
-                """);
-        String sql = queryBuilder.toString();
-
-        return jdbcTemplate.query(sql, parameters, (rs) -> {
-            List<ChairAvailableProjection> projections = new ArrayList<>();
+        QueryResult sql = projectionQueryMapper.parseParameters(parameters);
+        System.out.println(sql.query());
+        System.out.println(sql.parameters());
+        return jdbcTemplate.query(sql.query(), sql.parameters(), (rs) -> {
+            Set<ChairAvailableProjection> projections = new HashSet<>();
             while (rs.next()) {
                 List<Category> categories = new ArrayList<>();
                 categories.add(Category.builder()
@@ -232,7 +91,7 @@ public class ChairDAO implements ProjectionDAO<Chair, ChairAvailableProjection> 
                         .build()
                 );
             }
-            return projections;
+            return projections.stream().toList();
         });
     }
 
@@ -293,4 +152,27 @@ public class ChairDAO implements ProjectionDAO<Chair, ChairAvailableProjection> 
 
     }
 
+    @Override
+    public PageInfo<ChairAvailableProjection> findAndPaginateForProjection(Map<String, String> parameters, PageOptions pageOptions) {
+        QueryResult sql = projectionQueryMapper.parseParameters(parameters, pageOptions);
+
+        List<ChairAvailableProjection> paginatedProjections = jdbcTemplate.query(sql.query(), sql.parameters(), (rs) -> {
+            Set<ChairAvailableProjection> projections = new HashSet<>();
+            while (rs.next()) {
+                projections.add(ChairAvailableProjection
+                        .builder()
+                        .id(rs.getLong("chr_id"))
+                        .name(rs.getString("chr_name"))
+                        .price(rs.getDouble("chr_sell_price"))
+                        .totalResults(rs.getInt("total_count"))
+                        .build()
+                );
+            }
+            return projections.stream().toList();
+        });
+
+        int total = paginatedProjections == null ||
+                paginatedProjections.isEmpty() ? 0 : paginatedProjections.getFirst().getTotalResults();
+        return new PageInfo<>(total, paginatedProjections);
+    }
 }

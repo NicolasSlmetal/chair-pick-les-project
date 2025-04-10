@@ -451,6 +451,14 @@ form input[type="text"]:focus, form input[type="password"]:focus form input[type
     border: 1px solid var(--blue-color);
 }
 
+.container_search {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
 form input[type="text"]:invalid, form input[type="password"]:invalid, form input[type="email"]:invalid, form input[type="number"]:invalid, form input[type="date"]:invalid {
     border: 1px solid red;
 }

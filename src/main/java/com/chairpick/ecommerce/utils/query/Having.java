@@ -29,6 +29,14 @@ public class Having {
         return this;
     }
 
+    public Having sumHigherThanOtherColumn(String column, String otherColumn) {
+        endingOptions.append("SUM(")
+                .append(column)
+                .append(") > ")
+                .append(otherColumn);
+        return this;
+    }
+
     public Having sumLowerThan(String column, String value) {
         endingOptions.append("SUM(")
                 .append(column)

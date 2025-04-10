@@ -75,6 +75,11 @@ public class OrderDAO implements GenericDAO<Order> {
                 .innerJoinOn("ori_item_id", "itm_id")
                 .joinDifferentTables("tb_item", "tb_chair")
                 .innerJoinOn("itm_chair_id", "chr_id");
+        if (parameters.isEmpty()) {
+            return selectTable.endingOptions()
+                    .orderByDescending("ord_id")
+                    .build();
+        }
         Where where = selectTable.where();
         int size = parameters.size();
         for (Map.Entry<String, String> entry : parameters.entrySet()) {

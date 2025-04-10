@@ -2,11 +2,13 @@ package com.chairpick.ecommerce.config;
 
 import com.chairpick.ecommerce.daos.*;
 import com.chairpick.ecommerce.daos.interfaces.GenericDAO;
+import com.chairpick.ecommerce.daos.interfaces.PaginatedProjectionDAO;
 import com.chairpick.ecommerce.daos.interfaces.ProjectionDAO;
 import com.chairpick.ecommerce.daos.interfaces.WriteOnlyDAO;
 import com.chairpick.ecommerce.model.*;
 import com.chairpick.ecommerce.projections.CartItemSummaryProjection;
 import com.chairpick.ecommerce.projections.ChairAvailableProjection;
+import com.chairpick.ecommerce.utils.query.mappers.interfaces.GeneralObjectQueryMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -19,8 +21,8 @@ import java.util.List;
 public class DAOProvider {
 
     @Bean
-    ProjectionDAO<Chair, ChairAvailableProjection> provideChairDAO(NamedParameterJdbcTemplate jdbcTemplate, ResultSetExtractor<List<Chair>> extractor) {
-        return new ChairDAO(jdbcTemplate, extractor);
+    PaginatedProjectionDAO<Chair, ChairAvailableProjection> provideChairDAO(NamedParameterJdbcTemplate jdbcTemplate, ResultSetExtractor<List<Chair>> extractor, GeneralObjectQueryMapper<ChairAvailableProjection> projectionMapper) {
+        return new ChairDAO(jdbcTemplate, extractor, projectionMapper);
     }
 
     @Bean
