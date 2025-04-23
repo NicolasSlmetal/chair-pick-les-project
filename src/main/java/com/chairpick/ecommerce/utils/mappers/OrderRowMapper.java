@@ -43,14 +43,14 @@ public class OrderRowMapper extends CustomRowMapper<Order> implements ResultSetE
                     .build();
 
             OrderItem orderItem = OrderItem.builder()
-                    .id(rs.getLong(getRelatedTableColumn("item_id", "ori")))
+                    .id(rs.getLong(getRelatedTableColumn("id", "ori")))
                     .status(OrderStatus.valueOf(rs.getString(getRelatedTableColumn("status", "ori"))))
                     .value(rs.getDouble(getRelatedTableColumn("sell_price", "ori")))
                     .amount(rs.getInt(getRelatedTableColumn("amount", "ori")))
                     .freightValue(rs.getDouble(getRelatedTableColumn("freight_tax", "ori")))
                     .item(Item
                             .builder()
-                            .id(rs.getLong(getRelatedTableColumn("id", "ori")))
+                            .id(rs.getLong(getRelatedTableColumn("item_id", "ori")))
                             .chair(Chair
                                     .builder()
                                     .id(rs.getLong(getRelatedTableColumn("id","chr")))

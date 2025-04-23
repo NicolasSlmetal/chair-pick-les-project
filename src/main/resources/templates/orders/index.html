@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="'/css/styles.css'">
+    <title>Pedidos</title>
+</head>
+<body>
+<main>
+    <h1>Gerenciamento de pedidos</h1>
+
+    <div class="button__group">
+        <a class="action__button" th:href="@{/admin/customers}">Clientes</a>
+        <a class="action__button disabled">Dashboard</a>
+        <a class="action__button disabled">Estoque</a>
+        <a class="action__button" th:href="@{/logout}">Sair</a>
+    </div>
+    <table>
+        <thead>
+        <th>
+            Número do pedido
+        </th>
+        <th>
+            Cliente
+        </th>
+        <th>
+            Data da última alteração
+        </th>
+        <th>Status</th>
+        <th>
+            Ações
+        </th>
+
+        </thead>
+        <tr th:each="order : ${orders}">
+            <td th:text="${order.id}"></td>
+            <td th:text="${order.customer.name}"></td>
+            <td th:text="${#temporals.format(order.updatedDate, 'dd/MM/yyyy')}"></td>
+            <td th:text="${order.status.getDescription()}">
+            </td>
+            <td>
+                <img id="actions_button" th:src="@{/assets/dots.png}" alt="Mais ações" class="action__button">
+                <div id="actions" class="menu" style="display: none;">
+                    <a class="option" th:href="@{/admin/orders/{id}(id=${order.id})}">Visualizar itens</a>
+                    <a class="option" th:href="@{/admin/orders/{id}/payment(id=${order.id})}">Visualizar pagamento</a>
+                </div>
+            </td>
+        </tr>
+    </table>
+</main>
+<dialog id=""></dialog>
+<script src="/js/orders/index/index.js" type="module"></script>
+</body>
+</html>

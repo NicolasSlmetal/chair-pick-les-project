@@ -40,6 +40,40 @@
                 </div>
             </div>
             <a class="product_action" th:href="@{/customers/{customerId}/credit-cards/new(customerId=${customerId})}">Cadastrar novo cartão</a>
+
+            <div th:each="couponType : ${coupons.keySet()}">
+                <hr>
+                <div id="promo_coupons" th:if="${couponType.name() == 'PROMOTIONAL'}">
+                    <h3>Cupons Promocionais</h3>
+                    <div th:each="coupon : ${coupons.get(couponType)}" class="card without_cursor selectable">
+                        <input type="hidden" name="couponId" th:value="${coupon.id}">
+                        <input type="hidden" name="couponValue" th:value="${coupon.value}">
+                        <input type="radio" name="coupon" id="promoCouponId" th:value="${coupon.id}}">
+                        <p th:with="id=${coupon.id}"
+                                th:utext="'<strong>Id: </strong>' + ${id}"></p>
+                        <p th:with="value=${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(coupon.value)}"
+                         th:utext="'<strong>Valor: </strong>' + ${value}"></p>
+                        <button class="action__button danger" style="display: none;">Retirar</button>
+                    </div>
+                </div>
+                <div id="swap_coupons" th:if="${couponType.name() == 'SWAP'}">
+                    <h3>Cupons de Troca</h3>
+                    <div th:each="coupon : ${coupons.get(couponType)}" class="card without_cursor selectable">
+                        <input type="hidden" name="couponId" th:value="${coupon.id}">
+                        <input type="hidden" name="couponValue" th:value="${coupon.value}">
+                        <label class="label_check" for="swap[]">
+                            <input type="checkbox" name="swap[]" th:id="'couponId' + ${coupon.id}" th:value="${coupon.id}">
+                            <span class="checkmark"></span>
+                        </label>
+                        <br>
+                        <p th:with="id=${coupon.id}"
+                           th:utext="'<strong>Id: </strong>' + ${id}"></p>
+                        <p th:with="value=${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(coupon.value)}"
+                           th:utext="'<strong>Valor: </strong>' + ${value}"></p>
+                        <button class="action__button danger" style="display: none;">Retirar</button>
+                    </div>
+                </div>
+            </div>
             <input type="hidden" name="customerId" th:value="${customerId}">
             <input type="hidden" name="deliveryAddressId" th:value="${deliveryAddressId}">
             <input type="hidden" name="billingAddressId" th:value="${billingAddressId}">

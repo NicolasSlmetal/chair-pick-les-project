@@ -174,8 +174,7 @@ CREATE TABLE tb_item_swap (
     its_amount      INTEGER NOT NULL,
     its_status      VARCHAR(30) NOT NULL,
     its_total_value NUMERIC(8,2) NOT NULL,
-    its_item_id     INTEGER NOT NULL,
-    its_order_id    INTEGER NOT NULL
+    its_order_item_id     INTEGER NOT NULL,
 );
 
 CREATE TABLE tb_price_change_request (
@@ -278,8 +277,7 @@ ALTER TABLE tb_delivery
     ADD CONSTRAINT fk_delivery_order FOREIGN KEY (del_order_id) REFERENCES tb_order (ord_id);
 
 ALTER TABLE tb_item_swap
-    ADD CONSTRAINT fk_item_swap_item FOREIGN KEY (its_item_id) REFERENCES tb_item (itm_id),
-    ADD CONSTRAINT fk_item_swap_order FOREIGN KEY (its_order_id) REFERENCES tb_order (ord_id);
+    ADD CONSTRAINT fk_item_swap_order_item FOREIGN KEY (its_order_item_id) REFERENCES tb_order_id (itm_id),
 
 ALTER TABLE tb_order_item
     ADD CONSTRAINT fk_order_item_item FOREIGN KEY (ori_item_id) REFERENCES tb_item (itm_id),

@@ -100,8 +100,10 @@ public class Order extends DomainEntity {
         return !updatedDate.isAfter(LocalDate.now());
     }
 
-    private boolean requiresSwapCoupon() {
-        return payment.validatePayment(totalValue).contains(ErrorCode.REQUIRE_GENERATE_SWAP_COUPON);
+    public boolean requiresSwapCoupon() {
+        return payment.validatePayment(totalValue)
+                .contains(ErrorCode.REQUIRE_GENERATE_SWAP_COUPON) &&
+                payment.getTotalValue() > totalValue;
     }
 
     private boolean validateCreatedDate() {
@@ -127,7 +129,8 @@ public class Order extends DomainEntity {
     @Override
     public String toString() {
         return "Order{" +
-                "customer=" + customer +
+                "id=" + getId() +
+                ", customer=" + customer +
                 ", totalAmount=" + totalAmount +
                 ", status=" + status +
                 ", totalValue=" + totalValue +

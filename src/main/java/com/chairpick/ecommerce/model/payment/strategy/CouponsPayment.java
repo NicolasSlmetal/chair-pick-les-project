@@ -39,4 +39,12 @@ public class CouponsPayment implements PaymentStrategy {
 
         return errors;
     }
+
+    @Override
+    public double getTotalValue() {
+        return couponList
+                .stream()
+                .mapToDouble(Coupon::getValue)
+                .sum();
+    }
 }

@@ -54,6 +54,14 @@ public class CreditCardsPayment implements PaymentStrategy {
 
         return errors;
     }
+
+    @Override
+    public double getTotalValue() {
+        return creditCardPayments
+                .values()
+                .stream()
+                .reduce(0.0, Double::sum);
+    }
 }
 
 

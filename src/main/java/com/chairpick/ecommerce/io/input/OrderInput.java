@@ -4,6 +4,6 @@ import java.util.List;
 
 public record OrderInput(Long billingAddressId,
                          Long deliveryAddressId,
-                         List<CreditCartPaymentInput> creditCards,
+                         List<CreditCardPaymentInput> creditCards,
                          List<Long> coupons) {
 }

@@ -9,6 +9,7 @@ import com.chairpick.ecommerce.model.*;
 import com.chairpick.ecommerce.projections.CartItemSummaryProjection;
 import com.chairpick.ecommerce.projections.ChairAvailableProjection;
 import com.chairpick.ecommerce.utils.query.mappers.interfaces.GeneralObjectQueryMapper;
+import com.chairpick.ecommerce.utils.query.mappers.interfaces.ObjectQueryMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -56,13 +57,23 @@ public class DAOProvider {
     }
 
     @Bean
-    GenericDAO<Order> provideOrderDAO(NamedParameterJdbcTemplate jdbcTemplate, ResultSetExtractor<List<Order>> extractor) {
-        return new OrderDAO(jdbcTemplate, extractor);
+    GenericDAO<Order> provideOrderDAO(NamedParameterJdbcTemplate jdbcTemplate, ObjectQueryMapper<Order> queryMapper, ResultSetExtractor<List<Order>> extractor) {
+        return new OrderDAO(jdbcTemplate, queryMapper, extractor);
     }
 
     @Bean
-    WriteOnlyDAO<OrderItem> provideOrderItemDAO(NamedParameterJdbcTemplate jdbcTemplate) {
-        return new OrderItemDAO(jdbcTemplate);
+    GenericDAO<OrderItem> provideOrderItemDAO(NamedParameterJdbcTemplate jdbcTemplate, GeneralObjectQueryMapper<OrderItem> queryMapper, RowMapper<OrderItem> rowMapper) {
+        return new OrderItemDAO(jdbcTemplate, queryMapper, rowMapper);
+    }
+
+    @Bean
+    GenericDAO<Swap> provideSwapDAO(NamedParameterJdbcTemplate jdbcTemplate, RowMapper<Swap> rowMapper, ObjectQueryMapper<Swap> queryMapper) {
+        return new SwapDAO(jdbcTemplate, rowMapper, queryMapper);
+    }
+
+    @Bean
+    GenericDAO<Coupon> provideCouponDAO(NamedParameterJdbcTemplate jdbcTemplate, RowMapper<Coupon> rowMapper, ObjectQueryMapper<Coupon> queryMapper) {
+        return new CouponDAO(jdbcTemplate, queryMapper, rowMapper);
     }
 
 }

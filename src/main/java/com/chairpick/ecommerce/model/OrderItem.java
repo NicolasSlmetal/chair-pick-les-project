@@ -49,4 +49,17 @@ public class OrderItem extends DomainEntity {
 
         item.validate();
     }
+
+    @Override
+    public String toString() {
+        return "OrderItem{" +
+                "id=" + id +
+                ", item=" + item +
+                ", amount=" + amount +
+                ", value=" + value +
+                ", freightValue=" + freightValue +
+                ", status=" + status +
+                ", order=" + order +
+                '}';
+    }
 }

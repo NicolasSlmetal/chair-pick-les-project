@@ -10,12 +10,13 @@
 <h1>Gerenciamento de clientes</h1>
 <main>
     <div class="button__group">
-        <a class="action__button" th:href="'customers/new'" data-test="create-customer-button">Cadastrar cliente</a>
         <a class="action__button disabled">Dashboard</a>
-        <a class="action__button disabled">Sair</a>
+        <a class="action__button disabled">Estoque</a>
+        <a class="action__button" th:href="@{/admin/orders}">Pedidos</a>
+        <a class="action__button" th:href="@{/logout}">Sair</a>
     </div>
     <div class="search__container">
-        <img id="search_options" class="action__button" src="assets/dots.png" alt="Mais ações">
+        <img id="search_options" class="action__button" src="/assets/dots.png" alt="Mais ações">
         <div id="search_menu" class="menu search__menu" style="display: none;">
             <p>Pesquisar</p>
             <div class="search__input__container">
@@ -57,17 +58,20 @@
 
     <table class="table">
         <thead>
-        <th>Nome</th>
-        <th>CPF</th>
-        <th>Telefone</th>
-        <th>Gênero</th>
-        <th>Data de nascimento</th>
-        <th>Email</th>
-        <th>Ações</th>
-        <th>Edição</th>
-        <th>Remover</th>
+            <th>Rank</th>
+            <th>Nome</th>
+            <th>CPF</th>
+            <th>Telefone</th>
+            <th>Gênero</th>
+            <th>Data de nascimento</th>
+            <th>Email</th>
+            <th>Transações</th>
+            <th>Remover</th>
         </thead>
         <tr th:each="customer : ${customers}">
+            <td th:text="${customer.id}">
+
+            </td>
             <td th:text="${{customer.name}}">
             </td>
             <td th:text="${T(com.chairpick.ecommerce.utils.format.CpfFormater).format(customer.cpf)}">
@@ -84,16 +88,7 @@
             <td th:text="${customer.user.email}">
             </td>
             <td>
-                <img id="more_actions" src="assets/dots.png" alt="Mais ações" class="action__button">
-                <div id="actions_options" class="menu">
-                    <a class="option" th:href="'customers/' + ${customer.id} + '/addresses'">Gerir endereços</a>
-                    <a class="option" th:href="'customers/' + ${customer.id} + '/credit-cards'">Gerir cartões</a>
-                    <a class="option" th:href="'customers/' + ${customer.id} + '/transactions'">Consultar transações</a>
-                    <a data-test="alter-password" class="option" th:href="'customers/' + ${customer.id} + '/alter-password'">Alterar senha</a>
-                </div>
-            </td>
-            <td>
-                <a class="action__button" th:href="'customers/edit/' + ${customer.id}">Editar</a>
+                <a class="action__button">Transações</a>
             </td>
             <td>
                 <a id="remove_button" class="action__button danger"  th:attr="entity-id=${customer.id}, entity-name=${customer.name}">Remover</a>

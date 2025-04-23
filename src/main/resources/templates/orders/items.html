@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/styles.css">
+    <title>Pedidos</title>
+</head>
+<body>
+<input type="hidden" th:value="${orderId}" id="orderId">
+<main>
+    <h1 th:text="'Consultar itens do pedido ' + ${orderId}">Consultar itens do pedido 1</h1>
+
+    <div class="button__group">
+        <a th:href="@{/admin/orders}" class="action__button">Voltar</a>
+        <a class="action__button" th:href="@{/admin/orders/{orderId}/swaps(orderId=${orderId})}">Consultar trocas do pedido</a>
+    </div>
+    <table>
+        <thead>
+        <th>
+            Número do item
+        </th>
+        <th>
+            Produto
+        </th>
+        <th>
+            Quantidade
+        </th>
+        <th>
+            Preço unitário
+        </th>
+        <th>
+            Frete
+        </th>
+        <th>
+            Preço total
+        </th>
+        <th>Status</th>
+        <th>Ações</th>
+        </thead>
+        <tr th:each="orderItem : ${items}">
+            <td th:text="${orderItem.id}"></td>
+            <td th:text="${orderItem.item.chair.name}"></td>
+            <td th:text="${orderItem.amount}">
+            </td>
+            <td th:text="${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(orderItem.value)}">
+            </td>
+            <td th:text="${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(orderItem.freightValue)}">
+
+            </td>
+            <td th:with="totalValue=${orderItem.value * orderItem.amount + orderItem.freightValue}"
+            th:text="${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(totalValue)}">
+            </td>
+            <td th:text="${orderItem.status.getDescription()}">
+
+            </td>
+            <td>
+                <input type="hidden" th:value="${orderItem.id}" class="orderItemId" name="orderItemId">
+                <p th:if="${orderItem.status.name() == 'PENDING' ||
+                orderItem.status.name() == 'REPROVED' ||
+                orderItem.status.name() == 'DELIVERED' ||
+                orderItem.status.name() == 'SWAP_REQUEST'}">Sem ações</p>
+                <button class="action__button dispatch" th:if="${orderItem.status.name() == 'APPROVED'}">Despachar para entrega</button>
+                <button class="action__button delivered" th:if="${orderItem.status.name() == 'DELIVERING'}">Marcar como entregue</button>
+            </td>
+        </tr>
+    </table>
+</main>
+<dialog id="confirm__modal">
+    <div class="modal__content">
+        <h2></h2>
+        <p></p>
+        <div class="modal__actions row">
+            <button class="action__button danger" id="cancel__button">Cancelar</button>
+            <button class="action__button" style="width:100%;" id="confirm__button">Confirmar</button>
+        </div>
+    </div>
+</dialog>
+<dialog id="error__modal">
+    <div class="modal__content">
+        <h2>Erro</h2>
+        <p id="error__message"></p>
+        <div class="modal__actions row">
+            <button class="action__button" style="width: 100%;" id="ok__button">OK</button>
+        </div>
+    </div>
+</dialog>
+<script src="/js/orders/items/index.js" type="module"></script>
+</body>
+</html>

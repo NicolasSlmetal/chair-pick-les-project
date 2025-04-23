@@ -27,7 +27,7 @@ errorMessageMap.set("INVALID_CARD_HOLDER", "Nome do titular do cartão inválido
 errorMessageMap.set("ADDRESS_DEFAULT_REQUIRED", "Endereço padrão é obrigatório");
 errorMessageMap.set("INVALID_PASSWORD", "Senha inválida");
 errorMessageMap.set("INVALID_EMAIL", "E-mail inválido");
-errorMessageMap.set("INVALID_USER", "Usuário inválido");
+errorMessageMap.set("INVALID_USER", "E-mail ou senha inválidos");
 errorMessageMap.set("CUSTOMER_REQUIRED", "Cliente é obrigatório");
 errorMessageMap.set("AMOUNT_REQUIRED", "Quantidade é obrigatória");
 errorMessageMap.set("ITEM_REQUIRED", "Item é obrigatório");
@@ -56,7 +56,7 @@ errorMessageMap.set("COUPON_REQUIRED", "Cupom é obrigatório");
 
 export function parseErrorMessages(errorCodes) {
   return errorCodes
-    ? errorCodes.split("\n").map(code => errorMessageMap.get(code) || "Erro desconhecido")
-    .join("<br>")
+    ? Array.from(new Set(errorCodes.split("\n").map(code => errorMessageMap.get(code) || "Erro desconhecido"))
+    ).join("<br>")
     : "Erro desconhecido";
 }

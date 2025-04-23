@@ -1,15 +1,25 @@
 const statusMap = {
   "PENDING": "Em processamento",
   "APPROVED": "Aprovado",
-"DELIVERING": "Em entrega",
-"DELIVERED": "Entregue",
+  "REPROVED": "Reprovado",
+  "DELIVERING": "Em entrega",
+  "DELIVERED": "Entregue",
+  "SWAP_REQUEST": "Troca solicitada",
+  "SWAP_REPROVED": "Troca reprovada",
+  "IN_SWAP": "Em troca",
+  "SWAPPED": "Trocado",
 }
 
 const classStatusMap = {
     "PENDING" : "warning",
     "APPROVED" : "success",
+    "REPROVED" : "danger-text",
     "DELIVERING" : "warning",
     "DELIVERED" : "success",
+    "SWAP_REQUEST" : "warning",
+    "SWAP_REPROVED" : "danger-text",
+    "IN_SWAP" : "warning",
+    "SWAPPED" : "success",
 }
 
 
@@ -58,10 +68,13 @@ export function constructOrderSection(orders, title) {
             total.innerText = `Total: R$ ${(item.value + item.freightValue).toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             textColumn.appendChild(total);
             const status = document.createElement("h2");
+            console.log(item.status);
             status.innerHTML = `Status: <span class='${classStatusMap[item.status]}'> ${statusMap[item.status]} </span>`;
             textColumn.appendChild(status);
+            createButtonsForOrderItemStatus(textColumn, item, order);
             divRowBorder.appendChild(textColumn);
             cardRow.appendChild(divRowBorder);
+
         }
         const orderId = document.createElement("h2");
         orderId.innerText = `Pedido: ${order.id}`;
@@ -78,6 +91,7 @@ export function constructOrderSection(orders, title) {
         statusOrder.innerHTML = `Status: <span class='${classStatusMap[order.status]}'> ${statusMap[order.status]} </span> `;
         cardRow.appendChild(totalOrder);
         cardRow.appendChild(statusOrder);
+        createButtonsForOrderStatus(cardRow, order);
         columnDiv.appendChild(cardRow);
     }
     section.appendChild(columnDiv);
@@ -87,4 +101,49 @@ export function constructOrderSection(orders, title) {
 export function constructPaginatedOrderSection(orders, title) {
 
 
+}
+
+function createButtonsForOrderItemStatus(element, orderItem, order) {
+    if (orderItem.status == "DELIVERED") {
+        const requestSwapButton = document.createElement("button");
+        requestSwapButton.classList.add("danger");
+        requestSwapButton.classList.add("action__button");
+        requestSwapButton.classList.add("request_swap");
+        requestSwapButton.innerText = "Solicitar troca";
+        const maxAmount = document.createElement("input");
+        maxAmount.type = "hidden";
+        maxAmount.name = "maxAmount";
+        maxAmount.value = orderItem.amount;
+        const itemId = document.createElement("input");
+        itemId.type = "hidden";
+        itemId.name = "itemId";
+        itemId.value = orderItem.id;
+        const orderId = document.createElement("input");
+        orderId.type = "hidden";
+        orderId.name = "orderId";
+        orderId.value = order.id;
+        element.appendChild(orderId);
+        element.appendChild(maxAmount);
+        element.appendChild(itemId);
+        element.appendChild(requestSwapButton);
+    }
+}
+
+function createButtonsForOrderStatus(element, order) {
+    if (order.status == "REPROVED") {
+        const alterPaymentButton = document.createElement("a");
+        alterPaymentButton.classList.add("action__button");
+        alterPaymentButton.classList.add("fill");
+        alterPaymentButton.classList.add("warning");
+        alterPaymentButton.innerText = "Alterar pagamento";
+        alterPaymentButton.href = `/orders/${order.id}/editPayment`;
+        const cancelOrderButton = document.createElement("button");
+        cancelOrderButton.classList.add("cancel_order");
+        cancelOrderButton.classList.add("action__button")
+        cancelOrderButton.classList.add("danger");
+        cancelOrderButton.innerText = "Cancelar pedido";
+        element.appendChild(alterPaymentButton);
+        element.appendChild(cancelOrderButton);
+
+     }
 }

@@ -81,4 +81,6 @@ public class Item extends DomainEntity {
     public int hashCode() {
         return Objects.hash(getChair(), getEntryDate(), getSupplier());
     }
+
+
 }

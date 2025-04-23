@@ -31,6 +31,7 @@ public class ItemDAO implements GenericDAO<Item> {
                 UPDATE tb_item SET itm_amount = :amount, itm_reserved = :reserved, itm_version = itm_version + 1
                 WHERE itm_id = :id AND itm_version = :version;
                 """;
+        System.out.println(entity);
         Map<String, Object> parameters = Map.of(
                 "amount", entity.getAmount(),
                 "reserved", entity.getReservedAmount(),

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/styles.css">
+    <title>Trocas</title>
+</head>
+    <body>
+        <input type="hidden" th:value="${orderId}" id="orderId">
+        <main>
+            <h1 th:text="'Solicitações de troca para o pedido ' + ${orderId}"></h1>
+
+            <a th:href="@{/admin/orders/{orderId}(orderId=${orderId})}" class="action__button">Voltar</a>
+            <table>
+                <thead>
+                <th>
+                    Id do item do pedido
+                </th>
+                <th>
+                    Quantidade
+                </th>
+                <th>
+                    Preço unitário
+                </th>
+                <th>Status</th>
+                <th>Ações</th>
+                </thead>
+                <tr th:each="swapItem : ${swaps}" >
+                    <td th:text="${swapItem.orderItem.id}"></td>
+                    <td th:text="${swapItem.amount}"></td>
+                    <td th:text="${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(swapItem.value)}"></td>
+                    <td th:text="${swapItem.status.getDescription()}">
+                    </td>
+                    <td>
+                        <input type="hidden" th:value="${swapItem.id}" class="swapItemId" name="swapItemId">
+                        <button th:if="${swapItem.status.name() == 'SWAP_REQUEST'}" class="action__button accept">Aceitar</button>
+                        <button th:if="${swapItem.status.name() == 'SWAP_REQUEST'}" class="action__button reject">Recusar</button>
+                        <button th:if="${swapItem.status.name() == 'IN_SWAP'}" class="action__button change_to_swapped">Mudar para trocado</button>
+                        <p th:if="${swapItem.status.name() == 'SWAPPED'}" >Sem ações</p>
+                    </td>
+                </tr>
+            </table>
+        </main>
+        <dialog id="confirm_action">
+            <h2>Confirmação</h2>
+            <div class="modal__content">
+                <p></p>
+                <div class="actions">
+                    <button id="cancel_button" class="action__button danger fill">Não</button>
+                    <button id="confirm_button" class="action__button fill">Sim</button>
+                </div>
+            </div>
+        </dialog>
+    <script src="/js/swaps/index.js" type="module"></script>
+    </body>
+</html>

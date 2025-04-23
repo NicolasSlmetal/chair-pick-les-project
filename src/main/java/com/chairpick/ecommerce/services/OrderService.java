@@ -2,24 +2,23 @@ package com.chairpick.ecommerce.services;
 
 import com.chairpick.ecommerce.exceptions.DomainValidationException;
 import com.chairpick.ecommerce.exceptions.EntityNotFoundException;
-import com.chairpick.ecommerce.io.input.CreditCartPaymentInput;
+import com.chairpick.ecommerce.io.input.CreditCardPaymentInput;
 import com.chairpick.ecommerce.io.input.OrderInput;
+import com.chairpick.ecommerce.io.input.OrderStatusInput;
 import com.chairpick.ecommerce.io.output.FreightValueDTO;
+import com.chairpick.ecommerce.io.output.PaymentDTO;
 import com.chairpick.ecommerce.model.*;
+import com.chairpick.ecommerce.model.enums.CouponType;
 import com.chairpick.ecommerce.model.enums.OrderStatus;
 import com.chairpick.ecommerce.model.payment.strategy.CouponsPayment;
 import com.chairpick.ecommerce.model.payment.strategy.CreditCardsAndCouponsPayment;
 import com.chairpick.ecommerce.model.payment.strategy.CreditCardsPayment;
 import com.chairpick.ecommerce.model.payment.strategy.PaymentStrategy;
 import com.chairpick.ecommerce.repositories.*;
-import com.chairpick.ecommerce.utils.ErrorCode;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -29,17 +28,21 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final CustomerRepository customerRepository;
     private final CreditCardRepository creditCardRepository;
+    private final CouponRepository couponRepository;
     private final AddressRepository addressRepository;
     private final CartRepository cartRepository;
     private final FreightCalculatorService freightService;
+    private final OrderStatusService orderStatusService;
 
-    public OrderService(OrderRepository orderRepository, CustomerRepository customerRepository, AddressRepository addressRepository, ChairRepository chairRepository, CreditCardRepository creditCardRepository, CartRepository cartRepository, FreightCalculatorService freightService) {
+    public OrderService(OrderRepository orderRepository, CustomerRepository customerRepository, AddressRepository addressRepository, ChairRepository chairRepository, CreditCardRepository creditCardRepository, CouponRepository couponRepository, CartRepository cartRepository, FreightCalculatorService freightService, OrderStatusService orderStatusService) {
         this.orderRepository = orderRepository;
         this.customerRepository = customerRepository;
         this.addressRepository = addressRepository;
         this.creditCardRepository = creditCardRepository;
+        this.couponRepository = couponRepository;
         this.cartRepository = cartRepository;
         this.freightService = freightService;
+        this.orderStatusService = orderStatusService;
     }
 
     public Order createOrder(Long customerId, OrderInput orderInput) {
@@ -68,7 +71,8 @@ public class OrderService {
         List<Coupon> coupons = orderInput
                 .coupons()
                 .stream()
-                .map(couponId -> (Coupon) Coupon.builder().build()).toList();
+                .map(couponId -> couponRepository.findCouponById(couponId)
+                        .orElseThrow(() -> new EntityNotFoundException("Coupon with id " + couponId + " not found"))).toList();
 
         List<Object> paymentMethods = new ArrayList<>();
         paymentMethods.addAll(creditCards);
@@ -77,7 +81,10 @@ public class OrderService {
         if (paymentMethods.isEmpty()) {
             throw new DomainValidationException("INVALID_PAYMENT_METHODS");
         }
-        Map<Long, Double> creditCardValues = orderInput.creditCards().stream().collect(Collectors.toMap(CreditCartPaymentInput::id, CreditCartPaymentInput::value));
+        Map<Long, Double> creditCardValues = orderInput
+                .creditCards()
+                .stream()
+                .collect(Collectors.toMap(CreditCardPaymentInput::id, CreditCardPaymentInput::value));
 
         PaymentStrategy payment = getPaymentStrategy(paymentMethods, creditCardValues);
 
@@ -137,9 +144,23 @@ public class OrderService {
 
         order.setItems(orderItems);
         order.validate();
+
+        boolean requiresSwapCoupon = order.requiresSwapCoupon();
+        if (requiresSwapCoupon) {
+            double value = order.getPayment().getTotalValue() - order.getTotalValue();
+            Coupon swapCoupon = Coupon
+                    .builder()
+                    .type(CouponType.SWAP)
+                    .customer(customer)
+                    .value(value)
+                    .build();
+            swapCoupon.validate();
+
+            return orderRepository.saveOrderAndUpdateStock(order, cartList, swapCoupon);
+        }
+
         return orderRepository.saveOrderAndUpdateStock(order, cartList);
     }
-
 
     private PaymentStrategy getPaymentStrategy(List<Object> paymentMethods, Map<Long, Double> paymentValues) {
         Predicate<Object> isCreditCard = object -> object instanceof CreditCard;
@@ -194,10 +215,76 @@ public class OrderService {
                 .build();
     }
 
+    public List<Order> findAllOrders(Map<String, String> parameters) {
+        return orderRepository.findAllOrders(parameters);
+    }
+
     public List<Order> findAllByCustomer(Long customerId, Map<String, String> parameters) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new EntityNotFoundException("Customer not found"));
 
         return orderRepository.findAllByCustomer(customer, parameters);
     }
+
+    public List<OrderItem> findOrderItems(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException("Order not found"));
+        return orderRepository.findAllOrderItems(order);
+    }
+
+    public PaymentDTO findOrderPayment(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException("Order not found"));
+
+        return orderRepository
+                .findPaymentByOrder(order)
+                .stream().peek(dto -> {
+                    dto.setStatus(order.getStatus());
+                    dto.setTotalValue(order.getTotalValue());
+                })
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Order not found"));
+    }
+
+    public Order updateOrderStatus(Long orderId, OrderStatusInput status) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException("Order not found"));
+        String[] orderStatus = Arrays.stream(OrderStatus
+                .values())
+                .map(OrderStatus::name)
+                .sorted()
+                .toArray(String[]::new);
+
+        int statusIndex = Arrays.binarySearch(orderStatus, status.status());
+
+        if (statusIndex < 0 || statusIndex >= orderStatus.length) {
+            throw new DomainValidationException("INVALID_ORDER_STATUS");
+        }
+        OrderStatus newStatus = OrderStatus.valueOf(status.status());
+        orderStatusService.changeOrderStatus(order, newStatus);
+
+        return orderRepository.updateOrderStatus(order);
+    }
+
+    public OrderItem updateOrderItemStatus(Long orderItemId, OrderStatusInput status) {
+        OrderItem orderItem = orderRepository.findOrderItemById(orderItemId)
+                .orElseThrow(() -> new EntityNotFoundException("Order item not found"));
+
+        String[] orderStatus = Arrays.stream(OrderStatus
+                .values())
+                .map(OrderStatus::name)
+                .sorted()
+                .toArray(String[]::new);
+
+        int statusIndex = Arrays.binarySearch(orderStatus, status.status());
+
+        if (statusIndex < 0 || statusIndex >= orderStatus.length) {
+            throw new DomainValidationException("INVALID_ORDER_STATUS");
+        }
+
+        OrderStatus newStatus = OrderStatus.valueOf(status.status());
+        orderStatusService.changeOrderItemStatus(orderItem, newStatus);
+        return orderRepository.updateOrderItemStatus(orderItem);
+    }
+
 }

@@ -43,4 +43,19 @@ public class RowMapperProvider {
     RowMapper<Cart> getRowMapperForCart() {
         return new CartRowMapper();
     }
+
+    @Bean
+    RowMapper<OrderItem> getRowMapperForOrderItem() {
+        return new OrderItemRowMapper();
+    }
+
+    @Bean
+    RowMapper<Swap> getRowMapperForSwap() {
+        return new SwapRowMapper();
+    }
+
+    @Bean
+    RowMapper<Coupon> getRowMapperForCoupon() {
+        return new CouponRowMapper();
+    }
 }

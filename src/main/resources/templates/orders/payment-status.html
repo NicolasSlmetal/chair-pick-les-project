@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/styles.css">
+    <title>Pedidos</title>
+</head>
+<body>
+    <input type="hidden" th:value="${payment.orderId}" id="orderId">
+    <main >
+        <h1 th:text="'Opções de pagamento selecionadas para o pedido ' + ${payment.orderId}"></h1>
+        <a th:href="@{/admin/orders}" class="action__button">Voltar</a>
+        <section class="border" th:with="typeMap=${payment.paymentsByType}">
+            <div th:each="type : ${payment.paymentsByType.keySet()}">
+                <div th:if="${type.name() == 'CREDIT_CARD' && typeMap.get(type).creditCards.size() > 0}">
+                    <h2>Cartão de crédito</h2>
+                    <div class="cards row without_cursor" th:with="cards=${typeMap.get(type).creditCards}">
+                        <div class="card without_cursor" th:each="card : ${cards.keySet()}">
+                            <h2>Cartão de crédito</h2>
+                            <p th:text="'Nome: ' + ${card.name}"></p>
+                            <p th:with="value=${cards.get(card)}"
+                               th:text="'Valor: ' + ${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(value)}"></p>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${type.name() == 'COUPON' && typeMap.get(type).coupons.size() > 0}">
+                    <h2>Cupons</h2>
+                    <div class="cards row without_cursor" th:with="coupons=${typeMap.get(type).coupons}">
+                        <div class="card without_cursor" th:each="coupon : ${coupons}">
+                            <h2>Cupom</h2>
+                            <p th:text="'Numero do cupom: ' + ${coupon.id}"></p>
+                            <p th:text="'Tipo: ' + ${coupon.type.getDescription()}"></p>
+                            <p th:with="value=${coupon.value}"
+                               th:text="'Valor: ' + ${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(value)}"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                <h2 th:text="'Total: ' + ${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(payment.totalValue)}"></h2>
+                <h2 th:unless="${payment.status.name() == 'PENDING'}" style="align-self: flex-start;"
+                th:with="status=${payment.status.name() == 'REPROVED' ? ' reprovado' : ' aprovado' }"
+                th:text="'Pagamento ' + ${status}"></h2>
+                <button th:if="${payment.status.name() == 'PENDING'}" class="action__button fill" id="approve">Aprovar pagamento</button>
+                <button th:if="${payment.status.name() == 'PENDING'}" class="action__button danger fill" id="reject">Rejeitar pagamento</button>
+
+        </section>
+    </main>
+    <dialog id="confirm__dialog">
+        <div class="modal__content">
+            <h2></h2>
+            <p></p>
+            <div class="modal__actions row">
+                <button class="action__button danger" style="width: 100%;" id="cancel__button">Cancelar</button>
+                <button class="action__button" style="width:100%;" id="confirm__button">Confirmar</button>
+            </div>
+        </div>
+
+    </dialog>
+    <dialog id="error__modal">
+        <div class="modal__content">
+            <h2>Erro</h2>
+            <p id="error__message"></p>
+            <div class="modal__actions row">
+                <button class="action__button" style="width: 100%;" id="ok__button">OK</button>
+            </div>
+        </div>
+    </dialog>
+    <script src="/js/orders/payment-status/index.js" type="module"></script>
+</body>
+</html>

@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 @Builder
@@ -58,5 +60,17 @@ public class CreditCard extends DomainEntity  {
                 ", isDefault=" + isDefault +
                 ", customer=" + customer +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        CreditCard that = (CreditCard) o;
+        return Objects.equals(getNumber(), that.getNumber()) && Objects.equals(getName(), that.getName()) && getBrand() == that.getBrand() && Objects.equals(getCvv(), that.getCvv());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getNumber(), getName(), getBrand(), getCvv());
     }
 }

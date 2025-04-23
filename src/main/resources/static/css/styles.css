@@ -10,6 +10,8 @@
     --green-color: #28a745;
 }
 
+
+
 * {
     margin: 0;
     padding: 0;
@@ -56,6 +58,10 @@ button {
     align-items: center;
     text-align: center;
     top: 0;
+}
+
+.danger-text {
+    color: var(--red-color);
 }
 
 datalist {
@@ -257,6 +263,10 @@ img.star {
 
 img.star.not_filled {
     filter: blur(1px) grayscale(150%);
+}
+
+.fill {
+    width: 100%;
 }
 
 .product_summary {

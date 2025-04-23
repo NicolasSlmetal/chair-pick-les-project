@@ -3,8 +3,13 @@ package com.chairpick.ecommerce.model.enums;
 public enum OrderStatus {
     PENDING("EM PROCESSAMENTO"),
     APPROVED("APROVADA"),
+    DELIVERING("EM ENTREGA"),
     DELIVERED("ENTREGUE"),
-    CANCELED("CANCELADA");
+    REPROVED("REPROVADA"),
+    SWAP_REQUEST("SOLICITANDO TROCA"),
+    SWAP_REPROVED("TROCA REPROVADA"),
+    IN_SWAP("TROCA EM PROCESSO"),
+    SWAPPED("TROCA REALIZADA");
 
     private final String description;
 

@@ -66,4 +66,14 @@ public class CreditCardsAndCouponsPayment implements PaymentStrategy {
 
     }
 
+    @Override
+    public double getTotalValue() {
+        return creditCardPayments
+                .values()
+                .stream()
+                .reduce(0.0, Double::sum) +
+                coupons.stream().mapToDouble(Coupon::getValue)
+                        .sum();
+    }
+
 }

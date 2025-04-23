@@ -32,7 +32,7 @@
             <a href="customers/password/index.html" class="action__button" style="width: 100%;">Alterar senha</a>
             <a href="customers/address/index.html" class="action__button" style="width: 100%;">Endereços</a>
             <a href="customers/credit/index.html" class="action__button" style="width: 100%;">Cartões de crédito</a>
-            <button id="delete_account"class="action__button danger">Remover conta</button>
+            <button id="delete_account" class="action__button danger">Remover conta</button>
         </div>
     </section>
 
@@ -42,6 +42,17 @@
         <p>© 2025 Chair Pick</p>
     </div>
 </footer>
+<dialog id="swap__confirmation">
+    <div class="modal__content">
+        <h2>Solicitar troca</h2>
+        <p>Informe a quantidade de itens a ser trocado</p>
+        <input class="input" type="number" id="swap__amount" placeholder="Quantidade de itens a ser trocado" value="1" min="1">
+        <div class="modal__actions row">
+            <button class="action__button danger" id="cancel__button__swap">Cancelar</button>
+            <button class="action__button" style="width: 100%;" id="confirm__button__swap">Confirmar</button>
+        </div>
+    </div>
+</dialog>
 <dialog id="confirm__dialog">
     <div class="modal__content">
         <h2></h2>

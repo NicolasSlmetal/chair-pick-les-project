@@ -14,9 +14,10 @@ public class ItemRowMapper extends CustomRowMapper<Item> {
     public Item mapRow(ResultSet rs, int rowNum) throws SQLException {
         return Item
                 .builder()
+                .id(rs.getLong(getColumn("id")))
                 .amount(rs.getInt(getColumn("amount")))
                 .entryDate(rs.getDate(getColumn("entry_date")).toLocalDate())
-                .reservedAmount(rs.getInt(getColumn("reserved_amount")))
+                .reservedAmount(rs.getInt(getColumn("reserved")))
                 .unitCost(rs.getDouble(getColumn("unit_cost")))
                 .version(rs.getInt(getColumn("version")))
                 .build();

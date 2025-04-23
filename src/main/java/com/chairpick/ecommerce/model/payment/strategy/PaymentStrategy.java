@@ -7,4 +7,5 @@ import java.util.List;
 public interface PaymentStrategy {
 
     List<ErrorCode> validatePayment(double orderTotalValue);
+    double getTotalValue();
 }
