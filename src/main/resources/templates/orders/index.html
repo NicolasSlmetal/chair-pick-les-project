@@ -36,7 +36,7 @@
         <tr th:each="order : ${orders}">
             <td th:text="${order.id}"></td>
             <td th:text="${order.customer.name}"></td>
-            <td th:text="${#temporals.format(order.updatedDate, 'dd/MM/yyyy')}"></td>
+            <td th:text="${#temporals.format(order.updatedDate, 'dd/MM/yyyy - HH:mm:ss')}"></td>
             <td th:text="${order.status.getDescription()}">
             </td>
             <td>

@@ -32,12 +32,12 @@ public class SwapService {
     }
 
     public Swap createSwapRequest(Long orderId, SwapInput swapInput) {
-        System.out.println(swapInput);
+
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException("Order not found"));
         OrderItem orderItem = orderRepository.findOrderItemById(swapInput.orderItemId())
                 .orElseThrow(() -> new EntityNotFoundException("Order item not found"));
-        System.out.println(orderId + " - " + orderItem.getOrder().getId());
+
         if (!Objects.equals(orderItem.getOrder().getId(), orderId)) {;
             throw new EntityNotFoundException("Order item not found");
         }

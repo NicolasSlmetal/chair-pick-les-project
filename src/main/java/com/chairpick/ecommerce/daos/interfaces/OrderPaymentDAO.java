@@ -7,5 +7,6 @@ public interface OrderPaymentDAO {
 
     PaymentStrategy save(PaymentStrategy payment, Long orderId);
     PaymentDTO findByOrderId(Long orderId);
+    void delete(Long orderId);
 
 }

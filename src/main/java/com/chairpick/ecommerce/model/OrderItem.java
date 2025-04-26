@@ -18,6 +18,7 @@ public class OrderItem extends DomainEntity {
     private double freightValue;
     private OrderStatus status;
     private Order order;
+    private Swap swap;
 
     @Override
     public void validate() {

@@ -1,26 +1,25 @@
 package com.chairpick.ecommerce.daos;
 
 import com.chairpick.ecommerce.daos.interfaces.GenericDAO;
-import com.chairpick.ecommerce.model.Customer;
-import com.chairpick.ecommerce.model.Order;
+import com.chairpick.ecommerce.daos.interfaces.GenericPaginatedDAO;
+import com.chairpick.ecommerce.model.*;
 import com.chairpick.ecommerce.model.enums.OrderStatus;
+import com.chairpick.ecommerce.utils.pagination.PageInfo;
+import com.chairpick.ecommerce.utils.pagination.PageOptions;
 import com.chairpick.ecommerce.utils.query.*;
-import com.chairpick.ecommerce.utils.query.mappers.interfaces.ObjectQueryMapper;
+import com.chairpick.ecommerce.utils.query.mappers.interfaces.GeneralObjectQueryMapper;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
-public class OrderDAO implements GenericDAO<Order> {
+public class OrderDAO implements GenericPaginatedDAO<Order> {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
-    private final ObjectQueryMapper<Order> queryMapper;
+    private final GeneralObjectQueryMapper<Order> queryMapper;
     private final ResultSetExtractor<List<Order>> extractor;
 
-    public OrderDAO(NamedParameterJdbcTemplate jdbcTemplate, ObjectQueryMapper<Order> queryMapper , ResultSetExtractor<List<Order>> extractor) {
+    public OrderDAO(NamedParameterJdbcTemplate jdbcTemplate, GeneralObjectQueryMapper<Order> queryMapper , ResultSetExtractor<List<Order>> extractor) {
         this.jdbcTemplate = jdbcTemplate;
         this.queryMapper = queryMapper;
         this.extractor = extractor;
@@ -88,7 +87,7 @@ public class OrderDAO implements GenericDAO<Order> {
                         .status(OrderStatus.valueOf(rs.getString("ord_status")))
                         .totalAmount(rs.getInt("ord_total_amount"))
                         .totalValue(rs.getDouble("ord_total_value"))
-                        .updatedDate(rs.getDate("ord_updated_date").toLocalDate())
+                        .updatedDate(rs.getTimestamp("ord_updated_date").toLocalDateTime())
                         .customer(customer)
                         .build();
                 orders.add(order);
@@ -116,7 +115,7 @@ public class OrderDAO implements GenericDAO<Order> {
                                 .builder()
                                 .id(rs.getLong("ord_customer_id"))
                                 .build())
-                        .updatedDate(rs.getDate("ord_updated_date").toLocalDate())
+                        .updatedDate(rs.getTimestamp("ord_updated_date").toLocalDateTime())
                         .build();
                 return Optional.of(order);
             }
@@ -133,6 +132,72 @@ public class OrderDAO implements GenericDAO<Order> {
 
     @Override
     public void delete(Long id) {
+        String sql = """
+                DELETE FROM tb_order WHERE ord_id = :ord_id
+                """;
+        Map<String, Object> parameters = Map.of("ord_id", id);
+        jdbcTemplate.update(sql, parameters);
+    }
 
+    @Override
+    public PageInfo<Order> findAndPaginate(Map<String, String> parameters, PageOptions pageOptions) {
+        QueryResult sql = queryMapper.parseParameters(parameters, pageOptions);
+
+        return jdbcTemplate.query(sql.query(), sql.parameters(), rs -> {
+            Set<Order> orders = new HashSet<>();
+            int totalPages = 0;
+            while (rs.next()) {
+
+                totalPages = rs.getInt("total_count");
+                Order order = Order.builder()
+                        .id(rs.getLong("ord_id"))
+                        .status(OrderStatus.valueOf(rs.getString("ord_status")))
+                        .totalAmount(rs.getInt("ord_total_amount"))
+                        .totalValue(rs.getDouble("ord_total_value"))
+                        .items(new ArrayList<>())
+                        .customer(Customer
+                                .builder()
+                                .id(rs.getLong("ord_customer_id"))
+                                .build())
+                        .createdDate(rs.getDate("ord_created_date").toLocalDate())
+                        .updatedDate(rs.getTimestamp("ord_updated_date").toLocalDateTime())
+                        .build();
+                OrderItem orderItem = OrderItem.builder()
+                        .id(rs.getLong("ori_id"))
+                        .status(OrderStatus.valueOf(rs.getString("ori_status")))
+                        .value(rs.getDouble("ori_sell_price"))
+                        .amount(rs.getInt("ori_amount"))
+                        .freightValue(rs.getDouble("ori_freight_tax"))
+                        .item(Item
+                                .builder()
+                                .id(rs.getLong("itm_id"))
+                                .chair(Chair
+                                        .builder()
+                                        .id(rs.getLong("chr_id"))
+                                        .name(rs.getString("chr_name"))
+                                        .build())
+                                .build())
+                        .build();
+                Integer swapId = rs.getObject("its_order_item_id", Integer.class);
+                if (swapId != null) {
+                    Swap swap = Swap.builder()
+                            .id(rs.getLong("its_id"))
+                            .value(rs.getDouble("its_total_value"))
+                            .status(OrderStatus.valueOf(rs.getString("its_status")))
+                            .amount(rs.getInt("its_amount"))
+                            .build();
+                    orderItem.setSwap(swap);
+                }
+                order.setId(rs.getLong("ord_id"));
+                order.getItems().add(orderItem);
+                if (!orders.add(order)) {
+                    orders.stream()
+                            .filter(collectedOrder -> collectedOrder.equals(order))
+                            .forEach(collectedOrder -> collectedOrder.getItems().add(orderItem));
+                }
+            }
+
+            return new PageInfo<>(totalPages, orders.stream().toList());
+        });
     }
 }

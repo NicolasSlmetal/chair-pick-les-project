@@ -25,6 +25,13 @@ public class OrderItemQueryMapper implements GeneralObjectQueryMapper<OrderItem>
                         "ori_sell_price",
                         "ori_freight_tax",
                         "ori_order_id",
+                        "itm_id",
+                        "itm_chair_id",
+                        "itm_amount",
+                        "itm_entry_date",
+                        "itm_version",
+                        "itm_reserved",
+                        "itm_unit_cost",
                         "chr_id",
                         "chr_name",
                         "ori_item_id");

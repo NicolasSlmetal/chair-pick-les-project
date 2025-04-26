@@ -68,10 +68,16 @@ public class CreditCardPaymentDAO implements OrderPaymentDAO {
                         .name(holder)
                         .build();
 
-
                 cardValueMap.put(creditCard, paidValue);
             });
             return new CreditCardPaymentDTO(orderId, cardValueMap);
         });
+    }
+
+    @Override
+    public void delete(Long orderId) {
+        String sql = "DELETE FROM tb_order_credit_card WHERE occ_order_id = :order_id";
+        Map<String, Object> parameters = Map.of("order_id", orderId);
+        jdbcTemplate.update(sql, parameters);
     }
 }

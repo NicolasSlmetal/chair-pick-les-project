@@ -1,14 +1,16 @@
 package com.chairpick.ecommerce.utils.query.mappers;
 
 import com.chairpick.ecommerce.model.Order;
+import com.chairpick.ecommerce.utils.pagination.PageOptions;
 import com.chairpick.ecommerce.utils.query.*;
+import com.chairpick.ecommerce.utils.query.mappers.interfaces.GeneralObjectQueryMapper;
 import com.chairpick.ecommerce.utils.query.mappers.interfaces.ObjectQueryMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
 @Component
-public class OrderQueryMapper implements ObjectQueryMapper<Order> {
+public class OrderQueryMapper implements GeneralObjectQueryMapper<Order> {
 
     @Override
     public QueryResult parseParameters(Map<String, String> parameters) {
@@ -20,7 +22,9 @@ public class OrderQueryMapper implements ObjectQueryMapper<Order> {
                 .joinDifferentTables("tb_order_item", "tb_item")
                 .innerJoinOn("ori_item_id", "itm_id")
                 .joinDifferentTables("tb_item", "tb_chair")
-                .innerJoinOn("itm_chair_id", "chr_id");
+                .innerJoinOn("itm_chair_id", "chr_id")
+                .joinDifferentTables("tb_order_item", "tb_item_swap")
+                .leftJoinOn("ori_id", "its_order_item_id");
         if (parameters.isEmpty()) {
             return selectTable.endingOptions()
                     .orderByDescending("ord_id")
@@ -46,6 +50,21 @@ public class OrderQueryMapper implements ObjectQueryMapper<Order> {
         }
 
         EndingOptions endingOptions = where.end().endingOptions().orderByDescending("ord_id");
+        return endingOptions.build();
+    }
+
+    @Override
+    public QueryResult parseParameters(Map<String, String> parameters, PageOptions pageOptions) {
+        QueryResult with = parseParameters(parameters);
+
+        SelectTable selectTable = SqlQueryBuilder
+                .create()
+                .withClause()
+                .with("orders", with)
+                .end().selectingColumnsFromTable("orders", "*, COUNT(*) OVER() AS total_count");
+        EndingOptions endingOptions = selectTable.endingOptions();
+        endingOptions.limit(pageOptions.getSize());
+        endingOptions.offset(pageOptions);
         return endingOptions.build();
     }
 }

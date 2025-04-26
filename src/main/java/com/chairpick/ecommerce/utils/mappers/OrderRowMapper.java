@@ -32,7 +32,7 @@ public class OrderRowMapper extends CustomRowMapper<Order> implements ResultSetE
                     .id(rs.getLong(getColumn("id")))
                     .totalAmount(rs.getInt(getColumn("total_amount")))
                     .createdDate(rs.getDate(getColumn("created_date")).toLocalDate())
-                    .updatedDate(rs.getDate(getColumn("updated_date")).toLocalDate())
+                    .updatedDate(rs.getTimestamp(getColumn("updated_date")).toLocalDateTime())
                     .customer(Customer
                             .builder()
                             .id(rs.getLong(getColumn("customer_id")))

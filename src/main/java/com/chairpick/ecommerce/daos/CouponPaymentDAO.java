@@ -78,4 +78,11 @@ public class CouponPaymentDAO implements OrderPaymentDAO {
             return new CouponPaymentDTO(orderId, coupons);
         });
     }
+
+    @Override
+    public void delete(Long orderId) {
+        String sql = "DELETE FROM tb_order_coupon WHERE ocp_order_id = :orderId";
+        Map<String, Object> parameters = Map.of("orderId", orderId);
+        jdbcTemplate.update(sql, parameters);
+    }
 }

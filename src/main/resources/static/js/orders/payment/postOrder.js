@@ -9,7 +9,13 @@ okButton.addEventListener("click", () => {
 });
 
 export async function postOrder(order) {
-    const response = await post(`customers/${order.customerId}/orders`, order);
+    const payload = {
+        creditCards: order.creditCards,
+        billingAddressId: order.billingAddressId,
+        deliveryAddressId: order.deliveryAddressId,
+        coupons: order.coupons,
+    }
+    const response = await post(`customers/${order.customerId}/orders`, payload);
     if (response.status !== 201) {
         const pError = errorDialog.querySelector("p#errors");
         const error = await response.json();

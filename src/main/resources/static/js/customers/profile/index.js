@@ -1,9 +1,10 @@
 import { configureSearch } from "../../utils/configureSearch.js";
 import { countCart } from "../../utils/countCart.js";
 import { getOrders } from "./getOrders.js";
-import { constructOrderSection } from "./orderSectionBuilder.js";
+import { constructOrderSection, appendMoreOrdersToSection } from "./orderSectionBuilder.js";
 import { constructPaginatedOrderSection } from "./orderSectionBuilder.js";
 import { postSwap } from "./postSwap.js";
+import { deleteOrder } from "./deleteOrder.js";
 
 const statusMap = {
     "PENDING": "Pedidos em processamento",
@@ -22,6 +23,11 @@ const swapDialog = document.querySelector("#swap__confirmation");
 const swapAmountInput = swapDialog.querySelector("#swap__amount");
 const swapCancelButton = swapDialog.querySelector("#cancel__button__swap");
 const swapConfirmButton = swapDialog.querySelector("#confirm__button__swap");
+const errorDialog = document.querySelector("#error__modal");
+const okButton = errorDialog.querySelector("button");
+okButton.addEventListener("click", () => {
+    errorDialog.close();
+});
 
 swapCancelButton.addEventListener("click", () => {
     swapDialog.close();
@@ -48,17 +54,45 @@ deleteAccountButton.addEventListener("click", () => {
 
 configureSearch()
 
-async function getOrderAndBuildSection(status) {
-   const response = await getOrders(`status=${status}`);
+let mapFoundResultsByStatus = {
+    "PENDING": 0,
+    "APPROVED": 0,
+    "REPROVED": 0
+}
+async function getOrderAndBuildSection(status, page=1) {
+   const response = await getOrders(`status=${status}&page=${page}`);
    if (response.status !== 200) {
         return;
     }
-    const orders = await response.json();
-    if (orders.length === 0) {
-        return;
-    }
-    constructOrderSection(orders, statusMap[status]);
+    const json = await response.json();
 
+    const orders = json.entitiesInPage;
+    if (orders.length === 0) {
+       return;
+    }
+
+    const totalPages = json.totalResults;
+    mapFoundResultsByStatus[status] += orders.length;
+    if (page == 1) {
+        constructOrderSection(orders, statusMap[status]);
+
+    } else if (page > 1) {
+        const createdSection = document.querySelector(`section.${status}`);
+        appendMoreOrdersToSection(createdSection, orders);
+    }
+
+    if (totalPages > mapFoundResultsByStatus[status]) {
+        const createdSection = document.querySelector(`section.${status}`);
+        const button = document.createElement("button");
+        button.innerText = "Carregar mais";
+        button.classList.add("action__button");
+        button.addEventListener("click", async () => {
+
+            await getOrderAndBuildSection(status, page + 1);
+            button.remove();
+        })
+        createdSection.appendChild(button);
+    }
 }
 
 function configureModalAction(action, title, message) {
@@ -107,6 +141,9 @@ swapConfirmButton.addEventListener("click", async () => {
     if (response.status !== 201) {
         const errorJson = await response.json();
         const errorMessage = errorJson.message;
+        const pError = errorDialog.querySelector("p#error__message");
+        pError.innerHTML = errorMessage;
+        errorDialog.showModal();
         return;
     }
 
@@ -119,8 +156,28 @@ window.onload = async () => {
     await getOrderAndBuildSection("REPROVED");
     await getOrderAndBuildSection("APPROVED");
     const requestSwapButtons = document.querySelectorAll(".request_swap");
+    const cancelOrderButtons = document.querySelectorAll(".cancel_order");
     const itemMaxAmountIdMap = {};
     const ordersId = [];
+
+    cancelOrderButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            const orderId = button.parentElement.querySelector("input[name='orderId']").value;
+            configureModalAction(async () => {
+                dialog.close();
+                const response = await deleteOrder(orderId);
+                if (response.status !== 204) {
+                    const errorJson = await response.json();
+                    const errorMessage = errorJson.message;
+                    const pError = errorDialog.querySelector("p#error__message");
+                    pError.innerHTML = errorMessage;
+                    errorDialog.showModal();
+                    return;
+                }
+                window.location.reload();
+            }, "Cancelar pedido", `Tem certeza que deseja cancelar o pedido ${orderId}?`);
+        });
+    });
     requestSwapButtons.forEach(button => {
         const maxAmount = button.parentElement.querySelector("input[name='maxAmount']").value;
         const itemId = button.parentElement.querySelector("input[name='itemId']").value;

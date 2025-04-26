@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,7 +36,7 @@ public class Order extends DomainEntity {
 
     private LocalDate createdDate;
 
-    private LocalDate updatedDate;
+    private LocalDateTime updatedDate;
 
 
     @Override
@@ -97,7 +98,7 @@ public class Order extends DomainEntity {
             return false;
         }
 
-        return !updatedDate.isAfter(LocalDate.now());
+        return !updatedDate.isAfter(LocalDateTime.now());
     }
 
     public boolean requiresSwapCoupon() {

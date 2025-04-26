@@ -8,6 +8,7 @@ import com.chairpick.ecommerce.repositories.OrderRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -35,7 +36,7 @@ public class OrderStatusService {
         }
 
         order.setStatus(newStatus);
-        order.setUpdatedDate(LocalDate.now());
+        order.setUpdatedDate(LocalDateTime.now());
     }
 
     public void changeOrderItemStatus(OrderItem orderItem, OrderStatus newStatus) {

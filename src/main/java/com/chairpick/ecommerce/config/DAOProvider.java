@@ -2,9 +2,9 @@ package com.chairpick.ecommerce.config;
 
 import com.chairpick.ecommerce.daos.*;
 import com.chairpick.ecommerce.daos.interfaces.GenericDAO;
+import com.chairpick.ecommerce.daos.interfaces.GenericPaginatedDAO;
 import com.chairpick.ecommerce.daos.interfaces.PaginatedProjectionDAO;
 import com.chairpick.ecommerce.daos.interfaces.ProjectionDAO;
-import com.chairpick.ecommerce.daos.interfaces.WriteOnlyDAO;
 import com.chairpick.ecommerce.model.*;
 import com.chairpick.ecommerce.projections.CartItemSummaryProjection;
 import com.chairpick.ecommerce.projections.ChairAvailableProjection;
@@ -57,7 +57,7 @@ public class DAOProvider {
     }
 
     @Bean
-    GenericDAO<Order> provideOrderDAO(NamedParameterJdbcTemplate jdbcTemplate, ObjectQueryMapper<Order> queryMapper, ResultSetExtractor<List<Order>> extractor) {
+    GenericPaginatedDAO<Order> provideOrderDAO(NamedParameterJdbcTemplate jdbcTemplate, GeneralObjectQueryMapper<Order> queryMapper, ResultSetExtractor<List<Order>> extractor) {
         return new OrderDAO(jdbcTemplate, queryMapper, extractor);
     }
 

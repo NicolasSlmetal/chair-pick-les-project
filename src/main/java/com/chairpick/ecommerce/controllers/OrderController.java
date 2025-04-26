@@ -14,6 +14,7 @@ import com.chairpick.ecommerce.services.CartService;
 import com.chairpick.ecommerce.services.CouponService;
 import com.chairpick.ecommerce.services.CreditCardService;
 import com.chairpick.ecommerce.services.OrderService;
+import com.chairpick.ecommerce.utils.pagination.PageInfo;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -39,8 +40,8 @@ public class OrderController {
     }
 
     @GetMapping("customers/{customerId}/orders")
-    public ResponseEntity<List<Order>> findAllByCustomer(@PathVariable Long customerId, @RequestParam Map<String, String> params) {
-        List<Order> orders = orderService.findAllByCustomer(customerId, params);
+    public ResponseEntity<PageInfo<Order>> findAllByCustomer(@PathVariable Long customerId, @RequestParam Map<String, String> params) {
+        PageInfo<Order> orders = orderService.findAllByCustomer(customerId, params);
         return ResponseEntity.ok(orders);
     }
 
@@ -101,6 +102,12 @@ public class OrderController {
     public ResponseEntity<Order> updateOrderStatus(@PathVariable Long orderId, @RequestBody OrderStatusInput statusInput) {
         Order order = orderService.updateOrderStatus(orderId, statusInput);
         return ResponseEntity.ok(order);
+    }
+
+    @DeleteMapping("customers/{customerId}/orders/{orderId}")
+    public ResponseEntity<Void> deleteOrder(@PathVariable Long customerId, @PathVariable Long orderId) {
+        orderService.deleteOrder(orderId);
+        return ResponseEntity.noContent().build();
     }
 
 }

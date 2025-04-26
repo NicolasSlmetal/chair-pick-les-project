@@ -24,7 +24,11 @@ public class OrderItemRowMapper extends CustomRowMapper<OrderItem> {
                 .builder()
                 .id(rs.getLong(getColumn("item_id")))
                 .chair(chair)
-
+                .entryDate(rs.getDate(getRelatedTableColumn("entry_date", "itm")).toLocalDate())
+                .unitCost(rs.getDouble(getRelatedTableColumn("unit_cost", "itm")))
+                .amount(rs.getInt(getRelatedTableColumn("amount", "itm")))
+                .version(rs.getInt(getRelatedTableColumn("version", "itm")))
+                .reservedAmount(rs.getInt(getRelatedTableColumn("reserved", "itm")))
                 .build();
         return OrderItem
                 .builder()

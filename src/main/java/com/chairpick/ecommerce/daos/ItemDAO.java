@@ -1,6 +1,7 @@
 package com.chairpick.ecommerce.daos;
 
 import com.chairpick.ecommerce.daos.interfaces.GenericDAO;
+import com.chairpick.ecommerce.exceptions.OptimisticLockException;
 import com.chairpick.ecommerce.model.Item;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -31,7 +32,7 @@ public class ItemDAO implements GenericDAO<Item> {
                 UPDATE tb_item SET itm_amount = :amount, itm_reserved = :reserved, itm_version = itm_version + 1
                 WHERE itm_id = :id AND itm_version = :version;
                 """;
-        System.out.println(entity);
+
         Map<String, Object> parameters = Map.of(
                 "amount", entity.getAmount(),
                 "reserved", entity.getReservedAmount(),
@@ -39,6 +40,11 @@ public class ItemDAO implements GenericDAO<Item> {
                 "version", entity.getVersion()
         );
         int updated = jdbcTemplate.update(sql, parameters);
+
+        if (updated == 0) {
+            throw new OptimisticLockException("Item with id " + entity.getId() + " was updated by another transaction");
+        }
+
         entity.setVersion(entity.getVersion() + updated);
         return entity;
     }

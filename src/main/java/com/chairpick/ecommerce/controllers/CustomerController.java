@@ -66,7 +66,7 @@ public class CustomerController {
         return view;
     }
 
-    @GetMapping("/customers/edit/{id}")
+    @GetMapping("/customers/{id}/edit")
     public ModelAndView redirectToEditCustomer(@PathVariable Long id) {
         Customer customer = customerService.findById(id);
         ModelAndView view = new ModelAndView();

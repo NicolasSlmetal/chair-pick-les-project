@@ -28,10 +28,10 @@
         </div>
         <div class="column border">
             <h2>Ações</h2>
-            <a href="customers/edit.html" class="action__button" style="width: 100%;">Editar</a>
-            <a href="customers/password/index.html" class="action__button" style="width: 100%;">Alterar senha</a>
-            <a href="customers/address/index.html" class="action__button" style="width: 100%;">Endereços</a>
-            <a href="customers/credit/index.html" class="action__button" style="width: 100%;">Cartões de crédito</a>
+            <a th:href="@{/customers/{customerId}/edit(customerId=${customer.id})}" class="action__button" style="width: 100%;">Editar</a>
+            <a th:href="@{/customers/{customerId}/alter-password(customerId=${customer.id})}" class="action__button" style="width: 100%;">Alterar senha</a>
+            <a th:href="@{/customers/{customerId}/addresses(customerId=${customer.id})}" class="action__button" style="width: 100%;">Endereços</a>
+            <a th:href="@{/customers/{customerId}/credit-cards(customerId=${customer.id})}"class="action__button" style="width: 100%;">Cartões de crédito</a>
             <button id="delete_account" class="action__button danger">Remover conta</button>
         </div>
     </section>
@@ -60,6 +60,15 @@
         <div class="modal__actions row">
             <button class="action__button" style="width: 100%;" id="cancel__button">Cancelar</button>
             <button class="action__button danger"  id="confirm__button">Confirmar</button>
+        </div>
+    </div>
+</dialog>
+<dialog id="error__modal">
+    <div class="modal__content">
+        <h2>Erro</h2>
+        <p id="error__message"></p>
+        <div class="modal__actions row">
+            <button class="action__button" style="width: 100%;" id="ok__button">OK</button>
         </div>
     </div>
 </dialog>

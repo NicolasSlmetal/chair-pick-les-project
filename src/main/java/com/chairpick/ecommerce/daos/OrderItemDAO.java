@@ -115,6 +115,10 @@ public class OrderItemDAO implements GenericDAO<OrderItem> {
 
     @Override
     public void delete(Long id) {
-
+        String sql = """
+                DELETE FROM tb_order_item WHERE ori_id = :id
+                """;
+        Map<String, Object> parameters = Map.of("id", id);
+        jdbcTemplate.update(sql, parameters);
     }
 }

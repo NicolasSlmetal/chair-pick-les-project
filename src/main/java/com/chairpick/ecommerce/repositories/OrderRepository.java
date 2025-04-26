@@ -1,14 +1,16 @@
 package com.chairpick.ecommerce.repositories;
 
 import com.chairpick.ecommerce.daos.CompositePaymentDAO;
+import com.chairpick.ecommerce.daos.interfaces.GenericPaginatedDAO;
 import com.chairpick.ecommerce.daos.registry.PaymentDAORegistry;
 import com.chairpick.ecommerce.daos.interfaces.GenericDAO;
 import com.chairpick.ecommerce.daos.interfaces.OrderPaymentDAO;
-import com.chairpick.ecommerce.daos.interfaces.WriteOnlyDAO;
-import com.chairpick.ecommerce.io.output.CompositePaymentDTO;
 import com.chairpick.ecommerce.io.output.PaymentDTO;
 import com.chairpick.ecommerce.model.*;
 import com.chairpick.ecommerce.model.enums.OrderStatus;
+import com.chairpick.ecommerce.utils.pagination.PageInfo;
+import com.chairpick.ecommerce.utils.pagination.PageOptions;
+import org.openqa.selenium.devtools.v85.page.Page;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,14 +21,14 @@ import java.util.Optional;
 @Repository
 public class OrderRepository {
 
-    private final GenericDAO<Order> orderDAO;
+    private final GenericPaginatedDAO<Order> orderDAO;
     private final GenericDAO<Item> itemDAO;
     private final GenericDAO<Cart> cartDAO;
     private final GenericDAO<Coupon> couponDAO;
     private final GenericDAO<OrderItem> orderItemDAO;
     private final PaymentDAORegistry paymentDAORegistry;
 
-    public OrderRepository(GenericDAO<Order> orderDAO, GenericDAO<Item> itemDAO, GenericDAO<Cart> cartDAO, GenericDAO<Coupon> couponDAO, GenericDAO<OrderItem> orderItemDAO, PaymentDAORegistry paymentDAORegistry) {
+    public OrderRepository(GenericPaginatedDAO<Order> orderDAO, GenericDAO<Item> itemDAO, GenericDAO<Cart> cartDAO, GenericDAO<Coupon> couponDAO, GenericDAO<OrderItem> orderItemDAO, PaymentDAORegistry paymentDAORegistry) {
         this.orderDAO = orderDAO;
         this.itemDAO = itemDAO;
         this.cartDAO = cartDAO;
@@ -37,17 +39,11 @@ public class OrderRepository {
 
 
     @Transactional
-    public Order saveOrderAndUpdateStock(Order order, List<Cart> cartList) {
+    public Order saveOrder(Order order, List<Cart> cartList) {
         Order savedOrder  = orderDAO.save(order);
 
         cartList
                 .forEach(cart -> cartDAO.delete(cart.getId()));
-
-        order
-                .getItems()
-                .stream()
-                .map(OrderItem::getItem)
-                .forEach(itemDAO::update);
 
         order
                 .getItems()
@@ -63,9 +59,21 @@ public class OrderRepository {
     }
 
     @Transactional
-    public Order saveOrderAndUpdateStock(Order order, List<Cart> cartList, Coupon swapCoupon) {
-        saveOrderAndUpdateStock(order, cartList);
+    public Order saveOrder(Order order, List<Cart> cartList, Coupon swapCoupon) {
+        saveOrder(order, cartList);
         couponDAO.save(swapCoupon);
+        return order;
+    }
+
+    @Transactional
+    public Order updateApprovedOrder(Order order) {
+        orderDAO.update(order);
+        order.getItems()
+                .forEach(orderItem -> {
+                    orderItem.setStatus(OrderStatus.APPROVED);
+                    orderItemDAO.update(orderItem);
+                    itemDAO.update(orderItem.getItem());
+                });
         return order;
     }
 
@@ -87,12 +95,18 @@ public class OrderRepository {
         return orderItemDAO.findBy(Map.of("order_id", order.getId().toString()));
     }
 
-    public List<Order> findAllByCustomer(Customer customer, Map<String, String> parameters) {
+    public PageInfo<Order> findAllByCustomer(Customer customer, Map<String, String> parameters) {
         parameters.put("customer_id", customer.getId().toString());
         if (parameters.containsKey("status")) {
             parameters.put("status", parameters.get("status").toUpperCase());
         }
-        return orderDAO.findBy(parameters);
+        PageOptions pageOptions = PageOptions.builder()
+                .size(Integer.parseInt(parameters.get("limit")))
+                .page(Integer.parseInt(parameters.get("page")))
+                .build();
+        parameters.remove("limit");
+        parameters.remove("page");
+        return orderDAO.findAndPaginate(parameters, pageOptions);
     }
 
     public Optional<OrderItem> findOrderItemById(Long orderItemId) {
@@ -124,5 +138,16 @@ public class OrderRepository {
 
     public OrderItem updateOrderItemStatus(OrderItem orderItem) {
         return orderItemDAO.update(orderItem);
+    }
+
+    public void deleteOrder(Order order) {
+        Optional<CompositePaymentDAO> compositePaymentDAO = paymentDAORegistry.getCompositeDAO();
+        compositePaymentDAO.ifPresent(paymentDAO -> paymentDAO.delete(order.getId()));
+        order.getItems()
+            .forEach(orderItem -> {
+                itemDAO.update(orderItem.getItem());
+                orderItemDAO.delete(orderItem.getId());
+            });
+        orderDAO.delete(order.getId());
     }
 }

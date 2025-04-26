@@ -38,6 +38,12 @@ public class CompositePaymentDAO implements OrderPaymentDAO {
         return new CompositePaymentDTO(orderId, payments);
     }
 
+    @Override
+    public void delete(Long orderId) {
+        orderPaymentDAOs
+                .forEach(dao -> dao.delete(orderId));
+    }
+
     public void add(OrderPaymentDAO orderPaymentDAO) {
         orderPaymentDAOs.add(orderPaymentDAO);
     }
