@@ -18,7 +18,9 @@ public class SwapQueryMapper implements ObjectQueryMapper<Swap> {
         SelectTable selectTable = SqlQueryBuilder.create()
                 .selectingAllFromTable("tb_item_swap")
                 .join("tb_order_item")
-                .innerJoinOn("its_order_item_id", "ori_id");
+                .innerJoinOn("its_order_item_id", "ori_id")
+                .joinDifferentTables("tb_order_item", "tb_item")
+                .innerJoinOn("ori_item_id", "itm_id");
         if (parameters.isEmpty()) {
             return selectTable.endingOptions().build();
         }

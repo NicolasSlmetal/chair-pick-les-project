@@ -52,6 +52,20 @@
                 </div>
             </div>
         </dialog>
+        <dialog id="confirm__swap__modal">
+            <div class="modal__content">
+                <h2>Recebimento de item trocado</h2>
+                <p>Indique se o produto retorna para o estoque</p>
+                <label class="label_check" for="default"> Retornar para o estoque
+                    <input type="checkbox" name="default" id="default" value="true">
+                    <span class="checkmark"></span>
+                </label>
+                <div class="modal__actions row">
+                    <button class="action__button danger" id="cancel__swap__button">Cancelar</button>
+                    <button class="action__button" style="width:100%;" id="confirm__swap__button">Confirmar</button>
+                </div>
+            </div>
+        </dialog>
     <script src="/js/swaps/index.js" type="module"></script>
     </body>
 </html>

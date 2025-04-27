@@ -59,7 +59,9 @@
                 <p th:if="${orderItem.status.name() == 'PENDING' ||
                 orderItem.status.name() == 'REPROVED' ||
                 orderItem.status.name() == 'DELIVERED' ||
-                orderItem.status.name() == 'SWAP_REQUEST'}">Sem ações</p>
+                orderItem.status.name() == 'SWAP_REQUEST' ||
+                orderItem.status.name() == 'IN_SWAP' ||
+                orderItem.status.name() == 'SWAPPED'}">Sem ações</p>
                 <button class="action__button dispatch" th:if="${orderItem.status.name() == 'APPROVED'}">Despachar para entrega</button>
                 <button class="action__button delivered" th:if="${orderItem.status.name() == 'DELIVERING'}">Marcar como entregue</button>
             </td>

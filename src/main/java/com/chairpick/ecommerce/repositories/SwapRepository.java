@@ -50,11 +50,13 @@ public class SwapRepository {
     }
 
     @Transactional
-    public Swap confirmSwap(Swap swap, Coupon coupon) {
+    public Swap confirmSwap(Swap swap, Coupon coupon, boolean itemReturnToStock) {
 
         Swap updatedSwap = swapDAO.update(swap);
         orderItemDAO.update(updatedSwap.getOrderItem());
-        itemDAO.update(updatedSwap.getOrderItem().getItem());
+        if (itemReturnToStock) {
+            itemDAO.update(updatedSwap.getOrderItem().getItem());
+        }
         couponDAO.save(coupon);
         return updatedSwap;
     }

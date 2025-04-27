@@ -29,6 +29,11 @@ public class SwapRowMapper extends CustomRowMapper<Swap> {
                 .item(Item
                         .builder()
                         .id(rs.getLong(getRelatedTableColumn("item_id", "ori")))
+                        .entryDate(rs.getDate(getRelatedTableColumn("entry_date", "itm")).toLocalDate())
+                        .unitCost(rs.getDouble(getRelatedTableColumn("unit_cost", "itm")))
+                        .amount(rs.getInt(getRelatedTableColumn("amount", "itm")))
+                        .reservedAmount(rs.getInt(getRelatedTableColumn("reserved", "itm")))
+                        .version(rs.getInt(getRelatedTableColumn("version", "itm")))
                         .build())
                 .status(OrderStatus.valueOf(rs.getString(getRelatedTableColumn("status", "ori"))))
                 .id(rs.getLong(getColumn("order_item_id")))

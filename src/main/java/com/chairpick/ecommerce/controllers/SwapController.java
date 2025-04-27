@@ -38,4 +38,10 @@ public class SwapController {
         Swap updatedSwap = swapService.updateSwapStatus(orderId, swapId, input);
         return ResponseEntity.ok(updatedSwap);
     }
+
+    @PatchMapping("admin/orders/{orderId}/swaps/{swapId}/confirm")
+    public ResponseEntity<Swap> confirmSwapReceived(@PathVariable("orderId") Long orderId, @PathVariable("swapId") Long swapId, @RequestBody Boolean returnToStock) {
+        Swap confirmedSwap = swapService.confirmSwapReceived(orderId, swapId, returnToStock);
+        return ResponseEntity.ok(confirmedSwap);
+    }
 }

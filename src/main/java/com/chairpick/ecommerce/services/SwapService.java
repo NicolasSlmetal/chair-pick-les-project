@@ -90,25 +90,38 @@ public class SwapService {
         orderStatusService.changeOrderItemStatus(swap.getOrderItem(), newStatus);
         swap.setStatus(newStatus);
 
-        if (newStatus.equals(OrderStatus.SWAPPED)) {
-            Item item = itemRepository.findItemById(swap.getOrderItem().getItem().getId())
-                    .orElseThrow(() -> new EntityNotFoundException("Item not found"));
-            item.setAmount(item.getAmount() + swap.getAmount());
+        return swapRepository.updateStatus(swap);
+    }
 
-            swap.getOrderItem().setItem(item);
+    public Swap confirmSwapReceived(Long orderId, Long swapId, Boolean returnToStock) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException("Order not found"));
+        Swap swap = swapRepository.findById(swapId)
+                .orElseThrow(() -> new EntityNotFoundException("Swap not found"));
 
-            Coupon coupon = Coupon
-                    .builder()
-                    .customer(Customer
-                            .builder()
-                            .id(order.getCustomer().getId())
-                            .build())
-                    .type(CouponType.SWAP)
-                    .value(swap.getValue() * swap.getAmount())
-                    .build();
-            return swapRepository.confirmSwap(swap, coupon);
+        if (!swap.getOrderItem().getOrder().getId().equals(order.getId())) {
+            throw new EntityNotFoundException("Swap not found");
         }
 
-        return swapRepository.updateStatus(swap);
+        orderStatusService.changeOrderItemStatus(swap.getOrderItem(), OrderStatus.SWAPPED);
+        swap.setStatus(OrderStatus.SWAPPED);
+
+        if (returnToStock) {
+            Item item = swap.getOrderItem().getItem();
+            item.setAmount(item.getAmount() + swap.getAmount());
+        }
+
+        Coupon coupon = Coupon
+                .builder()
+                .customer(Customer
+                        .builder()
+                        .id(order.getCustomer().getId())
+                        .build())
+                .type(CouponType.SWAP)
+                .value(swap.getValue() * swap.getAmount())
+                .build();
+
+        return swapRepository.confirmSwap(swap, coupon, returnToStock);
+
     }
 }

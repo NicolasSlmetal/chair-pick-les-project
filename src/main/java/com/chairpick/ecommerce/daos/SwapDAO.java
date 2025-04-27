@@ -69,6 +69,8 @@ public class SwapDAO implements GenericDAO<Swap> {
                 FROM tb_item_swap
                 INNER JOIN tb_order_item
                 ON its_order_item_id = ori_id
+                INNER JOIN tb_item 
+                ON ori_item_id = itm_id
                 WHERE its_id = :its_id
                 """;
         Map<String, Object> parameters = Map.of("its_id", id);

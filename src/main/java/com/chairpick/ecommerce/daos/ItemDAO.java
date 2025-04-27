@@ -30,7 +30,7 @@ public class ItemDAO implements GenericDAO<Item> {
     public Item update(Item entity) {
         String sql = """
                 UPDATE tb_item SET itm_amount = :amount, itm_reserved = :reserved, itm_version = itm_version + 1
-                WHERE itm_id = :id AND itm_version = :version;
+                WHERE itm_id = :id AND itm_version = :version RETURNING itm_version;
                 """;
 
         Map<String, Object> parameters = Map.of(
@@ -39,13 +39,13 @@ public class ItemDAO implements GenericDAO<Item> {
                 "id", entity.getId(),
                 "version", entity.getVersion()
         );
-        int updated = jdbcTemplate.update(sql, parameters);
+        Integer version = jdbcTemplate.queryForObject(sql, parameters, Integer.class);
 
-        if (updated == 0) {
+        if (version.equals(entity.getVersion())) {
             throw new OptimisticLockException("Item with id " + entity.getId() + " was updated by another transaction");
         }
 
-        entity.setVersion(entity.getVersion() + updated);
+        entity.setVersion(version);
         return entity;
     }
 

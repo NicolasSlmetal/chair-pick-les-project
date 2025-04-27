@@ -1,8 +1,16 @@
 import { patchSwapStatus } from "./patchSwapStatus.js";
+import { patchSwapReceived } from "./patchSwapReceived.js";
 
 const orderId = document.querySelector("#orderId").value;
 const dialog = document.querySelector("#confirm_action");
+const swapConfirmDialog = document.querySelector("#confirm__swap__modal")
+const confirmSwapButton = swapConfirmDialog.querySelector("#confirm__swap__button");
+const cancelSwapButton = swapConfirmDialog.querySelector("#cancel__swap__button");
 const cancelButton = dialog.querySelector("#cancel_button");
+
+cancelSwapButton.onclick = () => {
+    swapConfirmDialog.close();
+}
 cancelButton.onclick = () => {
     dialog.close();
 }
@@ -51,13 +59,23 @@ changeToSwappedButtons.forEach((button) => {
         const row = button.closest("tr");
         const name = row.querySelector("td:nth-child(1)").innerText;
         const swapItemId = row.querySelector("input[name='swapItemId']").value;
+
         const action = async () => {
-            await changeStatus(swapItemId, "SWAPPED");
+            swapConfirmDialog.close();
+            const checkBoxModal = swapConfirmDialog.querySelector("input[type='checkbox']");
+            const returnToStock = checkBoxModal.checked;
+            const response = await patchSwapReceived(orderId, swapItemId, returnToStock);
+            if (response.status !== 200) {
+                const errorJson = await response.json();
+                const errorMessage = errorJson.message;
+                console.error(errorMessage);
+                return;
+            }
+
+            window.location.reload();
         }
-        const p = dialog.querySelector("p");
-        p.innerText = `Tem certeza que deseja marcar a troca do produto ${name} como realizada?`;
-        dialog.showModal();
-        confirmButton.onclick = action;
+        swapConfirmDialog.showModal();
+        confirmSwapButton.onclick = action;
 
     });
 });
