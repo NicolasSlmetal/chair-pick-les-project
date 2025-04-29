@@ -2,23 +2,24 @@ package com.chairpick.ecommerce.model;
 
 import com.chairpick.ecommerce.model.enums.CreditCardBrand;
 import com.chairpick.ecommerce.utils.ErrorCode;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.util.Objects;
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
+@NoArgsConstructor
 public class CreditCard extends DomainEntity  {
 
-    private Long id;
     private String number;
     private String name;
     private CreditCardBrand brand;
     private String cvv;
-    private boolean isDefault;
+    private Boolean isDefault;
     private Customer customer;
 
     @Override
@@ -53,7 +54,7 @@ public class CreditCard extends DomainEntity  {
     @Override
     public String toString() {
         return "CreditCard{" +
-                "id=" + id +
+                "id=" + getId() +
                 ", number='" + number + '\'' +
                 ", brand=" + brand +
                 ", cvv='" + cvv + '\'' +

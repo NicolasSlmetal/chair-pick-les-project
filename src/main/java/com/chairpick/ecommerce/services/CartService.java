@@ -159,7 +159,7 @@ public class CartService {
 
         Address defaultAddress = addresses
                 .stream()
-                .filter(Address::isDefault)
+                .filter(Address::getIsDefault)
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException("No default address found for customer with id: " + customer.getId()));
 

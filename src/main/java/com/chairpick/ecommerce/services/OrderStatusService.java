@@ -49,13 +49,13 @@ public class OrderStatusService {
 
     public boolean isNotOrderStatusValid(OrderStatus oldStatus, OrderStatus newStatus) {
         return !switch (oldStatus) {
-            case PENDING -> newStatus == OrderStatus.APPROVED || newStatus == OrderStatus.REPROVED;
-            case APPROVED -> newStatus == OrderStatus.DELIVERING;
-            case REPROVED -> newStatus == OrderStatus.PENDING;
-            case DELIVERING -> newStatus == OrderStatus.DELIVERED;
-            case DELIVERED -> newStatus == OrderStatus.SWAP_REQUEST;
-            case SWAP_REQUEST -> newStatus == OrderStatus.IN_SWAP;
-            case IN_SWAP -> newStatus == OrderStatus.SWAPPED;
+            case PENDING -> newStatus.equals(OrderStatus.APPROVED) || newStatus.equals(OrderStatus.REPROVED);
+            case APPROVED -> newStatus.equals(OrderStatus.DELIVERING);
+            case REPROVED -> newStatus.equals(OrderStatus.PENDING);
+            case DELIVERING -> newStatus.equals(OrderStatus.DELIVERED);
+            case DELIVERED -> newStatus.equals(OrderStatus.SWAP_REQUEST);
+            case SWAP_REQUEST -> newStatus.equals(OrderStatus.IN_SWAP) || newStatus.equals(OrderStatus.SWAP_REPROVED);
+            case IN_SWAP -> newStatus.equals(OrderStatus.SWAPPED);
             default -> false;
         };
     }

@@ -37,7 +37,8 @@
                         <button th:if="${swapItem.status.name() == 'SWAP_REQUEST'}" class="action__button accept">Aceitar</button>
                         <button th:if="${swapItem.status.name() == 'SWAP_REQUEST'}" class="action__button reject">Recusar</button>
                         <button th:if="${swapItem.status.name() == 'IN_SWAP'}" class="action__button change_to_swapped">Mudar para trocado</button>
-                        <p th:if="${swapItem.status.name() == 'SWAPPED'}" >Sem ações</p>
+                        <p th:if="${swapItem.status.name() == 'SWAPPED' ||
+                        swapItem.status.name() == 'SWAP_REPROVED'}" >Sem ações</p>
                     </td>
                 </tr>
             </table>
@@ -63,6 +64,15 @@
                 <div class="modal__actions row">
                     <button class="action__button danger" id="cancel__swap__button">Cancelar</button>
                     <button class="action__button" style="width:100%;" id="confirm__swap__button">Confirmar</button>
+                </div>
+            </div>
+        </dialog>
+        <dialog id="error__modal">
+            <div class="modal__content">
+                <h2>Erro</h2>
+                <p id="error__message"></p>
+                <div class="modal__actions row">
+                    <button class="action__button" style="width: 100%;" id="ok__button">OK</button>
                 </div>
             </div>
         </dialog>

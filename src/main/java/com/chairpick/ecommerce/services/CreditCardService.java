@@ -51,8 +51,8 @@ public class CreditCardService {
     private void setPreviousDefaultCardToFalse(Long customerId, CreditCard creditCard) {
         CreditCard defaultCreditCard = findDefaultCreditCardByCustomerId(customerId);
 
-        if (creditCard.isDefault()) {
-            defaultCreditCard.setDefault(false);
+        if (creditCard.getIsDefault()) {
+            defaultCreditCard.setIsDefault(false);
             creditCardRepository.updateCreditCard(defaultCreditCard);
         }
     }
@@ -78,7 +78,7 @@ public class CreditCardService {
         creditCard.setName(providedCreditCard.getName());
         creditCard.setBrand(providedCreditCard.getBrand());
         creditCard.setCvv(providedCreditCard.getCvv());
-        creditCard.setDefault(providedCreditCard.isDefault());
+        creditCard.setIsDefault(providedCreditCard.getIsDefault());
         creditCard.setCustomer(providedCreditCard.getCustomer());
         creditCard.validate();
 

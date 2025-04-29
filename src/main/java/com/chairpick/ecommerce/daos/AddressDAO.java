@@ -48,7 +48,7 @@ public class AddressDAO implements GenericDAO<Address> {
         parameters.put("add_neighborhood", entity.getNeighborhood());
         parameters.put("add_street_type", entity.getStreetType().name());
         parameters.put("add_customer_id", entity.getCustomer().getId());
-        parameters.put("add_default", entity.isDefault() ? 1 : 0);
+        parameters.put("add_default", entity.getIsDefault() ? 1 : 0);
         return parameters;
     }
 

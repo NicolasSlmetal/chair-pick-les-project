@@ -35,7 +35,7 @@ public class CreditCardDAO implements GenericDAO<CreditCard> {
                 "cre_holder", entity.getName(),
                 "cre_cvv", entity.getCvv(),
                 "cre_customer_id", entity.getCustomer().getId(),
-                "cre_default", entity.isDefault() ? 1 : 0,
+                "cre_default", entity.getIsDefault() ? 1 : 0,
                 "cre_credit_brand", brandId
         );
 
@@ -53,7 +53,7 @@ public class CreditCardDAO implements GenericDAO<CreditCard> {
                 "cre_number", entity.getNumber(),
                 "cre_holder", entity.getName(),
                 "cre_cvv", entity.getCvv(),
-                "cre_default", entity.isDefault() ? 1 : 0,
+                "cre_default", entity.getIsDefault() ? 1 : 0,
                 "id", entity.getId()
         );
         jdbcTemplate.update(sql, parameters);

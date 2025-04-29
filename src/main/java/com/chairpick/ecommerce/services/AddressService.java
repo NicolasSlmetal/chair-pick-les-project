@@ -80,8 +80,8 @@ public class AddressService {
     private void setPreviousDefaultAddressToFalse(Long customerId, Address address) {
         Address defaultAddress = findDefaultAddressByCustomerId(customerId);
 
-        if (address.isDefault()) {
-            defaultAddress.setDefault(false);
+        if (address.getIsDefault()) {
+            defaultAddress.setIsDefault(false);
             addressRepository.updateAddress(defaultAddress);
         }
     }

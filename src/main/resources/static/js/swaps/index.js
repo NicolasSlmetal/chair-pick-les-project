@@ -1,5 +1,6 @@
 import { patchSwapStatus } from "./patchSwapStatus.js";
 import { patchSwapReceived } from "./patchSwapReceived.js";
+import { parseErrorMessages } from "../utils/errorMessage.js"
 
 const orderId = document.querySelector("#orderId").value;
 const dialog = document.querySelector("#confirm_action");
@@ -7,6 +8,11 @@ const swapConfirmDialog = document.querySelector("#confirm__swap__modal")
 const confirmSwapButton = swapConfirmDialog.querySelector("#confirm__swap__button");
 const cancelSwapButton = swapConfirmDialog.querySelector("#cancel__swap__button");
 const cancelButton = dialog.querySelector("#cancel_button");
+const errorDialog = document.querySelector("#error__modal");
+const okButton = errorDialog.querySelector("button");
+okButton.addEventListener("click", () => {
+    errorDialog.close();
+});
 
 cancelSwapButton.onclick = () => {
     swapConfirmDialog.close();
@@ -67,8 +73,10 @@ changeToSwappedButtons.forEach((button) => {
             const response = await patchSwapReceived(orderId, swapItemId, returnToStock);
             if (response.status !== 200) {
                 const errorJson = await response.json();
-                const errorMessage = errorJson.message;
-                console.error(errorMessage);
+                const errorMessage = parseErrorMessages(errorJson.message);
+                const p = errorDialog.querySelector("p");
+                p.innerText = errorMessage;
+                errorDialog.showModal();
                 return;
             }
 

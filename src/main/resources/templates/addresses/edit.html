@@ -23,8 +23,8 @@
             <input type="text" name="address" id="address" th:value="${address.street}">
             <label for="address_type">Tipo de Logradouro</label>
             <select name="address_type" id="address_type">
-                <option th:each="type : ${T(com.chairpick.ecommerce.model.StreetType).values()}"
-                        th:value="${type}" th:text="${type.getName()}"
+                <option th:each="type : ${T(com.chairpick.ecommerce.model.enums.StreetType).values()}"
+                        th:value="${type.name()}" th:text="${type.getName()}"
                         th:selected="${type == address.streetType}"></option>
             </select>
             <label for="neighborhood">Bairro</label>
@@ -43,7 +43,7 @@
                 <input type="checkbox" name="default" id="default" value="true" th:checked="${address.isDefault}">
                 <span class="checkmark"></span>
             </label>
-            <p th:if="${address.isDefault}">Cartão configurado como padrão</p>
+            <p th:if="${address.isDefault}">Endereço configurado como padrão</p>
         </section>
         <input th:if="${address.isDefault}" type="hidden" th:value="true" name="default">
         <button class="disabled" type="submit" disabled>Atualizar</button>

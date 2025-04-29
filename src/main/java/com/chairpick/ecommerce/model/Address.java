@@ -3,20 +3,22 @@ package com.chairpick.ecommerce.model;
 
 import com.chairpick.ecommerce.model.enums.StreetType;
 import com.chairpick.ecommerce.utils.ErrorCode;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
+@NoArgsConstructor
 public class Address extends DomainEntity {
     private String name;
     private String street;
     private Integer number;
     private String neighborhood;
     private StreetType streetType;
-    private boolean isDefault;
+    private Boolean isDefault;
     private String city;
     private String state;
     private String country;
