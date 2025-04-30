@@ -7,6 +7,7 @@ import com.chairpick.ecommerce.model.CreditCard;
 import com.chairpick.ecommerce.model.payment.strategy.CreditCardsAndCouponsPayment;
 import com.chairpick.ecommerce.model.payment.strategy.CreditCardsPayment;
 import com.chairpick.ecommerce.model.payment.strategy.PaymentStrategy;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.util.HashMap;
@@ -50,26 +51,31 @@ public class CreditCardPaymentDAO implements OrderPaymentDAO {
     public PaymentDTO findByOrderId(Long orderId) {
 
         String sql = """
-                SELECT occ_order_id, occ_credit_card_id, occ_paid_value, cre_holder FROM tb_order_credit_card occ
+                SELECT * FROM tb_order_credit_card occ
                 INNER JOIN tb_credit_card cc ON occ.occ_credit_card_id = cc.cre_id
                 WHERE occ_order_id = :order_id
                 """;
         Map<String, Object> parameters = Map.of("order_id", orderId);
         return paymentCache.computeIfAbsent(orderId, k -> {
             Map<CreditCard, Double> cardValueMap = new HashMap<>();
-            jdbcTemplate.query(sql, parameters, rs -> {
+            jdbcTemplate.query(sql, parameters,  (rs) -> {
                 Long creditCardId = rs.getLong("occ_credit_card_id");
                 String holder = rs.getString("cre_holder");
                 Double paidValue = rs.getDouble("occ_paid_value");
+                String number = rs.getString("cre_number");
 
                 CreditCard creditCard = CreditCard
                         .builder()
+                        .number(number)
                         .id(creditCardId)
                         .name(holder)
                         .build();
 
                 cardValueMap.put(creditCard, paidValue);
+
             });
+
+
             return new CreditCardPaymentDTO(orderId, cardValueMap);
         });
     }

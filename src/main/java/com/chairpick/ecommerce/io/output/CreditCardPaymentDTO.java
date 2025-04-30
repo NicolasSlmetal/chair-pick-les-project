@@ -14,4 +14,11 @@ public class CreditCardPaymentDTO extends PaymentDTO {
         super(orderId, PaymentType.CREDIT_CARD);
         this.creditCards = creditCards;
     }
+
+    @Override
+    public String toString() {
+        return "CreditCardPaymentDTO{" +
+                "creditCards=" + creditCards +
+                '}';
+    }
 }

@@ -59,7 +59,7 @@ let mapFoundResultsByStatus = {
     "APPROVED": 0,
     "REPROVED": 0
 }
-async function getOrderAndBuildSection(status, page=1) {
+async function getOrderAndBuildSection(status, page=1   ) {
    const response = await getOrders(`status=${status}&page=${page}`);
    if (response.status !== 200) {
         return;
@@ -70,9 +70,10 @@ async function getOrderAndBuildSection(status, page=1) {
     if (orders.length === 0) {
        return;
     }
-
+    console.log({orders});
     const totalPages = json.totalResults;
     mapFoundResultsByStatus[status] += orders.length;
+
     if (page == 1) {
         constructOrderSection(orders, statusMap[status]);
 
@@ -87,12 +88,13 @@ async function getOrderAndBuildSection(status, page=1) {
         button.innerText = "Carregar mais";
         button.classList.add("action__button");
         button.addEventListener("click", async () => {
+            button.remove();
 
             await getOrderAndBuildSection(status, page + 1);
-            button.remove();
-        })
+        });
         createdSection.appendChild(button);
     }
+    reloadButtons();
 }
 
 function configureModalAction(action, title, message) {
@@ -155,45 +157,49 @@ window.onload = async () => {
     await getOrderAndBuildSection("PENDING");
     await getOrderAndBuildSection("REPROVED");
     await getOrderAndBuildSection("APPROVED");
-    const requestSwapButtons = document.querySelectorAll(".request_swap");
-    const cancelOrderButtons = document.querySelectorAll(".cancel_order");
-    const itemMaxAmountIdMap = {};
-    const ordersId = [];
 
-    cancelOrderButtons.forEach(button => {
-        button.addEventListener("click", () => {
-            const orderId = button.parentElement.querySelector("input[name='orderId']").value;
-            configureModalAction(async () => {
-                dialog.close();
-                const response = await deleteOrder(orderId);
-                if (response.status !== 204) {
-                    const errorJson = await response.json();
-                    const errorMessage = errorJson.message;
-                    const pError = errorDialog.querySelector("p#error__message");
-                    pError.innerHTML = errorMessage;
-                    errorDialog.showModal();
-                    return;
-                }
-                window.location.reload();
-            }, "Cancelar pedido", `Tem certeza que deseja cancelar o pedido ${orderId}?`);
-        });
-    });
-    requestSwapButtons.forEach(button => {
-        const maxAmount = button.parentElement.querySelector("input[name='maxAmount']").value;
-        const itemId = button.parentElement.querySelector("input[name='itemId']").value;
-        itemMaxAmountIdMap[itemId] = maxAmount;
-        const orderId = button.parentElement.querySelector("input[name='orderId']").value;
-        ordersId.push(orderId);
-        button.addEventListener("click", () => {
-            const selectedItemId = button.parentElement.querySelector("input[name='itemId']").value;
-            const selectedOrderId = button.parentElement.querySelector("input[name='orderId']").value;
-            const maxAmount = itemMaxAmountIdMap[selectedItemId];
-            swapItemId = Number(selectedItemId);
-            swapOrderId = Number(selectedOrderId);
-
-            swapAmountInput.setAttribute("max", maxAmount);
-            swapDialog.showModal();
-        });
-    });
     await countCart();
+}
+
+function reloadButtons() {
+    const requestSwapButtons = document.querySelectorAll(".request_swap");
+        const cancelOrderButtons = document.querySelectorAll(".cancel_order");
+        const itemMaxAmountIdMap = {};
+        const ordersId = [];
+
+        cancelOrderButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                const orderId = button.parentElement.querySelector("input[name='orderId']").value;
+                configureModalAction(async () => {
+                    dialog.close();
+                    const response = await deleteOrder(orderId);
+                    if (response.status !== 204) {
+                        const errorJson = await response.json();
+                        const errorMessage = errorJson.message;
+                        const pError = errorDialog.querySelector("p#error__message");
+                        pError.innerHTML = errorMessage;
+                        errorDialog.showModal();
+                        return;
+                    }
+                    window.location.reload();
+                }, "Cancelar pedido", `Tem certeza que deseja cancelar o pedido ${orderId}?`);
+            });
+        });
+        requestSwapButtons.forEach(button => {
+            const maxAmount = button.parentElement.querySelector("input[name='maxAmount']").value;
+            const itemId = button.parentElement.querySelector("input[name='itemId']").value;
+            itemMaxAmountIdMap[itemId] = maxAmount;
+            const orderId = button.parentElement.querySelector("input[name='orderId']").value;
+            ordersId.push(orderId);
+            button.addEventListener("click", () => {
+                const selectedItemId = button.parentElement.querySelector("input[name='itemId']").value;
+                const selectedOrderId = button.parentElement.querySelector("input[name='orderId']").value;
+                const maxAmount = itemMaxAmountIdMap[selectedItemId];
+                swapItemId = Number(selectedItemId);
+                swapOrderId = Number(selectedOrderId);
+
+                swapAmountInput.setAttribute("max", maxAmount);
+                swapDialog.showModal();
+            });
+        });
 }

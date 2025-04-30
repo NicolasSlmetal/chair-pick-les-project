@@ -14,24 +14,28 @@ import java.util.function.Predicate;
 @Component
 public class PaymentStrategyFactoryRegistry {
 
-    final Map<Predicate<Object>, PaymentStrategyFactory> factories = new HashMap<>();
+    final Map<String, PaymentStrategyFactory> factories = new HashMap<>();
 
     public PaymentStrategyFactoryRegistry() {
-        Predicate<Object> isAllCreditCard = o -> o instanceof CreditCard;
-        Predicate<Object> isAllCoupon = o -> o instanceof Coupon;
-        Predicate<Object> isAllCreditCardAndCoupon = o -> o instanceof CreditCard || o instanceof Coupon;
-        factories.put(isAllCoupon, new CouponPaymentFactory());
-        factories.put(isAllCreditCard, new CreditCardPaymentFactory());
-        factories.put(isAllCreditCardAndCoupon, new CreditCardAndCouponPaymentFactory());
+
+        factories.put("COUPON", new CouponPaymentFactory());
+        factories.put("CREDIT_CARD", new CreditCardPaymentFactory());
+        factories.put("CREDIT_CARD_AND_COUPON", new CreditCardAndCouponPaymentFactory());
     }
 
 
     public PaymentStrategy createPayment(List<Object> paymentMethods, Map<Long, Double> paymentValues) {
-        for (Map.Entry<Predicate<Object>, PaymentStrategyFactory> entry : factories.entrySet()) {
-            if (paymentMethods.stream().allMatch(entry.getKey())) {
-                return entry.getValue().createPayment(paymentMethods, paymentValues);
-            }
+        Predicate<Object> isAllCreditCard = o -> o instanceof CreditCard;
+        Predicate<Object> isAllCoupon = o -> o instanceof Coupon;
+        Predicate<Object> isAllCreditCardAndCoupon = o -> o instanceof CreditCard || o instanceof Coupon;
+
+        if (paymentMethods.stream().allMatch(isAllCreditCard)) {
+            return factories.get("CREDIT_CARD").createPayment(paymentMethods, paymentValues);
         }
-        throw new IllegalArgumentException("No suitable payment strategy found for the provided payment methods.");
+
+        if (paymentMethods.stream().allMatch(isAllCoupon)) {
+            return factories.get("COUPON").createPayment(paymentMethods, paymentValues);
+        }
+        return factories.get("CREDIT_CARD_AND_COUPON").createPayment(paymentMethods, paymentValues);
     }
 }

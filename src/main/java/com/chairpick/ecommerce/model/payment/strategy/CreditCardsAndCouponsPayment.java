@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +60,15 @@ public class CreditCardsAndCouponsPayment implements PaymentStrategy {
                 .mapToDouble(Coupon::getValue)
                 .sum();
 
-        if (totalValueCreditCards + totalValueCoupons != orderTotalValue) {
+        System.out.println(totalValueCoupons + totalValueCreditCards);
+        System.out.println(orderTotalValue);
+        BigDecimal totalValueCouponDecimal = new BigDecimal(totalValueCoupons);
+        BigDecimal totalValueCreditCard = new BigDecimal(totalValueCreditCards);
+        BigDecimal total = new BigDecimal(0).add(totalValueCouponDecimal).add(totalValueCreditCard)
+                .setScale(2, RoundingMode.HALF_DOWN);
+
+        System.out.println(total.setScale(2, RoundingMode.HALF_DOWN));
+        if (total.doubleValue() != orderTotalValue) {
             errors.add(ErrorCode.INVALID_PAYMENT_VALUE_FOR_COUPON);
         }
 

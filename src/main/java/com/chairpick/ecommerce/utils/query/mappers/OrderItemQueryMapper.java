@@ -18,25 +18,11 @@ public class OrderItemQueryMapper implements GeneralObjectQueryMapper<OrderItem>
     public QueryResult parseParameters(Map<String, String> parameters) {
         SelectTable selectTable = SqlQueryBuilder
                 .create()
-                .selectingColumnsFromTable("tb_order_item",
-                        "ori_id",
-                        "ori_status",
-                        "ori_amount",
-                        "ori_sell_price",
-                        "ori_freight_tax",
-                        "ori_order_id",
-                        "itm_id",
-                        "itm_chair_id",
-                        "itm_amount",
-                        "itm_entry_date",
-                        "itm_version",
-                        "itm_reserved",
-                        "itm_unit_cost",
-                        "chr_id",
-                        "chr_name",
-                        "ori_item_id");
+                .selectingAllFromTable("tb_order_item");
         selectTable.join("tb_item")
                 .innerJoinOn("ori_item_id", "itm_id")
+                .join("tb_item_swap")
+                .leftJoinOn("ori_id", "its_order_item_id")
                 .joinDifferentTables("tb_item", "tb_chair")
                 .innerJoinOn("itm_chair_id", "chr_id");
         if (parameters.isEmpty()) {
@@ -50,7 +36,7 @@ public class OrderItemQueryMapper implements GeneralObjectQueryMapper<OrderItem>
         for (Map.Entry<String, String> entry : parameters.entrySet()) {
             String key = "ori_"+entry.getKey();
             String value = entry.getValue();
-
+            System.out.println(entry);
             if (key.equals("ori_status")) {
                 where.equalString("ori_status", value);
             }
@@ -60,7 +46,7 @@ public class OrderItemQueryMapper implements GeneralObjectQueryMapper<OrderItem>
             }
 
             if (--size > 0) {
-                where = where.and();
+                where.and();
             }
         }
 

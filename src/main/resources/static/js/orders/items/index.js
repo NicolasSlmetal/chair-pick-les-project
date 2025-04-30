@@ -53,7 +53,7 @@ dispatchButtons.forEach(button => {
 
 deliveredButtons.forEach(button => {
     button.addEventListener("click", () => {
-        const itemName = button.parentElement.parentElement.querySelector("tr:nth-child(1) td").innerText;
+        const itemName = button.parentElement.parentElement.querySelector("td:nth-child(1)").innerText;
         selectedOrderItemId = button.parentElement.querySelector("input[name='orderItemId']").value;
         renderModal("Entregar pedido", "Tem certeza que deseja entregar o pedido " + itemName + "?", "DELIVERED");
     });

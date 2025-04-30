@@ -10,7 +10,6 @@ import com.chairpick.ecommerce.model.*;
 import com.chairpick.ecommerce.model.enums.OrderStatus;
 import com.chairpick.ecommerce.utils.pagination.PageInfo;
 import com.chairpick.ecommerce.utils.pagination.PageOptions;
-import org.openqa.selenium.devtools.v85.page.Page;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -106,7 +105,13 @@ public class OrderRepository {
                 .build();
         parameters.remove("limit");
         parameters.remove("page");
-        return orderDAO.findAndPaginate(parameters, pageOptions);
+        PageInfo<Order> paginatedOrders = orderDAO.findAndPaginate(parameters, pageOptions);
+        paginatedOrders.forEach(order -> {
+            Map<String, String> parametersForOrderId = Map.of("order_id", String.valueOf(order.getId()));
+            List<OrderItem> orderItems = orderItemDAO.findBy(parametersForOrderId);
+            order.setItems(orderItems);
+        });
+        return paginatedOrders;
     }
 
     public Optional<OrderItem> findOrderItemById(Long orderItemId) {

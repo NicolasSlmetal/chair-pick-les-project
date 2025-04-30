@@ -162,39 +162,7 @@ public class OrderDAO implements GenericPaginatedDAO<Order> {
                         .createdDate(rs.getDate("ord_created_date").toLocalDate())
                         .updatedDate(rs.getTimestamp("ord_updated_date").toLocalDateTime())
                         .build();
-                OrderItem orderItem = OrderItem.builder()
-                        .id(rs.getLong("ori_id"))
-                        .status(OrderStatus.valueOf(rs.getString("ori_status")))
-                        .value(rs.getDouble("ori_sell_price"))
-                        .amount(rs.getInt("ori_amount"))
-                        .freightValue(rs.getDouble("ori_freight_tax"))
-                        .item(Item
-                                .builder()
-                                .id(rs.getLong("itm_id"))
-                                .chair(Chair
-                                        .builder()
-                                        .id(rs.getLong("chr_id"))
-                                        .name(rs.getString("chr_name"))
-                                        .build())
-                                .build())
-                        .build();
-                Integer swapId = rs.getObject("its_order_item_id", Integer.class);
-                if (swapId != null) {
-                    Swap swap = Swap.builder()
-                            .id(rs.getLong("its_id"))
-                            .value(rs.getDouble("its_total_value"))
-                            .status(OrderStatus.valueOf(rs.getString("its_status")))
-                            .amount(rs.getInt("its_amount"))
-                            .build();
-                    orderItem.setSwap(swap);
-                }
-                order.setId(rs.getLong("ord_id"));
-                order.getItems().add(orderItem);
-                if (!orders.add(order)) {
-                    orders.stream()
-                            .filter(collectedOrder -> collectedOrder.equals(order))
-                            .forEach(collectedOrder -> collectedOrder.getItems().add(orderItem));
-                }
+                orders.add(order);
             }
 
             return new PageInfo<>(totalPages, orders.stream().toList());

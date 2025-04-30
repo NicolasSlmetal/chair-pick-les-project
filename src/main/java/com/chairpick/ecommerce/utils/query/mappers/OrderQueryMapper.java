@@ -49,22 +49,56 @@ public class OrderQueryMapper implements GeneralObjectQueryMapper<Order> {
             }
         }
 
-        EndingOptions endingOptions = where.end().endingOptions().orderByDescending("ord_id");
+        EndingOptions endingOptions = where.end().endingOptions().orderBy("ord_updated_date");
         return endingOptions.build();
     }
 
     @Override
     public QueryResult parseParameters(Map<String, String> parameters, PageOptions pageOptions) {
-        QueryResult with = parseParameters(parameters);
+        SelectTable selectTable = SqlQueryBuilder.create()
+                .selectingColumnsFromTable("tb_order",
+        "ord_id",
+                        "ord_total_value",
+                        "ord_total_amount",
+                        "ord_status",
+                        "ord_created_date",
+                        "ord_updated_date",
+                        "ord_customer_id",
+                        "COUNT(*) OVER() as total_count");
+        QueryResult with = null;
+        if (parameters.isEmpty()) {
+            with = selectTable.endingOptions().orderByDescending("ord_updated_date").build();
+        }
 
-        SelectTable selectTable = SqlQueryBuilder
-                .create()
-                .withClause()
-                .with("orders", with)
-                .end().selectingColumnsFromTable("orders", "*, COUNT(*) OVER() AS total_count");
-        EndingOptions endingOptions = selectTable.endingOptions();
-        endingOptions.limit(pageOptions.getSize());
-        endingOptions.offset(pageOptions);
-        return endingOptions.build();
+        Where where = selectTable.where();
+        int size = parameters.size();
+        for (Map.Entry<String, String> entry : parameters.entrySet()) {
+            String key = "ord_"+entry.getKey();
+            String value = entry.getValue();
+
+            if (key.equals("ord_status")) {
+                where.equalString("ord_status", value);
+            }
+
+            if (key.equals("ord_customer_id")) {
+                where.equals("ord_customer_id", value);
+            }
+
+            if (--size > 0) {
+                where = where.and();
+            }
+        }
+        if (with == null) {
+            with = where.end().endingOptions().orderByDescending("ord_updated_date").build();
+        }
+
+        return SqlQueryBuilder
+                .create().withClause().with("select_with", with)
+                .end()
+                .selectingAllFromTable("select_with")
+                .endingOptions()
+                .limit(pageOptions.getSize())
+                .offset(pageOptions)
+                .build();
     }
 }
