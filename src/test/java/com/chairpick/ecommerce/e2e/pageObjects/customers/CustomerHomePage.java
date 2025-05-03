@@ -29,7 +29,6 @@ public class CustomerHomePage extends PageObject {
         verifyIfIsTheCorrectPage();
     }
 
-    @Override
     public void verifyIfIsTheCorrectPage() {
         if (!Objects.equals(URL, driver.getCurrentUrl())) {
             throw new IllegalStateException("This is not the customer home page");

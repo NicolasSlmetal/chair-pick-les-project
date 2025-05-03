@@ -5,6 +5,7 @@ import { constructOrderSection, appendMoreOrdersToSection } from "./orderSection
 import { constructPaginatedOrderSection } from "./orderSectionBuilder.js";
 import { postSwap } from "./postSwap.js";
 import { deleteOrder } from "./deleteOrder.js";
+import { parseErrorMessages } from "../../utils/errorMessage.js";
 
 const statusMap = {
     "PENDING": "Pedidos em processamento",
@@ -144,7 +145,7 @@ swapConfirmButton.addEventListener("click", async () => {
         const errorJson = await response.json();
         const errorMessage = errorJson.message;
         const pError = errorDialog.querySelector("p#error__message");
-        pError.innerHTML = errorMessage;
+        pError.innerHTML = parseErrorMessages(errorMessage);
         errorDialog.showModal();
         return;
     }
@@ -177,7 +178,7 @@ function reloadButtons() {
                         const errorJson = await response.json();
                         const errorMessage = errorJson.message;
                         const pError = errorDialog.querySelector("p#error__message");
-                        pError.innerHTML = errorMessage;
+                        pError.innerHTML = parseErrorMessages(errorMessage);
                         errorDialog.showModal();
                         return;
                     }

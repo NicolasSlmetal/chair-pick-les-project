@@ -11,10 +11,10 @@
     <h1>Gerenciamento de pedidos</h1>
 
     <div class="button__group">
-        <a class="action__button" th:href="@{/admin/customers}">Clientes</a>
-        <a class="action__button disabled">Dashboard</a>
-        <a class="action__button disabled">Estoque</a>
-        <a class="action__button" th:href="@{/logout}">Sair</a>
+        <a class="action__button customers" th:href="@{/admin/customers}">Clientes</a>
+        <a class="action__button disabled dashboard">Dashboard</a>
+        <a class="action__button disabled stock">Estoque</a>
+        <a class="action__button logout" th:href="@{/logout}">Sair</a>
     </div>
     <table>
         <thead>
@@ -42,8 +42,8 @@
             <td>
                 <img id="actions_button" th:src="@{/assets/dots.png}" alt="Mais ações" class="action__button">
                 <div id="actions" class="menu" style="display: none;">
-                    <a class="option" th:href="@{/admin/orders/{id}(id=${order.id})}">Visualizar itens</a>
-                    <a class="option" th:href="@{/admin/orders/{id}/payment(id=${order.id})}">Visualizar pagamento</a>
+                    <a class="option view_items" th:href="@{/admin/orders/{id}(id=${order.id})}">Visualizar itens</a>
+                    <a class="option payment_status" th:href="@{/admin/orders/{id}/payment(id=${order.id})}">Visualizar pagamento</a>
                 </div>
             </td>
         </tr>

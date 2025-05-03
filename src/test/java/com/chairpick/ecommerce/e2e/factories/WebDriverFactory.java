@@ -6,6 +6,9 @@ import org.openqa.selenium.chrome.ChromeDriver;
 public class WebDriverFactory {
 
     public static WebDriver createWebDriver() {
-        return new ChromeDriver();
+
+        ChromeDriver driver = new ChromeDriver();
+        driver.manage().window().fullscreen();
+        return driver;
     }
 }

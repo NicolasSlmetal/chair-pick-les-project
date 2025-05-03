@@ -11,7 +11,7 @@
         <main>
             <h1 th:text="'Solicitações de troca para o pedido ' + ${orderId}"></h1>
 
-            <a th:href="@{/admin/orders/{orderId}(orderId=${orderId})}" class="action__button">Voltar</a>
+            <a th:href="@{/admin/orders/{orderId}(orderId=${orderId})}" class="action__button" id="back_button">Voltar</a>
             <table>
                 <thead>
                 <th>
@@ -30,7 +30,7 @@
                     <td th:text="${swapItem.orderItem.id}"></td>
                     <td th:text="${swapItem.amount}"></td>
                     <td th:text="${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(swapItem.value)}"></td>
-                    <td th:text="${swapItem.status.getDescription()}">
+                    <td th:text="${swapItem.status.getDescription()}" class="status">
                     </td>
                     <td>
                         <input type="hidden" th:value="${swapItem.id}" class="swapItemId" name="swapItemId">
@@ -48,8 +48,8 @@
             <div class="modal__content">
                 <p></p>
                 <div class="actions">
-                    <button id="cancel_button" class="action__button danger fill">Não</button>
-                    <button id="confirm_button" class="action__button fill">Sim</button>
+                    <button id="cancel__button" class="action__button danger fill">Não</button>
+                    <button id="confirm__button" class="action__button fill">Sim</button>
                 </div>
             </div>
         </dialog>

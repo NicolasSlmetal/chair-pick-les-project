@@ -322,12 +322,12 @@ ALTER TABLE tb_price_change_request ADD CONSTRAINT chk_price_change_value CHECK 
 INSERT INTO tb_credit_brand (cbr_id, cbr_name) VALUES (1, 'VISA');
 INSERT INTO tb_credit_brand (cbr_id, cbr_name) VALUES (2, 'MASTERCARD');
 
-INSERT INTO tb_pricing_group (pgr_id, pgr_name, pgr_percent_value) VALUES
-(1, 'A', 1.00),
-(2, 'B', 1.20),
-(3, 'C', 1.50);
+INSERT INTO tb_pricing_group (pgr_name, pgr_percent_value) VALUES
+('A', 1.00),
+('B', 1.20),
+('C', 1.50);
 
-INSERT INTO tb_chair (chr_id, chr_name, chr_sell_price, chr_description,
+INSERT INTO tb_chair (chr_name, chr_sell_price, chr_description,
                      chr_height,   -- EM CENTÍMETROS (ex: 120 = 120cm = 1.20m)
                      chr_width,    -- EM CENTÍMETROS (ex: 60 = 60cm = 0.60m)
                      chr_length,   -- EM CENTÍMETROS (ex: 65 = 65cm = 0.65m)
@@ -335,5 +335,5 @@ INSERT INTO tb_chair (chr_id, chr_name, chr_sell_price, chr_description,
                      chr_average_rating, chr_pricing_group_id)
 VALUES
 -- Cadeira 1: Altura 120cm, Largura 60cm, Profundidade 65cm, Peso 15kg
-(1, 'Cadeira Ergonômica Executiva', 299.99, 'Cadeira ergonômica com ajuste de altura e lombar',
+('Cadeira Ergonômica Executiva', 299.99, 'Cadeira ergonômica com ajuste de altura e lombar',
  120, 60, 65, 15, 4.50, 2);

@@ -15,13 +15,13 @@
     </div>
 
     <div class="profile__container">
-        <a th:classappend="${pageTitle == 'Home' ? 'active' : ''}" th:href="@{/}"><img th:classappend="${pageTitle == 'Home' ? 'active' : ''}" class="profile__image" th:src="@{/assets/home.png}"></a>
-        <a th:href="@{/customers/{customerId}/cart(customerId=${customerId})}" th:classappend="${pageTitle == 'Cart' ? 'active' : ''}">
+        <a data-test="home" th:classappend="${pageTitle == 'Home' ? 'active' : ''}" th:href="@{/}"><img th:classappend="${pageTitle == 'Home' ? 'active' : ''}" class="profile__image" th:src="@{/assets/home.png}"></a>
+        <a data-test="cart" th:href="@{/customers/{customerId}/cart(customerId=${customerId})}" th:classappend="${pageTitle == 'Cart' ? 'active' : ''}">
             <span class="cart__counter"><strong>0</strong></span>
             <img class="profile__image" src="/assets/cart.png">
         </a>
-        <a th:classappend="${pageTitle == 'Profile' ? 'active' : ''}" th:href="@{/customers/{id}(id=${customerId})}"><img class="profile__image" src="/assets/user.png"></a>
-        <a th:href="@{/logout}"><img class="profile__image" src="/assets/logout.png"></a>
+        <a data-test="profile" th:classappend="${pageTitle == 'Profile' ? 'active' : ''}" th:href="@{/customers/{id}(id=${customerId})}"><img class="profile__image" src="/assets/user.png"></a>
+        <a data-test="logout" th:href="@{/logout}"><img class="profile__image" src="/assets/logout.png"></a>
     </div>
 </header>
 </body>

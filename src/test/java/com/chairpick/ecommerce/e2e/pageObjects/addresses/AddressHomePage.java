@@ -53,11 +53,4 @@ public class AddressHomePage extends PageObject {
         address.put("delete", columns.get(11).findElement(deleteRowButton));
         return address;
     }
-
-    @Override
-    public void verifyIfIsTheCorrectPage() {
-        if (!Objects.requireNonNull(driver.getCurrentUrl()).matches(URL)) {
-            throw new IllegalStateException("This is not the correct page");
-        }
-    }
 }

@@ -12,8 +12,8 @@
         <a th:href="@{/search}" class="home_search"><img class="profile__image" th:src="@{/assets/search.png}"></a>
     </div>
     <div class="profile__container">
-        <a th:classappend="${pageTitle == 'Home' ? 'active' : ''}" th:href="@{/}"><img th:classappend="${pageTitle == '/' ? 'active' : ''}" class="profile__image" th:src="@{/assets/home.png}"></a>
-        <a class="login__button" th:href="@{/login}">
+        <a data-test="home" th:classappend="${pageTitle == 'Home' ? 'active' : ''}" th:href="@{/}"><img th:classappend="${pageTitle == '/' ? 'active' : ''}" class="profile__image" th:src="@{/assets/home.png}"></a>
+        <a data-test="login" class="login__button" th:href="@{/login}">
             <img class="profile__image" th:src="@{/assets/user.png}">
             <p>Faça login ou registre-se</p>
         </a>

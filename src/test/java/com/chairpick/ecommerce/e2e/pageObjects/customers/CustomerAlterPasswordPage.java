@@ -30,7 +30,7 @@ public class CustomerAlterPasswordPage extends PageObject {
         driver.findElement(submitButton).click();
     }
 
-    @Override
+
     public void verifyIfIsTheCorrectPage() {
         if (!Objects.requireNonNull(driver.getCurrentUrl()).matches(URL)) {
             throw new IllegalStateException("This is not the correct page");

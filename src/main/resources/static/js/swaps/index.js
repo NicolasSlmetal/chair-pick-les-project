@@ -7,7 +7,7 @@ const dialog = document.querySelector("#confirm_action");
 const swapConfirmDialog = document.querySelector("#confirm__swap__modal")
 const confirmSwapButton = swapConfirmDialog.querySelector("#confirm__swap__button");
 const cancelSwapButton = swapConfirmDialog.querySelector("#cancel__swap__button");
-const cancelButton = dialog.querySelector("#cancel_button");
+const cancelButton = dialog.querySelector("#cancel__button");
 const errorDialog = document.querySelector("#error__modal");
 const okButton = errorDialog.querySelector("button");
 okButton.addEventListener("click", () => {
@@ -20,7 +20,7 @@ cancelSwapButton.onclick = () => {
 cancelButton.onclick = () => {
     dialog.close();
 }
-const confirmButton = dialog.querySelector("#confirm_button");
+const confirmButton = dialog.querySelector("#confirm__button");
 
 const acceptButtons = document.querySelectorAll("button.accept");
 const rejectButtons = document.querySelectorAll("button.reject");

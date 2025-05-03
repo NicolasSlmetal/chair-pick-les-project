@@ -10,5 +10,5 @@ public abstract class PageObject {
         this.driver = driver;
     }
 
-    public abstract void verifyIfIsTheCorrectPage();
+    
 }

@@ -12,8 +12,8 @@
     <h1 th:text="'Consultar itens do pedido ' + ${orderId}">Consultar itens do pedido 1</h1>
 
     <div class="button__group">
-        <a th:href="@{/admin/orders}" class="action__button">Voltar</a>
-        <a class="action__button" th:href="@{/admin/orders/{orderId}/swaps(orderId=${orderId})}">Consultar trocas do pedido</a>
+        <a id="back_button" th:href="@{/admin/orders}" class="action__button">Voltar</a>
+        <a class="action__button swaps" th:href="@{/admin/orders/{orderId}/swaps(orderId=${orderId})}">Consultar trocas do pedido</a>
     </div>
     <table>
         <thead>
@@ -51,7 +51,7 @@
             <td th:with="totalValue=${orderItem.value * orderItem.amount + orderItem.freightValue}"
             th:text="${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(totalValue)}">
             </td>
-            <td th:text="${orderItem.status.getDescription()}">
+            <td th:text="${orderItem.status.getDescription()}" class="status">
 
             </td>
             <td>

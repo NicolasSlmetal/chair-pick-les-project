@@ -10,7 +10,7 @@
     <input type="hidden" th:value="${payment.orderId}" id="orderId">
     <main >
         <h1 th:text="'Opções de pagamento selecionadas para o pedido ' + ${payment.orderId}"></h1>
-        <a th:href="@{/admin/orders}" class="action__button">Voltar</a>
+        <a id="back_button" th:href="@{/admin/orders}" class="action__button">Voltar</a>
         <section class="border" th:with="typeMap=${payment.paymentsByType}">
             <div th:each="type : ${payment.paymentsByType.keySet()}">
                 <div th:if="${type.name() == 'CREDIT_CARD' && typeMap.get(type).creditCards.size() > 0}">

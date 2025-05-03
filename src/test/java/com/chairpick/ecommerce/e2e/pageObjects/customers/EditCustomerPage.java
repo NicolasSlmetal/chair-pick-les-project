@@ -59,7 +59,7 @@ public class EditCustomerPage extends PageObject {
         driver.findElement(submitButton).click();
     }
 
-    @Override
+
     public void verifyIfIsTheCorrectPage() {
         if (!Objects.requireNonNull(driver.getCurrentUrl()).equals(URL)) {
             throw new IllegalStateException("This is not the edit customer page");

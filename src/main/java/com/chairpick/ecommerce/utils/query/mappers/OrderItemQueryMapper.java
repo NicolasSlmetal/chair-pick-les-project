@@ -36,7 +36,7 @@ public class OrderItemQueryMapper implements GeneralObjectQueryMapper<OrderItem>
         for (Map.Entry<String, String> entry : parameters.entrySet()) {
             String key = "ori_"+entry.getKey();
             String value = entry.getValue();
-            System.out.println(entry);
+
             if (key.equals("ori_status")) {
                 where.equalString("ori_status", value);
             }

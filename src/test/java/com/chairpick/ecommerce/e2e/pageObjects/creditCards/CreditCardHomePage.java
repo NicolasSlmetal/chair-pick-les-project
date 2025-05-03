@@ -50,10 +50,4 @@ public class CreditCardHomePage extends PageObject {
         driver.findElement(backButton).click();
     }
 
-    @Override
-    public void verifyIfIsTheCorrectPage() {
-        if (!Objects.requireNonNull(driver.getCurrentUrl()).matches(URL)) {
-            throw new IllegalStateException("This is not the correct page");
-        }
-    }
 }
