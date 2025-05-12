@@ -47,6 +47,16 @@ public class CartRepository {
         return carts;
     }
 
+    public List<Cart> findByCustomerAndStatus(Customer customer, CartItemStatus status) {
+        Map<String, String> parameters = Map.of(
+                "customer_id", customer.getId().toString(),
+                "item_status", status.toString()
+        );
+        List<Cart> carts = cartDAO.findBy(parameters);
+        carts.forEach(cart -> cart.setCustomer(customer));
+        return carts;
+    }
+
     @Transactional
     public Cart addItemToCart(Cart cart) {
         itemDAO.update(cart.getItem());
@@ -67,6 +77,13 @@ public class CartRepository {
             }
         });
         return savedCarts;
+    }
+
+    @Transactional
+    public List<Cart> batchUpdateCarts(List<Cart> carts) {
+        carts.forEach(cartDAO::update);
+        carts.forEach(cart-> itemDAO.update(cart.getItem()));
+        return carts;
     }
 
     @Transactional

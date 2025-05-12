@@ -115,6 +115,14 @@
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script type="importmap">
+    {
+      "imports": {
+        "@stomp/stompjs": "https://ga.jspm.io/npm:@stomp/stompjs@7.0.0/esm6/index.js"
+      }
+    }
+</script>
 <script th:src="@{/js/index/index.js}" type="module"></script>
+<script th:src="@{/js/utils/stomp.js}" type="module"></script>
 </body>
 </html>

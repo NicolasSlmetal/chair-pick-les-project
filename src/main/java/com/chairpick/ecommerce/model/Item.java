@@ -21,6 +21,10 @@ public class Item extends DomainEntity {
     private Supplier supplier;
     private int version;
 
+    public Item() {
+        super();
+    }
+
     @Override
     public void validate() {
 

@@ -17,6 +17,10 @@ public class User extends DomainEntity {
     private String password;
     private UserType type;
 
+    public User() {
+        super();
+    }
+
     @Override
     public void validate() {
         if (!haveValidEmail()) {

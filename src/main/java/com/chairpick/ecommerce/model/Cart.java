@@ -21,6 +21,10 @@ public class Cart extends DomainEntity {
     private double price;
     private CartItemStatus status;
 
+    public Cart() {
+        super();
+    }
+
 
     @Override
     public void validate() {

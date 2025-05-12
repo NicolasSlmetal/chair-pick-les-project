@@ -38,6 +38,16 @@
         <button class="product_action expanded" style="display: none;">Confirmar produtos</button>
     </section>
 </main>
+<dialog id="expired_items" th:if="${haveExpired}">
+    <div class="dialog">
+        <h2>Alguns produtos do seu carrinho estão expirados</h2>
+        <p>Os seguintes produtos devem ser removidos:</p>
+        <ul>
+            <li th:each="item : ${cart}" th:if="${item.status.name() == 'EXPIRED'}" th:text="${item.name}"></li>
+        </ul>
+        <button class="product_action" id="confirm_expired_items">Remover produtos</button>
+    </div>
+</dialog>
 <footer class="footer">
     <div class="footer">
         <p>© 2025 Chair Pick</p>
@@ -47,5 +57,13 @@
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
 <script src="/js/cart/index.js" type="module"></script>
+<script type="importmap">
+    {
+      "imports": {
+        "@stomp/stompjs": "https://ga.jspm.io/npm:@stomp/stompjs@7.0.0/esm6/index.js"
+      }
+    }
+</script>
+<script th:src="@{/js/utils/stomp.js}" type="module"></script>
 </body>
 </html>

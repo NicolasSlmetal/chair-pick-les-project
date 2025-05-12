@@ -28,6 +28,10 @@ public class Customer extends DomainEntity {
     private Genre genre;
     private User user;
 
+    public Customer() {
+        super();
+    }
+
     @Override
     public void validate() {
         validateMainFields();

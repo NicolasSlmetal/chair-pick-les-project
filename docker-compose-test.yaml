@@ -1,4 +1,13 @@
 services:
+  rabbit-mq:
+    container_name: rabbit-mq
+    image: rabbitmq:4.0.1-management
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    environment:
+      RABBITMQ_DEFAULT_USER: "user"
+      RABBITMQ_DEFAULT_PASS: "password"
   test-database:
     container_name: test-database
     build:

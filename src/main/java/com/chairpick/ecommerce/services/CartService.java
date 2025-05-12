@@ -13,6 +13,10 @@ import com.chairpick.ecommerce.repositories.AddressRepository;
 import com.chairpick.ecommerce.repositories.CartRepository;
 import com.chairpick.ecommerce.repositories.ChairRepository;
 import com.chairpick.ecommerce.repositories.CustomerRepository;
+import com.chairpick.ecommerce.services.task.CartCheckTask;
+import com.chairpick.ecommerce.services.task.Task;
+import com.chairpick.ecommerce.services.task.interfaces.TaskExecutor;
+import com.chairpick.ecommerce.services.task.TaskType;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,17 +31,19 @@ public class CartService {
     private final CartRepository cartRepository;
     private final AddressRepository addressRepository;
     private final FreightCalculatorService freightCalculatorService;
+    private final TaskExecutor taskExecutor;
 
     public CartService(ChairRepository chairRepository,
                        CustomerRepository customerRepository,
                        CartRepository cartRepository,
                        AddressRepository addressRepository,
-                       FreightCalculatorService freightCalculatorService) {
+                       FreightCalculatorService freightCalculatorService, TaskExecutor taskExecutor) {
         this.chairRepository = chairRepository;
         this.customerRepository = customerRepository;
         this.cartRepository = cartRepository;
         this.addressRepository = addressRepository;
         this.freightCalculatorService = freightCalculatorService;
+        this.taskExecutor = taskExecutor;
     }
 
     public Cart addItemToCart(Long customerId, Long chairId) {
@@ -71,7 +77,16 @@ public class CartService {
         cart.getItem().setReservedAmount(actualReservedAmount + 1);
         cart.validate();
 
-        return cartRepository.addItemToCart(cart);
+        Cart savedCart = cartRepository.addItemToCart(cart);
+        savedCart.getItem().getChair().setItems(null);
+        taskExecutor.execute(new CartCheckTask(savedCart));
+        return savedCart;
+    }
+
+    public List<Cart> findExpiredCartsByCustomer(Long customerId) {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new EntityNotFoundException("Customer with id " + customerId + " not found"));
+        return cartRepository.findByCustomerAndStatus(customer, CartItemStatus.EXPIRED);
     }
 
     public Map<CartItemSummaryProjection, TotalValueDTO> showCartConfirmationWithSelectedAddress(Long customerId, Long addressId) {
@@ -116,15 +131,6 @@ public class CartService {
 
         return cartRepository.summarizeByCustomer(customer);
     }
-
-    public List<CartItemSummaryProjection> findCartByCustomer(User user) {
-        Customer customer = customerRepository
-                .findByUser(user)
-                .orElseThrow(() -> new EntityNotFoundException("No customer found with user id " + user.getId()));
-
-        return cartRepository.summarizeByCustomer(customer);
-    }
-
 
     public List<Cart> findCartByCustomerAndChair(Long customerId, Long chairId) {
         Customer customer = customerRepository
@@ -370,6 +376,13 @@ public class CartService {
         if (beforeVersion.equals(item.getVersion())) {
             throw new OptimisticLockException("The item stock has not been updated. Item id: " + item.getId());
         }
+    }
+
+    public void deleteExpiredCarts(Long customerId) {
+        Customer customer = customerRepository
+                .findById(customerId).orElseThrow(() -> new EntityNotFoundException("Customer with id " + customerId + " not found"));
+        List<Cart> carts = cartRepository.findByCustomerAndStatus(customer, CartItemStatus.EXPIRED);
+        cartRepository.deleteCartItems(carts);
     }
 
     public void deleteChairFromCart(Long customerId, Long chairId) {

@@ -224,6 +224,19 @@ main {
     align-items: center;
 }
 
+.large_dialog {
+    width: 45%;
+
+}
+
+.list {
+   list-style: square;
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
+   padding: 2em;
+}
+
 .home_search {
     background: none;
     border: none;

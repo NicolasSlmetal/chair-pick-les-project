@@ -21,11 +21,9 @@ import java.util.Map;
 @RequestMapping("/customers/{customerId}/cart")
 public class CartController {
 
-    private final TokenService tokenService;
     private final CartService cartService;
 
-    public CartController(TokenService tokenService, CartService cartService) {
-        this.tokenService = tokenService;
+    public CartController(CartService cartService) {
         this.cartService = cartService;
     }
 
@@ -38,6 +36,7 @@ public class CartController {
         view.addObject("cart" ,cartList);
         view.addObject("customerId", customerId);
         view.addObject("pageTitle", "Cart");
+
         view.setViewName("cart/index.html");
         return view;
     }
@@ -46,6 +45,12 @@ public class CartController {
     public ResponseEntity<Integer> getCartCount(@PathVariable Long customerId) {
         int cartCount = cartService.findCartByCustomer(customerId).size();
         return ResponseEntity.ok(cartCount);
+    }
+
+    @GetMapping("/expired")
+    public ResponseEntity<List<Cart>> getExpiredCarts(@PathVariable Long customerId) {
+        List<Cart> expiredCarts = cartService.findExpiredCartsByCustomer(customerId);
+        return ResponseEntity.ok(expiredCarts);
     }
 
     @GetMapping("/confirm")
@@ -84,6 +89,13 @@ public class CartController {
         List<Cart> cartList = cartService.updateChairAmountInCart(customerId, updateCartItemInput);
 
         return new ResponseEntity<>(cartList, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/expired")
+    public ResponseEntity<Void> deleteExpiredCarts(@PathVariable(name = "customerId") Long customerId) {
+        cartService.deleteExpiredCarts(customerId);
+
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/chair/{chairId}")

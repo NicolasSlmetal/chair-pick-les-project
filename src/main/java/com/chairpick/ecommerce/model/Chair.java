@@ -24,6 +24,10 @@ public class Chair extends DomainEntity{
     private List<Item> items;
     private List<Category> categories;
 
+    public Chair() {
+        super();
+    }
+
     @Override
     public void validate() {
 

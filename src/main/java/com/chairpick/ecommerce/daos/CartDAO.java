@@ -3,6 +3,7 @@ package com.chairpick.ecommerce.daos;
 import com.chairpick.ecommerce.daos.interfaces.ProjectionDAO;
 import com.chairpick.ecommerce.model.Cart;
 import com.chairpick.ecommerce.model.Chair;
+import com.chairpick.ecommerce.model.enums.CartItemStatus;
 import com.chairpick.ecommerce.projections.CartItemSummaryProjection;
 import com.chairpick.ecommerce.utils.query.*;
 import org.springframework.jdbc.core.RowMapper;
@@ -130,7 +131,7 @@ public class CartDAO implements ProjectionDAO<Cart, CartItemSummaryProjection> {
     @Override
     public List<CartItemSummaryProjection> findAndMapForProjection(Map<String, String> parameters) {
         String sql = """
-                SELECT chr_id, chr_name, chr_weight, chr_length, chr_width, chr_height, chr_sell_price, SUM(car_item_amount) AS amount, MAX(car_item_limit) AS car_item_limit
+                SELECT chr_id, chr_name, MAX(car_item_entry_datetime) as max_date, chr_weight, chr_length, chr_width, chr_height, chr_sell_price, SUM(car_item_amount) AS amount, MAX(car_item_limit) AS car_item_limit
                 FROM tb_cart INNER JOIN tb_item ON car_item_id = itm_id
                 INNER JOIN tb_chair ON itm_chair_id = chr_id
                 WHERE car_customer_id = CAST(:customer_id AS INTEGER)
@@ -154,6 +155,7 @@ public class CartDAO implements ProjectionDAO<Cart, CartItemSummaryProjection> {
                                 .build())
                         .price(rs.getDouble("chr_sell_price"))
                         .amount(rs.getInt("amount"))
+                        .entryDateTime(rs.getTimestamp("max_date").toLocalDateTime())
                         .limit(rs.getInt("car_item_limit"))
                         .build());
 
