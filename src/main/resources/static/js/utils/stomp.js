@@ -1,5 +1,6 @@
 import { Client } from '@stomp/stompjs';
 import { createDialogToConfirmExpiredItems } from './countCart.js';
+import { createModal } from './modalCreator.js'
 
 const customerId = document.getElementById("authenticated_customer_id");
 
@@ -8,8 +9,14 @@ const client = new Client({
     onConnect: () => {
         console.log('Connected to WebSocket server');
         client.subscribe('/user/notifications/cart-expiration', (message) => {
+            const cartItems = JSON.parse(message.body);
 
-            createDialogToConfirmExpiredItems([JSON.parse(message.body)]);
+            createDialogToConfirmExpiredItems(cartItems);
+        });
+        client.subscribe('/user/notifications/cart-expiration-advice', (message) => {
+            const body = message.body;
+            createModal("Aviso", body);
+
         });
 
     }

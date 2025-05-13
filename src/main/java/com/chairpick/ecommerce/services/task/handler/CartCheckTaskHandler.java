@@ -1,13 +1,11 @@
 package com.chairpick.ecommerce.services.task.handler;
 
 import com.chairpick.ecommerce.model.Cart;
+import com.chairpick.ecommerce.model.Chair;
 import com.chairpick.ecommerce.model.Item;
 import com.chairpick.ecommerce.model.enums.CartItemStatus;
 import com.chairpick.ecommerce.repositories.CartRepository;
-import com.chairpick.ecommerce.services.task.CartCheckTask;
-import com.chairpick.ecommerce.services.task.CartExpirationNotificationTask;
-import com.chairpick.ecommerce.services.task.Task;
-import com.chairpick.ecommerce.services.task.TaskType;
+import com.chairpick.ecommerce.services.task.*;
 import com.chairpick.ecommerce.services.task.interfaces.TaskConfirmation;
 import com.chairpick.ecommerce.services.task.interfaces.TaskExecutor;
 import org.springframework.stereotype.Service;
@@ -16,9 +14,11 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 public class CartCheckTaskHandler implements TaskHandler {
@@ -34,54 +34,64 @@ public class CartCheckTaskHandler implements TaskHandler {
 
     @Override
     public <T> void handle(Task<T> task, TaskConfirmation confirmation) {
-        confirmation.confirm();
+
         CartCheckTask cartCheckTask = convertToCartCheckTask(task);
 
         Cart cart = cartCheckTask.getInfo();
-        LocalDateTime endTime = cart.getEntryDate().plusMinutes(8);
+
+        LocalDateTime endTime = cart.getEntryDate().plusMinutes(30);
         long remainingTime = ChronoUnit.MINUTES.between(cart.getEntryDate(), endTime);
 
         executorService.schedule(() -> {
+
             List<Cart> carts = cartRepository.findByCustomer(cart.getCustomer());
+
+
+            if (carts.isEmpty()) {
+                confirmation.confirm();
+                return;
+            }
+
             Cart latestCart = carts.stream()
-                    .filter(c -> c.getItem().getId().equals(cart.getItem().getId()))
                     .max(Comparator.comparing(Cart::getEntryDate))
                     .orElse(null);
-            if (latestCart == null) {
-                return;
-            }
 
             if (!latestCart.getId().equals(cart.getId())) {
+                confirmation.confirm();
                 return;
             }
 
-
+            taskExecutor.execute(new CartExpirationAdviceTask(cart));
 
         }, remainingTime - 5, TimeUnit.MINUTES);
 
         executorService.schedule(() -> {
             List<Cart> carts = cartRepository.findByCustomer(cart.getCustomer());
+            if (carts.isEmpty()) {
+                confirmation.confirm();
+                return;
+            }
+
             Cart latestCart = carts.stream()
-                    .filter(c -> c.getItem().getId().equals(cart.getItem().getId()))
                     .max(Comparator.comparing(Cart::getEntryDate))
                     .orElse(null);
-            if (latestCart == null) {
-                return;
-            }
 
             if (!latestCart.getId().equals(cart.getId())) {
+                confirmation.confirm();
                 return;
             }
 
-            carts.forEach(expiredCart -> {
-                expiredCart.setStatus(CartItemStatus.EXPIRED);
-                Item item = expiredCart.getItem();
-                item.setReservedAmount(item.getReservedAmount() - expiredCart.getAmount());
-            });
+            carts.stream()
+                .peek(customerCart -> customerCart.setStatus(CartItemStatus.EXPIRED))
+                .forEach(customerCart -> {
+                    Item item = customerCart.getItem();
+                    item.setReservedAmount(item.getReservedAmount() - customerCart.getAmount());
+                });
 
-            cartRepository.batchUpdateCarts(carts);
+            List<Cart> updatedCarts = cartRepository.batchUpdateCarts(carts);
 
-            taskExecutor.execute(new CartExpirationNotificationTask(cart));
+            taskExecutor.execute(new CartExpirationNotificationTask(updatedCarts));
+            confirmation.confirm();
         }, remainingTime, TimeUnit.MINUTES);
     }
 

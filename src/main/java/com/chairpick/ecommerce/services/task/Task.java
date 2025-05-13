@@ -17,6 +17,7 @@ import java.util.UUID;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = CartCheckTask.class, name = "CHECK_CART"),
         @JsonSubTypes.Type(value = CartExpirationNotificationTask.class, name = "CART_EXPIRATION_NOTIFICATION"),
+        @JsonSubTypes.Type(value = CartExpirationAdviceTask.class, name = "CART_EXPIRATION_ADVICE")
 })
 public abstract class Task<T> {
     T info;

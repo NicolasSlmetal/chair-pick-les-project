@@ -43,7 +43,6 @@ public class RabbitMqInitializer {
                 channel.exchangeDeclare(exchangeName, BuiltinExchangeType.DIRECT, true);
                 channel.queueDeclare(queueName, true, false, false, null);
                 channel.queueBind(queueName, exchangeName, rabbitMqConfig.getRoutingKey(entry.getKey(), entry.getValue()));
-                channel.basicQos(1);
 
                 RabbitMqDestination destination = new RabbitMqDestination(queueName, exchangeName);
                 RabbitMqData rabbitMqData = new RabbitMqData(destination, channel);

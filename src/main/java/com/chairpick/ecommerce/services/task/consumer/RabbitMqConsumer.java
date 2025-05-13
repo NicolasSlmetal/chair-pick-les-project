@@ -10,7 +10,9 @@ import com.chairpick.ecommerce.services.task.broker.RabbitMqDestination;
 import com.chairpick.ecommerce.services.task.handler.TaskHandler;
 import com.chairpick.ecommerce.services.task.handler.TaskHandlerRegistry;
 import com.chairpick.ecommerce.utils.task.TaskTypeParser;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.rabbitmq.client.Channel;
 
@@ -31,6 +33,7 @@ public class RabbitMqConsumer implements TaskConsumer {
 
         try {
             channel.basicConsume(destination.getQueueName(), false, (consumerTag, message) -> {
+                System.out.println("Recceiving message on queue \"" + destination.getQueueName() + "\"");
 
                 String messageBody = new String(message.getBody());
 
@@ -56,8 +59,11 @@ public class RabbitMqConsumer implements TaskConsumer {
 
     private Task<?> deserializeTask(String messageBody) {
         ObjectMapper objectMapper = new ObjectMapper();
-        TaskType taskType = TaskTypeParser.parse(messageBody);
         objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        objectMapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
+
+        TaskType taskType = TaskTypeParser.parse(messageBody);
         if (taskType == null) {
             throw new IllegalArgumentException("Invalid task type in message body");
         }

@@ -61,7 +61,7 @@ public class ChairInitializer {
                 "pricingGroupId", newPricingGroupId,
                 "averageRating", 4.1
         );
-        System.out.println(chairParams);
+
         Long chairId = seeder.executeReturningId(chairInsert, chairParams);
         String supplierQuery = """
                 INSERT INTO tb_supplier

@@ -78,5 +78,13 @@
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
 <script src="/js/customers/profile/index.js" type="module"></script>
+<script type="importmap">
+    {
+      "imports": {
+        "@stomp/stompjs": "https://ga.jspm.io/npm:@stomp/stompjs@7.0.0/esm6/index.js"
+      }
+    }
+</script>
+<script th:src="@{/js/utils/stomp.js}" type="module"></script>
 </body>
 </html>

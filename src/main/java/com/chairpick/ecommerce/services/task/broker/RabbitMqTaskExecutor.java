@@ -4,7 +4,9 @@ import com.chairpick.ecommerce.config.broker.RabbitMqConfig;
 import com.chairpick.ecommerce.services.task.MessageBrokerTaskExecutor;
 import com.chairpick.ecommerce.services.task.Task;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.rabbitmq.client.Channel;
@@ -37,7 +39,7 @@ public class RabbitMqTaskExecutor extends MessageBrokerTaskExecutor {
             RabbitMqConfig rabbitMqConfig = new RabbitMqConfig();
             String routingKey = rabbitMqConfig.getRoutingKey(rabbitMqDestination.getExchangeName(), rabbitMqDestination.getQueueName());
             channel.basicPublish(rabbitMqDestination.getExchangeName(), routingKey, null, serializedTask.getBytes());
-
+            System.out.println("Published message with routing key \"" + routingKey + "\"");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -48,6 +50,8 @@ public class RabbitMqTaskExecutor extends MessageBrokerTaskExecutor {
                 .build();
 
         mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
         return mapper.writeValueAsString(task);
     }
 

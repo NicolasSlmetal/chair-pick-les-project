@@ -46,9 +46,10 @@ export function createDialogToConfirmExpiredItems(items) {
     message.innerText = "Os seguintes itens do carrinho estão expirados:";
     const list = document.createElement("ul");
     list.setAttribute("class", "list");
-    items.forEach(item => {
+    const chairSet = new Set(items.map(item => item.item.chair.name));
+    chairSet.forEach(name => {
         const listItem = document.createElement("li");
-        listItem.innerText = item.item.chair.name;
+        listItem.innerText = name;
         list.appendChild(listItem);
     });
     dialog.appendChild(list);

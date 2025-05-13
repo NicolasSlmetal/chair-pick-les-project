@@ -1,9 +1,6 @@
 package com.chairpick.ecommerce.e2e.utils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 public class ContainerInitializer {
     private static final String DIRNAME = System.getProperty("user.dir");
@@ -12,6 +9,14 @@ public class ContainerInitializer {
         Process process = new ProcessBuilder("docker", "compose", "-f", "docker-compose-test.yaml", "up", "-d", "--build")
                 .directory(new File(DIRNAME))
                 .start();
+
+        BufferedReader readerProcess = new BufferedReader(process.inputReader());
+        StringBuilder sb = new StringBuilder();
+        while (readerProcess.read() != -1) {
+            sb.append(readerProcess.readLine());
+        }
+        System.out.println(sb.toString());
+        readerProcess.close();
         process.waitFor();
 
         if (process.exitValue() != 0) {

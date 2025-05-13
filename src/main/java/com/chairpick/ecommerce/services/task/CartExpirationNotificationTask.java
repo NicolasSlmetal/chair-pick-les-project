@@ -2,13 +2,15 @@ package com.chairpick.ecommerce.services.task;
 
 import com.chairpick.ecommerce.model.Cart;
 
-public class CartExpirationNotificationTask extends Task<Cart> {
+import java.util.List;
+
+public class CartExpirationNotificationTask extends Task<List<Cart>> {
 
     public CartExpirationNotificationTask() {
         super();
     }
 
-    public CartExpirationNotificationTask(Cart cart) {
-        super(cart, TaskType.CART_EXPIRATION_NOTIFICATION);
+    public CartExpirationNotificationTask(List<Cart> info) {
+        super(info, TaskType.CART_EXPIRATION_NOTIFICATION);
     }
 }

@@ -18,11 +18,14 @@ public class RabbitMqDestinationResolver implements TaskDestinationResolver {
         taskTypeQueueMap.put(TaskType.SEND_EMAIL, "email-queue");
         taskTypeQueueMap.put(TaskType.SEND_SMS, "sms-queue");
         taskTypeQueueMap.put(TaskType.CART_EXPIRATION_NOTIFICATION, "notification-queue");
+        taskTypeQueueMap.put(TaskType.CART_EXPIRATION_ADVICE, "notification-queue");
+
         taskTypeExchangeMap.put(TaskType.CHECK_CART, "cart-check-exchange");
         taskTypeExchangeMap.put(TaskType.CHECK_STOCK, "stock-check-exchange");
         taskTypeExchangeMap.put(TaskType.SEND_EMAIL, "email-exchange");
         taskTypeExchangeMap.put(TaskType.SEND_SMS, "sms-exchange");
         taskTypeExchangeMap.put(TaskType.CART_EXPIRATION_NOTIFICATION, "notification-exchange");
+        taskTypeExchangeMap.put(TaskType.CART_EXPIRATION_ADVICE, "notification-exchange");
     }
 
     @Override

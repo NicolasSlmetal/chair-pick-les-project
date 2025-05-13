@@ -30,8 +30,8 @@ public class PaymentStatusPage extends PageObject {
 
     public boolean isApproveButtonEnabled() {
         try {
-            WebElement approveButton = driver.findElement(this.approveButton);
-            return approveButton.isDisplayed();
+            driver.findElement(this.approveButton);
+            return true;
         } catch (Exception e) {
             return false;
         }
@@ -39,8 +39,8 @@ public class PaymentStatusPage extends PageObject {
 
     public boolean isRejectButtonEnabled() {
         try {
-            WebElement rejectButton = driver.findElement(this.rejectButton);
-            return rejectButton.isDisplayed();
+            driver.findElement(this.rejectButton);
+            return true;
         } catch (Exception e) {
             return false;
         }

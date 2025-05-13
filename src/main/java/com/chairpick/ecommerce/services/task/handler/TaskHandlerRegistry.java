@@ -12,9 +12,11 @@ public class TaskHandlerRegistry {
     private final Map<TaskType, TaskHandler> handlers = new HashMap<>();
 
     public TaskHandlerRegistry(CartCheckTaskHandler cartCheckTaskHandler,
-                               CartExpirationNotificationTaskHandler cartExpirationNotificationTaskHandler) {
+                               CartExpirationNotificationTaskHandler cartExpirationNotificationTaskHandler,
+                               CartExpirationAdviceTaskHandler cartExpirationAdviceTaskHandler) {
         handlers.put(TaskType.CHECK_CART, cartCheckTaskHandler);
         handlers.put(TaskType.CART_EXPIRATION_NOTIFICATION, cartExpirationNotificationTaskHandler);
+        handlers.put(TaskType.CART_EXPIRATION_ADVICE, cartExpirationAdviceTaskHandler);
     }
 
     public TaskHandler getHandler(TaskType type) {

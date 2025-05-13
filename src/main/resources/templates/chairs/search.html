@@ -113,4 +113,12 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-typeahead/2.11.0/jquery.typeahead.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
 <script src="/js/chairs/search/index.js" type="module"></script>
+<script type="importmap">
+    {
+      "imports": {
+        "@stomp/stompjs": "https://ga.jspm.io/npm:@stomp/stompjs@7.0.0/esm6/index.js"
+      }
+    }
+</script>
+<script th:src="@{/js/utils/stomp.js}" type="module"></script>
 </body>

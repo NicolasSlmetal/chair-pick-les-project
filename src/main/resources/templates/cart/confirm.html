@@ -80,5 +80,13 @@
     </section>
 </main>
 <script src="/js/cart/confirm/index.js" type="module"></script>
+<script type="importmap">
+    {
+      "imports": {
+        "@stomp/stompjs": "https://ga.jspm.io/npm:@stomp/stompjs@7.0.0/esm6/index.js"
+      }
+    }
+</script>
+<script th:src="@{/js/utils/stomp.js}" type="module"></script>
 </body>
 </html>

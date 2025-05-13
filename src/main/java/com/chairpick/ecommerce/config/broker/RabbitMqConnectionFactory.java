@@ -15,7 +15,7 @@ public class RabbitMqConnectionFactory implements BrokerConnectionFactory {
         try {
             return factory.newConnection();
         } catch (Exception e) {
-            throw new RuntimeException("Failed to create RabbitMQ connection", e);
+            throw new RuntimeException("Failed to create RabbitMQ connection: " + e.getMessage());
         }
     }
 }
