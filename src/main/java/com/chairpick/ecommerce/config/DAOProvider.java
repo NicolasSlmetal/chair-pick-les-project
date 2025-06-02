@@ -1,15 +1,13 @@
 package com.chairpick.ecommerce.config;
 
 import com.chairpick.ecommerce.daos.*;
-import com.chairpick.ecommerce.daos.interfaces.GenericDAO;
-import com.chairpick.ecommerce.daos.interfaces.GenericPaginatedDAO;
-import com.chairpick.ecommerce.daos.interfaces.PaginatedProjectionDAO;
-import com.chairpick.ecommerce.daos.interfaces.ProjectionDAO;
+import com.chairpick.ecommerce.daos.interfaces.*;
 import com.chairpick.ecommerce.model.*;
 import com.chairpick.ecommerce.projections.CartItemSummaryProjection;
 import com.chairpick.ecommerce.projections.ChairAvailableProjection;
 import com.chairpick.ecommerce.utils.query.mappers.interfaces.GeneralObjectQueryMapper;
 import com.chairpick.ecommerce.utils.query.mappers.interfaces.ObjectQueryMapper;
+import io.qdrant.client.QdrantClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -74,6 +72,11 @@ public class DAOProvider {
     @Bean
     GenericDAO<Coupon> provideCouponDAO(NamedParameterJdbcTemplate jdbcTemplate, RowMapper<Coupon> rowMapper, ObjectQueryMapper<Coupon> queryMapper) {
         return new CouponDAO(jdbcTemplate, queryMapper, rowMapper);
+    }
+
+    @Bean
+    SemanticDAO<Chair> provideSemanticChairDAO(QdrantClient qdrantClient) {
+        return new SemanticChairDAO(qdrantClient);
     }
 
 }

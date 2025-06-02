@@ -197,6 +197,27 @@ public class Where {
         return this;
     }
 
+    public Where integerIn(String column, String... value) {
+        selectTable.append(column)
+                .append(" IN (");
+        StringBuilder subQueryBuilder = new StringBuilder();
+        int length = value.length;
+        for (String val : value) {
+            String identifierValue = column.concat(String.valueOf(length--));
+            subQueryBuilder.append("CAST(");
+            subQueryBuilder.append(":")
+                    .append(identifierValue);
+            subQueryBuilder.append(" AS INTEGER)");
+            selectTable.appendValue(identifierValue, val);
+            if (length > 0) {
+                subQueryBuilder.append(", ");
+            }
+        }
+        selectTable.append(subQueryBuilder.toString());
+        selectTable.append(")");
+        return this;
+    }
+
     public Where in(String column, String... value) {
         selectTable.append(column)
                 .append(" IN (");

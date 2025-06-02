@@ -13,6 +13,12 @@ public class ChairAvailableProjection {
 
     private Long id;
     private String name;
+    private String description;
+    private double width;
+    private double height;
+    private double length;
+    private double weight;
+    private double averageRating;
     private double price;
     private List<Category> categories;
     private int totalResults;

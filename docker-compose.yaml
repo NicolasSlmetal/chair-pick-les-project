@@ -1,4 +1,21 @@
 services:
+  qdrant:
+    image: qdrant/qdrant:v1.14.1
+    container_name: qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant-storage:/qdrant/storage
+  chat-bot:
+    container_name: chat-bot
+    image: ollama/ollama:0.8.0
+    ports:
+      - "11434:11434"
+    environment:
+      OLLAMA_HOST: 0.0.0.0
+    volumes:
+      - ollama-models:/models
   rabbit-mq:
     container_name: rabbit-mq
     image: rabbitmq:4.0.1-management
@@ -23,6 +40,8 @@ services:
           - dev-database
 volumes:
   dev-database:
+  ollama-models:
+  qdrant-storage:
 networks:
   dev-network:
     driver: bridge

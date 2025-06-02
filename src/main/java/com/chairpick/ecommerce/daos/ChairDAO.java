@@ -1,10 +1,8 @@
 package com.chairpick.ecommerce.daos;
 
 import com.chairpick.ecommerce.daos.interfaces.PaginatedProjectionDAO;
-import com.chairpick.ecommerce.daos.interfaces.ProjectionDAO;
 import com.chairpick.ecommerce.model.Category;
 import com.chairpick.ecommerce.model.Chair;
-import com.chairpick.ecommerce.model.Item;
 import com.chairpick.ecommerce.projections.ChairAvailableProjection;
 import com.chairpick.ecommerce.utils.pagination.PageInfo;
 import com.chairpick.ecommerce.utils.pagination.PageOptions;
@@ -20,7 +18,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
-@Repository
 public class ChairDAO implements PaginatedProjectionDAO<Chair, ChairAvailableProjection> {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
@@ -84,6 +81,12 @@ public class ChairDAO implements PaginatedProjectionDAO<Chair, ChairAvailablePro
                         .builder()
                         .id(rs.getLong("chr_id"))
                         .name(rs.getString("chr_name"))
+                        .description(rs.getString("chr_description"))
+                        .width(rs.getDouble("chr_width"))
+                        .height(rs.getDouble("chr_height"))
+                        .length(rs.getDouble("chr_length"))
+                        .weight(rs.getDouble("chr_weight"))
+                        .averageRating(rs.getDouble("chr_average_rating"))
                         .price(rs.getDouble("chr_sell_price"))
                         .categories(categories)
                         .totalResults(rs.getInt("total_count"))

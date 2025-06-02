@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/chatbot.css}">
+
+    <title>ChatBot de recomendação</title>
+</head>
+<body>
+<header class="header">
+    <a class="back__button" th:href="@{/}"><img th:src="@{/assets/left.svg}"></a>
+</header>
+<div class="chat__container">
+    <div class="message__container bot__message active"><p class="message__text">Me conte o que você procura em uma cadeira.</p><img class="profile__image" th:src="@{/assets/bot.png}"></div>
+</div>
+<div class="text__input__container">
+    <input type="text" id="user__input" class="user__input" placeholder="Pesquise cadeiras por aqui">
+    <button id="send__button" class="send__button">Enviar</button>
+</div>
+<script th:src="@{/js/chatbot/index.js}" type="module"></script>
+</body>
+</html>

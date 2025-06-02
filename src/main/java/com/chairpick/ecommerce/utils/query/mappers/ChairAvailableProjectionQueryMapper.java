@@ -18,6 +18,12 @@ public class ChairAvailableProjectionQueryMapper implements GeneralObjectQueryMa
                 .selectingColumnsFromTable("tb_chair", "chr_id",
                         "chr_name",
                         "chr_sell_price",
+                        "chr_description",
+                        "chr_width",
+                        "chr_length",
+                        "chr_height",
+                        "chr_weight",
+                        "chr_average_rating",
                         "cat_name",
                         "COUNT(*) AS total_count",
                         "SUM(itm_amount) as total_amount");
@@ -28,14 +34,41 @@ public class ChairAvailableProjectionQueryMapper implements GeneralObjectQueryMa
                 .innerJoinOn("chr_id", "chc_chair_id")
                 .joinDifferentTables("tb_chair_category", "tb_category")
                 .innerJoinOn("chc_category_id", "cat_id");
-        QueryResult with = selectTable
-                .endingOptions()
-                .groupBy("chr_id", "cat_name")
-                .having()
-                .sumHigherThan("itm_amount", "0")
-                .and()
-                .sumHigherThanOtherColumn("itm_amount", "SUM(itm_reserved)")
-                .end().build();
+
+
+        QueryResult with = null;
+        if (parameters.isEmpty()) {
+            with = selectTable.endingOptions()
+                    .groupBy("chr_id", "cat_name")
+                    .having()
+                    .sumHigherThan("itm_amount", "0")
+                    .and()
+                    .sumHigherThanOtherColumn("itm_amount", "SUM(itm_reserved)")
+                    .end().build();
+        }
+        Where where = selectTable.where();
+        int size = parameters.size();
+        for (Map.Entry<String, String> entry : parameters.entrySet()) {
+            if (entry.getKey().equals("ids")) {
+                String[] ids = entry.getValue().split(",");
+                where.integerIn("chr_id", ids);
+            }
+
+            if (--size > 0) {
+                where.and();
+            }
+        }
+        if (with == null) {
+            with = selectTable
+                    .endingOptions()
+                    .groupBy("chr_id", "cat_name")
+                    .having()
+                    .sumHigherThan("itm_amount", "0")
+                    .and()
+                    .sumHigherThanOtherColumn("itm_amount", "SUM(itm_reserved)")
+                    .end().build();
+        }
+
 
         SqlQueryBuilder nextQueryBuilder = SqlQueryBuilder.create();
         nextQueryBuilder = nextQueryBuilder.withClause().with("sub_query", with).end();
@@ -45,6 +78,12 @@ public class ChairAvailableProjectionQueryMapper implements GeneralObjectQueryMa
                         "chr_name",
                         "chr_sell_price",
                         "cat_name",
+                        "chr_description",
+                        "chr_width",
+                        "chr_length",
+                        "chr_height",
+                        "chr_average_rating",
+                        "chr_weight",
                         "total_count",
                         "total_amount");
         selectWithTable.where().greaterThan("total_amount", "0");

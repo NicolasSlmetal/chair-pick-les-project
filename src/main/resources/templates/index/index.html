@@ -95,14 +95,7 @@
             <hr>
         </section>
     </div>
-    <section class="chatbot_redirect">
-        <h2>Chatbot</h2>
-        <div>
-            <img class="profile__image" th:src="@{/assets/bot.png}">
-            <p>Converse com nosso chatbot para receber recomendações personalizadas de cadeiras.</p>
-        </div>
-        <a class="action__button" href="ia/index.html">Acesse o chatbot</a>
-    </section>
+    <div th:replace="fragments/bot-button :: a"></div>
 </main>
 
 <footer class="footer">

@@ -2,12 +2,12 @@ package com.chairpick.ecommerce.repositories;
 
 import com.chairpick.ecommerce.daos.interfaces.GenericDAO;
 import com.chairpick.ecommerce.daos.interfaces.PaginatedProjectionDAO;
-import com.chairpick.ecommerce.daos.interfaces.ProjectionDAO;
-import com.chairpick.ecommerce.io.output.ChairDTO;
+import com.chairpick.ecommerce.daos.interfaces.SemanticDAO;
 import com.chairpick.ecommerce.model.Category;
 import com.chairpick.ecommerce.model.Chair;
 import com.chairpick.ecommerce.model.Item;
 import com.chairpick.ecommerce.projections.ChairAvailableProjection;
+import com.chairpick.ecommerce.projections.SemanticResultProjection;
 import com.chairpick.ecommerce.utils.pagination.PageInfo;
 import com.chairpick.ecommerce.utils.pagination.PageOptions;
 import org.springframework.stereotype.Repository;
@@ -19,10 +19,12 @@ import java.util.stream.Collectors;
 public class ChairRepository {
 
     private final PaginatedProjectionDAO<Chair, ChairAvailableProjection> chairDAO;
+    private final SemanticDAO<Chair> semanticChairDAO;
     private final GenericDAO<Item> itemDAO;
 
-    public ChairRepository(PaginatedProjectionDAO<Chair, ChairAvailableProjection> chairDAO, GenericDAO<Item> itemDAO) {
+    public ChairRepository(PaginatedProjectionDAO<Chair, ChairAvailableProjection> chairDAO, SemanticDAO<Chair> semanticChairDAO, GenericDAO<Item> itemDAO) {
         this.chairDAO = chairDAO;
+        this.semanticChairDAO = semanticChairDAO;
         this.itemDAO = itemDAO;
     }
 
@@ -53,6 +55,21 @@ public class ChairRepository {
 
     public Optional<Chair> findById(Long id) {
         return chairDAO.findById(id);
+    }
+
+    public List<ChairAvailableProjection> findBySemanticSearch(float[] vector) {
+        List<SemanticResultProjection> results = semanticChairDAO.findByVector(vector);
+
+        if (results.isEmpty()) {
+            return List.of();
+        }
+
+        Map<String, String> parameters = Map.of("ids", results.stream()
+                .map(SemanticResultProjection::getId)
+                .map(String::valueOf)
+                .collect(Collectors.joining(",")));
+
+        return chairDAO.findAndMapForProjection(parameters);
     }
 
 }

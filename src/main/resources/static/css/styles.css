@@ -10,6 +10,28 @@
     --green-color: #28a745;
 }
 
+.bot_button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    justify-content: space-between;
+    display: flex;
+    gap: 20px;
+    border-radius: 24px;
+    border: 1px solid var(--text-color);
+    color: var(--button-color);
+    flex-direction: row;
+    align-items: center;
+    background-color: var(--bg-color);
+    padding: 1em;
+}
+
+.bot_button:hover {
+    cursor: pointer;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+}
+
 
 
 * {
