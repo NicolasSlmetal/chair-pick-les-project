@@ -110,6 +110,8 @@ public class SwapTest {
         modal.confirm();
 
         wait.until(ExpectedConditions.urlToBe(BASE_URL + "admin/orders/1/payment"));
+
+        Thread.sleep(1000);
         Assertions.assertFalse(paymentStatusPage.isRejectButtonEnabled());
         Assertions.assertFalse(paymentStatusPage.isApproveButtonEnabled());
 
@@ -126,12 +128,14 @@ public class SwapTest {
         modal.confirm();
 
         wait.until(ExpectedConditions.urlToBe(BASE_URL + "admin/orders/1"));
-
+        wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector("table")));
         Assertions.assertEquals(OrderStatus.DELIVERING.getDescription(), orderItemsPage.getStatusOfRow(1));
 
         modal = orderItemsPage.confirmDeliveryOfRow(1);
         modal.confirm();
         wait.until(ExpectedConditions.urlToBe(BASE_URL + "admin/orders/1"));
+        wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector("table")));
+        Thread.sleep(1000);
         Assertions.assertEquals(OrderStatus.DELIVERED.getDescription(), orderItemsPage.getStatusOfRow(1));
 
         orderItemsPage.clickBackButton();
@@ -152,6 +156,7 @@ public class SwapTest {
         swapModal.clickSwapButton();
         wait.until(ExpectedConditions.urlToBe(BASE_URL + "customers/1"));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("section.APPROVED")));
+        Thread.sleep(1000);
         profilePage.scrollIntoSectionOfOrders(ProfilePage.OrdersStatus.APPROVED);
 
         ProfilePage.Card swapCard = profilePage.getCardFromSection(ProfilePage.OrdersStatus.APPROVED, 1, 1);
@@ -190,7 +195,7 @@ public class SwapTest {
         confirmSwapModal.clickConfirmButton();
         wait.until(ExpectedConditions.urlToBe(BASE_URL + "admin/orders/1/swaps"));
         wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector("table")));
-
+        Thread.sleep(1000);
         String statusAfterConfirm = swapPage.getStatusOfRow(1);
 
         Assertions.assertEquals(OrderStatus.SWAPPED.getDescription(), statusAfterConfirm);
@@ -264,6 +269,7 @@ public class SwapTest {
         modal.confirm();
 
         wait.until(ExpectedConditions.urlToBe(BASE_URL + "admin/orders/1/payment"));
+        Thread.sleep(1000);
         Assertions.assertFalse(paymentStatusPage.isRejectButtonEnabled());
         Assertions.assertFalse(paymentStatusPage.isApproveButtonEnabled());
 
@@ -280,12 +286,14 @@ public class SwapTest {
         modal.confirm();
 
         wait.until(ExpectedConditions.urlToBe(BASE_URL + "admin/orders/1"));
-
+        wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector("table")));
         Assertions.assertEquals(OrderStatus.DELIVERING.getDescription(), orderItemsPage.getStatusOfRow(1));
 
         modal = orderItemsPage.confirmDeliveryOfRow(1);
         modal.confirm();
         wait.until(ExpectedConditions.urlToBe(BASE_URL + "admin/orders/1"));
+        wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector("table")));
+        Thread.sleep(1000);
         Assertions.assertEquals(OrderStatus.DELIVERED.getDescription(), orderItemsPage.getStatusOfRow(1));
 
         orderItemsPage.clickBackButton();
@@ -306,6 +314,7 @@ public class SwapTest {
         swapModal.clickSwapButton();
         wait.until(ExpectedConditions.urlToBe(BASE_URL + "customers/1"));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("section.APPROVED")));
+        Thread.sleep(1000);
         profilePage.scrollIntoSectionOfOrders(ProfilePage.OrdersStatus.APPROVED);
 
         ProfilePage.Card swapCard = profilePage.getCardFromSection(ProfilePage.OrdersStatus.APPROVED, 1, 1);
@@ -334,6 +343,7 @@ public class SwapTest {
         modal.confirm();
         wait.until(ExpectedConditions.urlToBe(BASE_URL + "admin/orders/1/swaps"));
         wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector("table")));
+        Thread.sleep(1000);
         String statusAfterApprove = swapPage.getStatusOfRow(1);
         Assertions.assertEquals(OrderStatus.SWAP_REPROVED.getDescription(), statusAfterApprove);
         swapPage.clickBackButton();

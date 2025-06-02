@@ -61,8 +61,7 @@ function sendMessage() {
     userPromptContainer.scrollIntoView({ behavior: "smooth" });
     activeElement(userPromptContainer, 10);
     descriptionMap.clear();
-    messageContainerMap.clear();
-    setTimeout(() => generateTextAnswerBasedInUserInput(message), 500);
+    generateTextAnswerBasedInUserInput(message);
 }
 
 function generateTextAnswerBasedInUserInput(prompt) {

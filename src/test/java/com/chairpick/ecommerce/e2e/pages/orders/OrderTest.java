@@ -38,6 +38,7 @@ public class OrderTest {
     public static void beforeAll() {
         try {
             ContainerInitializer.up();
+            Thread.sleep(1000);
         } catch (Exception e) {
             throw new RuntimeException("Failed to initialize containers", e);
         }
@@ -58,7 +59,7 @@ public class OrderTest {
     }
 
     @Test
-    public void shouldMakeAnOrderAndDeliver() {
+    public void shouldMakeAnOrderAndDeliver() throws InterruptedException {
         driver.get(BASE_URL);
         wait.until(ExpectedConditions.urlToBe(BASE_URL));
 
@@ -99,6 +100,7 @@ public class OrderTest {
         wait.until(ExpectedConditions.urlToBe(BASE_URL + "admin/customers"));
         driver.get(BASE_URL + "admin/orders");
         wait.until(ExpectedConditions.urlToBe(BASE_URL + "admin/orders"));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("table")));
         AdminOrderIndexPage adminOrderIndexPage = new AdminOrderIndexPage(driver);
         OrderActions orderActions = adminOrderIndexPage.getMenuDivOfRow(1);
 
@@ -109,7 +111,10 @@ public class OrderTest {
         ConfirmModal modal = paymentStatusPage.clickApprove();
         modal.confirm();
 
+
         wait.until(ExpectedConditions.urlToBe(BASE_URL + "admin/orders/1/payment"));
+        driver.navigate().refresh();
+
         Assertions.assertFalse(paymentStatusPage.isRejectButtonEnabled());
         Assertions.assertFalse(paymentStatusPage.isApproveButtonEnabled());
 
@@ -126,12 +131,13 @@ public class OrderTest {
         modal.confirm();
 
         wait.until(ExpectedConditions.urlToBe(BASE_URL + "admin/orders/1"));
-
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("table")));
         Assertions.assertEquals(OrderStatus.DELIVERING.getDescription(), orderItemsPage.getStatusOfRow(1));
 
         modal = orderItemsPage.confirmDeliveryOfRow(1);
         modal.confirm();
         wait.until(ExpectedConditions.urlToBe(BASE_URL + "admin/orders/1"));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("table")));
         Assertions.assertEquals(OrderStatus.DELIVERED.getDescription(), orderItemsPage.getStatusOfRow(1));
 
         orderItemsPage.clickBackButton();
@@ -157,7 +163,7 @@ public class OrderTest {
     }
 
     @Test
-    public void shouldReproveOrderExcluding() {
+    public void shouldReproveOrderExcluding() throws InterruptedException {
         driver.get(BASE_URL);
         wait.until(ExpectedConditions.urlToBe(BASE_URL));
 
@@ -193,6 +199,7 @@ public class OrderTest {
         ConfirmModal modal = paymentStatusPage.clickReject();
         modal.confirm();
 
+        Thread.sleep(1000);
         wait.until(ExpectedConditions.urlToBe(BASE_URL + "admin/orders/1/payment"));
         Assertions.assertFalse(paymentStatusPage.isRejectButtonEnabled());
         Assertions.assertFalse(paymentStatusPage.isApproveButtonEnabled());
