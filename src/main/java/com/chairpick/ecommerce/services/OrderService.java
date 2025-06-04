@@ -16,6 +16,7 @@ import com.chairpick.ecommerce.model.payment.strategy.CouponsPayment;
 import com.chairpick.ecommerce.model.payment.strategy.CreditCardsAndCouponsPayment;
 import com.chairpick.ecommerce.model.payment.strategy.CreditCardsPayment;
 import com.chairpick.ecommerce.model.payment.strategy.PaymentStrategy;
+import com.chairpick.ecommerce.projections.OrderReportByChairs;
 import com.chairpick.ecommerce.repositories.*;
 import com.chairpick.ecommerce.utils.pagination.PageInfo;
 import org.springframework.stereotype.Service;
@@ -180,6 +181,21 @@ public class OrderService {
 
     public List<Order> findAllOrders(Map<String, String> parameters) {
         return orderRepository.findAllOrders(parameters);
+    }
+
+    public List<OrderReportByChairs> findAllReportsByChair(LocalDate startDate, LocalDate endDate) {
+        LocalDate now = LocalDate.now();
+
+        if (startDate == null || startDate.isAfter(now)) {
+            startDate = now.minusMonths(1);
+        }
+
+        if (endDate == null || endDate.isAfter(now)) {
+            endDate = now;
+        }
+
+        return orderRepository.findAllOrderReportsByChair(startDate, endDate);
+
     }
 
     public PageInfo<Order> findAllByCustomer(Long customerId, Map<String, String> parameters) {

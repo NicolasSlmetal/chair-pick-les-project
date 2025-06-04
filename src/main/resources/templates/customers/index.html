@@ -10,7 +10,7 @@
 <h1>Gerenciamento de clientes</h1>
 <main>
     <div class="button__group">
-        <a class="action__button dashboard disabled">Dashboard</a>
+        <a class="action__button dashboard" th:href="@{/admin/orders/dashboard}">Dashboard</a>
         <a class="action__button stock disabled">Estoque</a>
         <a class="action__button orders " th:href="@{/admin/orders}">Pedidos</a>
         <a class="action__button logout" th:href="@{/logout}">Sair</a>

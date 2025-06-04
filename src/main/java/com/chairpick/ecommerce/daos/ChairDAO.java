@@ -12,9 +12,7 @@ import com.chairpick.ecommerce.utils.query.SqlQueryBuilder;
 import com.chairpick.ecommerce.utils.query.Where;
 import com.chairpick.ecommerce.utils.query.mappers.interfaces.GeneralObjectQueryMapper;
 import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Repository;
 
 import java.util.*;
 

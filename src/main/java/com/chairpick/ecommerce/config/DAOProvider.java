@@ -5,6 +5,8 @@ import com.chairpick.ecommerce.daos.interfaces.*;
 import com.chairpick.ecommerce.model.*;
 import com.chairpick.ecommerce.projections.CartItemSummaryProjection;
 import com.chairpick.ecommerce.projections.ChairAvailableProjection;
+import com.chairpick.ecommerce.projections.OrderReportByCategory;
+import com.chairpick.ecommerce.projections.OrderReportByChairs;
 import com.chairpick.ecommerce.utils.query.mappers.interfaces.GeneralObjectQueryMapper;
 import com.chairpick.ecommerce.utils.query.mappers.interfaces.ObjectQueryMapper;
 import io.qdrant.client.QdrantClient;
@@ -22,6 +24,11 @@ public class DAOProvider {
     @Bean
     PaginatedProjectionDAO<Chair, ChairAvailableProjection> provideChairDAO(NamedParameterJdbcTemplate jdbcTemplate, ResultSetExtractor<List<Chair>> extractor, GeneralObjectQueryMapper<ChairAvailableProjection> projectionMapper) {
         return new ChairDAO(jdbcTemplate, extractor, projectionMapper);
+    }
+
+    @Bean
+    ProjectionDAO<Category, OrderReportByCategory> provideCategoryDAO(NamedParameterJdbcTemplate jdbcTemplate, ObjectQueryMapper<OrderReportByCategory> projectionQueryMapper) {
+        return new CategoryDAO(jdbcTemplate, projectionQueryMapper);
     }
 
     @Bean
@@ -55,8 +62,8 @@ public class DAOProvider {
     }
 
     @Bean
-    GenericPaginatedDAO<Order> provideOrderDAO(NamedParameterJdbcTemplate jdbcTemplate, GeneralObjectQueryMapper<Order> queryMapper, ResultSetExtractor<List<Order>> extractor) {
-        return new OrderDAO(jdbcTemplate, queryMapper, extractor);
+    PaginatedWithProjectionDAO<Order, OrderReportByChairs> provideOrderDAO(NamedParameterJdbcTemplate jdbcTemplate, GeneralObjectQueryMapper<Order> queryMapper, ObjectQueryMapper<OrderReportByChairs> projectionQueryMapper, ResultSetExtractor<List<Order>> extractor) {
+        return new OrderDAO(jdbcTemplate, queryMapper, projectionQueryMapper, extractor);
     }
 
     @Bean

@@ -10,6 +10,7 @@ import com.chairpick.ecommerce.model.Order;
 import com.chairpick.ecommerce.model.OrderItem;
 import com.chairpick.ecommerce.model.enums.CouponType;
 import com.chairpick.ecommerce.projections.CartItemSummaryProjection;
+import com.chairpick.ecommerce.projections.OrderReportByChairs;
 import com.chairpick.ecommerce.services.CartService;
 import com.chairpick.ecommerce.services.CouponService;
 import com.chairpick.ecommerce.services.CreditCardService;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -85,6 +87,22 @@ public class OrderController {
         view.addObject("items", orderItems);
         view.addObject("orderId", orderId);
         return view;
+    }
+
+    @GetMapping("admin/orders/dashboard")
+    public ModelAndView redirectToOrdersDashboard() {
+        ModelAndView view = new ModelAndView("orders/dashboard.html");
+        view.addObject("pageTitle", "Orders Dashboard");
+        return view;
+    }
+
+    @GetMapping("admin/orders/reports")
+    public ResponseEntity<List<OrderReportByChairs>> findOrderReportsByChair(@RequestParam(
+            name ="startDate", defaultValue = "#{T(java.time.LocalDate).now().minusMonths(1)}") LocalDate startDate,
+                                                                             @RequestParam(name = "endDate",
+                                                                             defaultValue = "#{T(java.time.LocalDate).now()}") LocalDate endDate) {
+        List<OrderReportByChairs> reports = orderService.findAllReportsByChair(startDate, endDate);
+        return ResponseEntity.ok(reports);
     }
 
     @PostMapping("customers/{customerId}/orders")

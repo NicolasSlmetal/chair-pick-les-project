@@ -1,27 +1,30 @@
 package com.chairpick.ecommerce.daos;
 
-import com.chairpick.ecommerce.daos.interfaces.GenericDAO;
-import com.chairpick.ecommerce.daos.interfaces.GenericPaginatedDAO;
+import com.chairpick.ecommerce.daos.interfaces.PaginatedWithProjectionDAO;
 import com.chairpick.ecommerce.model.*;
 import com.chairpick.ecommerce.model.enums.OrderStatus;
+import com.chairpick.ecommerce.projections.OrderReportByChairs;
 import com.chairpick.ecommerce.utils.pagination.PageInfo;
 import com.chairpick.ecommerce.utils.pagination.PageOptions;
 import com.chairpick.ecommerce.utils.query.*;
 import com.chairpick.ecommerce.utils.query.mappers.interfaces.GeneralObjectQueryMapper;
+import com.chairpick.ecommerce.utils.query.mappers.interfaces.ObjectQueryMapper;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.util.*;
 
-public class OrderDAO implements GenericPaginatedDAO<Order> {
+public class OrderDAO implements PaginatedWithProjectionDAO<Order, OrderReportByChairs> {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final GeneralObjectQueryMapper<Order> queryMapper;
+    private final ObjectQueryMapper<OrderReportByChairs> projectionQueryMapper;
     private final ResultSetExtractor<List<Order>> extractor;
 
-    public OrderDAO(NamedParameterJdbcTemplate jdbcTemplate, GeneralObjectQueryMapper<Order> queryMapper , ResultSetExtractor<List<Order>> extractor) {
+    public OrderDAO(NamedParameterJdbcTemplate jdbcTemplate, GeneralObjectQueryMapper<Order> queryMapper, ObjectQueryMapper<OrderReportByChairs> projectionQueryMapper, ResultSetExtractor<List<Order>> extractor) {
         this.jdbcTemplate = jdbcTemplate;
         this.queryMapper = queryMapper;
+        this.projectionQueryMapper = projectionQueryMapper;
         this.extractor = extractor;
     }
 
@@ -166,6 +169,24 @@ public class OrderDAO implements GenericPaginatedDAO<Order> {
             }
 
             return new PageInfo<>(totalPages, orders.stream().toList());
+        });
+    }
+
+    @Override
+    public List<OrderReportByChairs> findAndMapForProjection(Map<String, String> parameters) {
+        QueryResult sql = projectionQueryMapper.parseParameters(parameters);
+        return jdbcTemplate.query(sql.query(), sql.parameters(), (rs) -> {
+            List<OrderReportByChairs> reports = new ArrayList<>();
+            while (rs.next()) {
+                OrderReportByChairs report = OrderReportByChairs
+                        .builder()
+                        .chairName(rs.getString("chr_name"))
+                        .date(rs.getDate("ord_created_date").toLocalDate())
+                        .soldValue(rs.getDouble("total_value"))
+                        .build();
+                reports.add(report);
+            }
+            return reports;
         });
     }
 }

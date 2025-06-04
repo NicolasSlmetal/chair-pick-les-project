@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <title>Dashboard</title>
+</head>
+<body>
+<h1>Dashboard de vendas</h1>
+<main>
+    <div class="button__group">
+        <a class="action__button customers" th:href="@{/admin/customers}">Clientes</a>
+        <a class="action__button stock disabled">Estoque</a>
+        <a class="action__button orders " th:href="@{/admin/orders}">Pedidos</a>
+        <a class="action__button logout" th:href="@{/logout}">Sair</a>
+    </div>
+    <section class="border">
+        <h2>Gráfico de vendas</h2>
+        <div class="border">
+            <div class="row">
+                <div class="column">
+                    <label for="date1-chairs">Data inicial</label>
+                    <input type="date" id="date1-chairs"
+                           th:with="initialDate=${#temporals.createNow().minusMonths(1)}"
+                           th:value="${#temporals.format(initialDate, 'yyyy-MM-dd')}">
+                </div>
+                <div class="column">
+                    <label for="date2-chairs">Data final</label>
+                    <input type="date" id="date2-chairs" th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+                </div>
+
+            </div>
+
+            <div id="chart1">
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="column">
+                <label for="date1-categories">Data inicial</label>
+                <input type="date" id="date1-categories"
+                       th:with="initialDate=${#temporals.createNow().minusMonths(1)}"
+                       th:value="${#temporals.format(initialDate, 'yyyy-MM-dd')}">
+            </div>
+            <div class="column">
+                <label for="date2-categories">Data final</label>
+                <input type="date" id="date2-categories" th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+            </div>
+        </div>
+        <div id="chart2"></div>
+    </section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script th:src="@{/js/orders/dashboard/index.js}" type="module"></script>
+
+</body>
+</html>

@@ -74,10 +74,40 @@ public class Where {
     public Where notEqualsString(String column, String value) {
         long occurrences = selectTable.getSqlQueryBuilder().countParameterOccurrences(column);
         selectTable.append(column)
-                .append(" != '")
+                .append(" <> '")
                 .append(String.format(":%s", column + occurrences))
                 .append("'");
         selectTable.appendValue(column + occurrences, value);
+        return this;
+    }
+
+    public Where betweenString(String column, String value1, String value2) {
+        long occurrences = selectTable.getSqlQueryBuilder().countParameterOccurrences(column);
+        selectTable
+                .append(column)
+                .append(" ")
+                .append("BETWEEN ")
+                .append(String.format(":%s", column + (occurrences + 1)))
+                .append(" AND ")
+                .append(String.format(":%s", column + (occurrences + 2)));
+        selectTable.appendValue(column + (occurrences + 1), value1);
+        selectTable.appendValue(column + (occurrences + 2), value2);
+        return this;
+    }
+
+    public Where betweenDate(String column, String value1, String value2) {
+        long occurrences = selectTable.getSqlQueryBuilder().countParameterOccurrences(column);
+        selectTable
+                .append(column)
+                .append(" ")
+                .append("BETWEEN ")
+                .append("TO_DATE(")
+                .append(String.format(":%s", column + (occurrences + 1)))
+                .append(", 'YYYY-MM-DD') AND TO_DATE(")
+                .append(String.format(":%s", column + (occurrences + 2)))
+                .append(", 'YYYY-MM-DD')");
+        selectTable.appendValue(column + (occurrences + 1), value1);
+        selectTable.appendValue(column + (occurrences + 2), value2);
         return this;
     }
 

@@ -2,17 +2,20 @@ package com.chairpick.ecommerce.repositories;
 
 import com.chairpick.ecommerce.daos.CompositePaymentDAO;
 import com.chairpick.ecommerce.daos.interfaces.GenericPaginatedDAO;
+import com.chairpick.ecommerce.daos.interfaces.PaginatedWithProjectionDAO;
 import com.chairpick.ecommerce.daos.registry.PaymentDAORegistry;
 import com.chairpick.ecommerce.daos.interfaces.GenericDAO;
 import com.chairpick.ecommerce.daos.interfaces.OrderPaymentDAO;
 import com.chairpick.ecommerce.io.output.PaymentDTO;
 import com.chairpick.ecommerce.model.*;
 import com.chairpick.ecommerce.model.enums.OrderStatus;
+import com.chairpick.ecommerce.projections.OrderReportByChairs;
 import com.chairpick.ecommerce.utils.pagination.PageInfo;
 import com.chairpick.ecommerce.utils.pagination.PageOptions;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,14 +23,14 @@ import java.util.Optional;
 @Repository
 public class OrderRepository {
 
-    private final GenericPaginatedDAO<Order> orderDAO;
+    private final PaginatedWithProjectionDAO<Order, OrderReportByChairs> orderDAO;
     private final GenericDAO<Item> itemDAO;
     private final GenericDAO<Cart> cartDAO;
     private final GenericDAO<Coupon> couponDAO;
     private final GenericDAO<OrderItem> orderItemDAO;
     private final PaymentDAORegistry paymentDAORegistry;
 
-    public OrderRepository(GenericPaginatedDAO<Order> orderDAO, GenericDAO<Item> itemDAO, GenericDAO<Cart> cartDAO, GenericDAO<Coupon> couponDAO, GenericDAO<OrderItem> orderItemDAO, PaymentDAORegistry paymentDAORegistry) {
+    public OrderRepository(PaginatedWithProjectionDAO<Order, OrderReportByChairs> orderDAO, GenericDAO<Item> itemDAO, GenericDAO<Cart> cartDAO, GenericDAO<Coupon> couponDAO, GenericDAO<OrderItem> orderItemDAO, PaymentDAORegistry paymentDAORegistry) {
         this.orderDAO = orderDAO;
         this.itemDAO = itemDAO;
         this.cartDAO = cartDAO;
@@ -112,6 +115,15 @@ public class OrderRepository {
             order.setItems(orderItems);
         });
         return paginatedOrders;
+    }
+
+    public List<OrderReportByChairs> findAllOrderReportsByChair(LocalDate startDate, LocalDate endDate) {
+        Map<String, String> parameters = Map.of(
+                "start_date", startDate.toString(),
+                "end_date", endDate.toString()
+        );
+
+        return orderDAO.findAndMapForProjection(parameters);
     }
 
     public Optional<OrderItem> findOrderItemById(Long orderItemId) {
