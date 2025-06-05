@@ -10,4 +10,8 @@ import java.util.List;
 public abstract class FilterObject {
 
     private List<ValueFilter> filters;
+
+    public final boolean hasFilters() {
+        return !filters.isEmpty();
+    }
 }
