@@ -1,5 +1,6 @@
 package com.chairpick.ecommerce.services;
 
+import com.chairpick.ecommerce.model.Category;
 import com.chairpick.ecommerce.projections.OrderReportByCategory;
 import com.chairpick.ecommerce.repositories.CategoryRepository;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,10 @@ public class CategoryService {
 
     public CategoryService(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
+    }
+
+    public List<Category> findAllCategories() {
+        return categoryRepository.findAllCategories();
     }
 
     public List<OrderReportByCategory> findOrderReportsByCategory(LocalDate startDate, LocalDate endDate) {

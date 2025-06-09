@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="'/css/styles.css'">
+    <title>Estoque</title>
+</head>
+<body>
+<h1>Gerenciamento de produtos</h1>
+<main>
+    <div class="button__group">
+        <a class="action__button customers" th:href="@{/admin/customers}">Clientes</a>
+        <a class="action__button dashboard" th:href="@{/admin/orders/dashboard}">Dashboard</a>
+        <a class="action__button orders " th:href="@{/admin/orders}">Pedidos</a>
+        <a class="action__button logout" th:href="@{/logout}">Sair</a>
+    </div>
+    <a class="action__button" th:href="@{/admin/chairs/new}">Cadastrar cadeira</a>
+    <table>
+        <thead>
+        <th>Nome</th>
+        <th>Preço de venda atual</th>
+        <th>Dimensões</th>
+        <th>Peso</th>
+        <th>Grupo de precificação</th>
+        <th>Estoque</th>
+        <th>Custo</th>
+        <th>Avaliação média</th>
+        <th>Status</th>
+        <th>Última entrada no estoque</th>
+        <th>Ações</th>
+        </thead>
+        <tr th:each="chair : ${chairs}">
+            <td th:text="${chair.name}">
+
+            </td>
+            <td th:text="${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(chair.sellPrice)}">
+
+            </td>
+            <td th:text="${chair.dimensions}">
+            </td>
+            <td th:text="${chair.weight} + ' kg'">
+            </td>
+            <td th:text="${chair.pricingGroupName}">
+            </td>
+            <td th:text="${chair.stockAmount}">
+            </td>
+            <td th:text="${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(chair.cost)}">
+            </td>
+            <td th:text="${chair.averageRating}">
+            </td>
+            <td th:text="${chair.isActive ? 'Ativo' : 'Inativo'}">
+            </td>
+            <td th:text="${chair.lastEntryDate != null ? #temporals.format(chair.lastEntryDate, 'dd/MM/yyyy') : 'Nenhuma entrada'}">
+
+            </td>
+            <td>
+                <img class="actions_button action__button" th:src="'/assets/dots.png'" alt="Mais ações">
+                <div class="menu">
+                    <input type="hidden" name="product_id" value="1">
+                    <a class="option" th:href="@{/admin/chairs/{id}/edit(id=${chair.id})}">Editar</a>
+                    <a class="option" th:href="@{/admin/chairs/{id}/price-changes(id=${chair.id})}">Alterações de preço</a>
+                    <a class="option" th:href="@{/admin/chairs/{id}/items/new(id=${chair.id})}">Entrada no estoque</a>
+                    <a class="option danger">Inativar</a>
+                </div>
+            </td>
+        </tr>
+    </table>
+</main>
+<dialog id="status_change_dialog">
+    <h2>Alterar status</h2>
+    <div class="modal__content">
+        <p id="message"></p>
+        <input class="input" type="text" id="reason" name="reason" placeholder="Motivo de mudança de status">
+        <div class="actions">
+            <button id="cancel_button" class="action__button">Cancelar</button>
+            <button id="confirm_button" class="action__button">Confirmar</button>
+        </div>
+        <p id="error"></p>
+    </div>
+</dialog>
+<script th:src="@{/js/chairs/index/index.js}" type="module"></script>
+</body>
+</html>

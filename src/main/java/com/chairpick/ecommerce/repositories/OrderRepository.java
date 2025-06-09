@@ -157,6 +157,7 @@ public class OrderRepository {
         return orderItemDAO.update(orderItem);
     }
 
+    @Transactional
     public void deleteOrder(Order order) {
         Optional<CompositePaymentDAO> compositePaymentDAO = paymentDAORegistry.getCompositeDAO();
         compositePaymentDAO.ifPresent(paymentDAO -> paymentDAO.delete(order.getId()));

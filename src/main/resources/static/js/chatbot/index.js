@@ -25,7 +25,6 @@ function generateText(text) {
     }
 
     return messageText;
-
 }
 
 function createMessageElement(text, origin = "USER") {
@@ -50,6 +49,45 @@ function activeElement(element, time) {
     }, time);
 }
 
+function saveMessageToSessionStorage(message) {
+    const stored = sessionStorage.getItem("chatHistory");
+    const history = stored ? JSON.parse(stored) : [];
+    console.log({ message });
+    history.push(message);
+    history.filter(item => item.type === "product-group").forEach(item => item.products.forEach(product => {
+        product.description = product.description.replace("null", "");
+    }));
+    sessionStorage.setItem("chatHistory", JSON.stringify(history));
+}
+
+function restoreChatFromSessionStorage() {
+    const stored = sessionStorage.getItem("chatHistory");
+    if (!stored) return;
+    const history = JSON.parse(stored);
+    let lastContainer = null;
+    for (const item of history) {
+        if (item.type === "user") {
+            const container = createMessageElement(item.text, "USER");
+            chatContainer.appendChild(container);
+            activeElement(container, 10);
+        } else if (item.type === "product-group") {
+            const messageGroup = document.createElement("p");
+            for (const product of item.products) {
+                const productCard = buildProductCard(product, product.description);
+                messageGroup.appendChild(productCard);
+            }
+            const container = createMessageElement(messageGroup, "BOT");
+            chatContainer.appendChild(container);
+            activeElement(container, 10);
+        }
+        lastContainer = container;
+    }
+    if (lastContainer) {
+        lastContainer.scrollIntoView({ behavior: "smooth" });
+    }
+
+}
+
 function sendMessage() {
     const message = inputText.value.trim();
     if (!message) return;
@@ -61,25 +99,33 @@ function sendMessage() {
     userPromptContainer.scrollIntoView({ behavior: "smooth" });
     activeElement(userPromptContainer, 10);
     descriptionMap.clear();
+
+    saveMessageToSessionStorage({ type: "user", text: message });
+
     generateTextAnswerBasedInUserInput(message);
 }
 
 function generateTextAnswerBasedInUserInput(prompt) {
     const eventSource = new EventSource(`/chatbot/chairs?prompt=${encodeURIComponent(prompt)}`);
-
-    const displayedChairs = new Set();
+    const displayedChairs = new Map();
     let createdBotAnswerContainer = undefined;
+
+    const productsToSave = [];
+
     eventSource.onmessage = (event) => {
         const data = JSON.parse(event.data);
         const chair = data.chair;
 
         if (!displayedChairs.has(chair.id)) {
-            const generatedCard =  buildProductCard(chair, data.message)
+            const generatedCard = buildProductCard(chair, data.message);
+            const productData = { id: chair.id, name: chair.name, description: data.message };
+            if (productData.description !== null && productData.description !== undefined) {
+                productData.description = data.message.replace("null", "");
+            }
+            productsToSave.push(productData);
+
             if (!createdBotAnswerContainer) {
-                const botAnswerContainer = createMessageElement(
-                    generatedCard,
-                    "BOT"
-                );
+                const botAnswerContainer = createMessageElement(generatedCard, "BOT");
                 chatContainer.appendChild(botAnswerContainer);
                 botAnswerContainer.scrollIntoView({ behavior: "smooth" });
                 activeElement(botAnswerContainer, 100);
@@ -88,7 +134,8 @@ function generateTextAnswerBasedInUserInput(prompt) {
                 const messageTextElement = messageContainerMap.get(createdBotAnswerContainer);
                 messageTextElement.appendChild(generatedCard);
             }
-            displayedChairs.add(chair.id);
+
+            displayedChairs.set(chair.id, productData);
         } else {
             const descriptionElement = descriptionMap.get(chair.id);
             const interval = loadingIntervalMap.get(chair.id);
@@ -102,7 +149,8 @@ function generateTextAnswerBasedInUserInput(prompt) {
                 }
             }
 
-            descriptionMap.get(chair.id).innerText += data.message;
+            descriptionElement.innerText += data.message;
+            displayedChairs.get(chair.id).description += data.message;
         }
     };
 
@@ -111,8 +159,9 @@ function generateTextAnswerBasedInUserInput(prompt) {
         if (displayedChairs.size === 0) {
             const errorMessage = createMessageElement("Desculpe, não consegui encontrar cadeiras para a sua solicitação.", "BOT");
             chatContainer.appendChild(errorMessage);
-            errorMessage.scrollIntoView({ behavior: "smooth" });
             activeElement(errorMessage, 100);
+        } else {
+            saveMessageToSessionStorage({ type: "product-group", products: Array.from(displayedChairs.values()) });
         }
         eventSource.close();
     };
@@ -129,21 +178,22 @@ function buildProductCard(product, descriptionText) {
     `;
 
     const description = document.createElement("p");
-    description.innerText = descriptionText;
+    description.innerText = descriptionText || "";
     card.appendChild(description);
 
     card.href = "/chairs/" + product.id;
     container.appendChild(card);
     descriptionMap.set(product.id, description);
-    console.log({ product, descriptionText });
+
     if (!descriptionText) {
         description.innerText = "Carregando descrição...";
         const interval = setInterval(() => {
-            const dotsCountMap = new Map();
-            dotsCountMap.set("0", ".");
-            dotsCountMap.set("1", "..");
-            dotsCountMap.set("2", "...");
-            dotsCountMap.set("3", ".");
+            const dotsCountMap = new Map([
+                ["0", "."],
+                ["1", ".."],
+                ["2", "..."],
+                ["3", "."]
+            ]);
             const text = description.innerText;
             const textWithoutDots = text.replace(/\.+$/, "");
             const dotsNumber = text.length - textWithoutDots.length;
@@ -151,13 +201,14 @@ function buildProductCard(product, descriptionText) {
             description.innerText = `${textWithoutDots}${nextDots}`;
         }, 500);
         loadingIntervalMap.set(product.id, interval);
-
     }
+
     return container;
 }
 
 function init() {
     button.addEventListener("click", sendMessage);
+    restoreChatFromSessionStorage();
 }
 
 window.onload = init;

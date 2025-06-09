@@ -1,6 +1,7 @@
 package com.chairpick.ecommerce.controllers;
 
 import com.chairpick.ecommerce.io.output.ChairDTO;
+import com.chairpick.ecommerce.io.output.CompleteChairDTO;
 import com.chairpick.ecommerce.projections.ChairAvailableProjection;
 import com.chairpick.ecommerce.services.ChairService;
 import com.chairpick.ecommerce.services.FreightCalculatorService;
@@ -18,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/chairs")
 public class ChairController {
 
     private final ChairService chairService;
@@ -27,12 +27,12 @@ public class ChairController {
         this.chairService = chairService;
     }
 
-    @GetMapping("/search")
+    @GetMapping("/chairs/search")
     public ResponseEntity<PageInfo<ChairAvailableProjection>> searchForChairs(@RequestParam Map<String, String> parameters) {
         return ResponseEntity.ok(chairService.searchForChairs(parameters));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/chairs/{id}")
     public ModelAndView findChairById(@PathVariable Long id, HttpServletRequest request) {
 
         ChairDTO chairDTO = chairService.findChairById(id);
@@ -48,10 +48,19 @@ public class ChairController {
         return view;
     }
 
-    @GetMapping
-    public ResponseEntity<?> findAllChairs(Map<String, String> parameters) {
-
-        return null;
+    @GetMapping("/admin/chairs")
+    public ModelAndView redirectToAdminChairs() {
+        ModelAndView view = new ModelAndView("chairs/index.html");
+        List<CompleteChairDTO> chairs = chairService.findAllChairs();
+        view.addObject("chairs", chairs);
+        return view;
     }
+
+    @GetMapping("/admin/chairs/new")
+    public ModelAndView redirectToNewChairForm() {
+        return new ModelAndView("chairs/new.html");
+    }
+
+
 
 }

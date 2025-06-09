@@ -18,6 +18,10 @@ public class CategoryRepository {
         this.categoryDAO = categoryDAO;
     }
 
+    public List<Category> findAllCategories() {
+        return categoryDAO.findAll();
+    }
+
     public List<OrderReportByCategory> findOrderReportsByCategory(LocalDate startDate, LocalDate endDate) {
         return categoryDAO.findAndMapForProjection(Map.of(
                 "startDate", startDate.toString(),

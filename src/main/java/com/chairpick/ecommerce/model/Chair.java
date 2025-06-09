@@ -22,6 +22,7 @@ public class Chair extends DomainEntity{
     private double averageRating;
     private PricingGroup pricingGroup;
     private List<Item> items;
+    private boolean isActive;
     private List<Category> categories;
 
     public Chair() {

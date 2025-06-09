@@ -4,9 +4,12 @@ import com.chairpick.ecommerce.model.Chair;
 import com.chairpick.ecommerce.projections.ChairAvailableProjection;
 import com.chairpick.ecommerce.projections.ChatBotResponse;
 import com.chairpick.ecommerce.repositories.ChairRepository;
+import com.chairpick.ecommerce.utils.filter.FilterObject;
+import com.chairpick.ecommerce.utils.filter.TextQueryFilter;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -15,17 +18,20 @@ public class ChatBotService {
     private final ChairRepository chairRepository;
     private final TextGenerationService generationService;
     private final EmbeddingService embeddingService;
+    private final TextQueryFilter textQueryFilter;
 
-    public ChatBotService(ChairRepository chairRepository, TextGenerationService generationService, EmbeddingService embeddingService) {
+    public ChatBotService(ChairRepository chairRepository, TextGenerationService generationService, EmbeddingService embeddingService, TextQueryFilter textQueryFilter) {
         this.chairRepository = chairRepository;
         this.generationService = generationService;
         this.embeddingService = embeddingService;
+        this.textQueryFilter = textQueryFilter;
     }
 
     public Flux<ChatBotResponse> recommendChairByPrompt(String prompt) {
         float[] embedding = embeddingService.generateEmbedding(prompt);
+        var result = textQueryFilter.filterByText(prompt);
 
-        return Flux.fromIterable(chairRepository.findBySemanticSearch(embedding))
+        return Flux.fromIterable(getEitherWithFilterOrNot(embedding, result))
                 .flatMap(chair -> {
                     String template = generateResponseTemplate(chair, prompt);
 
@@ -48,6 +54,15 @@ public class ChatBotService {
                 });
 
 
+    }
+
+    private List<ChairAvailableProjection> getEitherWithFilterOrNot(float[] embedding, FilterObject filter) {
+        if (filter.hasFilters() && !filter.hasUndefinedFilters()) {
+
+            return chairRepository.findBySemanticSearch(embedding, filter);
+        }
+
+        return chairRepository.findBySemanticSearch(embedding);
     }
 
 

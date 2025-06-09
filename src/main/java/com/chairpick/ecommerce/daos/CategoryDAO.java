@@ -52,7 +52,19 @@ public class CategoryDAO implements ProjectionDAO<Category, OrderReportByCategor
 
     @Override
     public List<Category> findAll() {
-        return List.of();
+
+        String sql = "SELECT * FROM tb_category";
+        return jdbcTemplate.query(sql, (rs) -> {;
+            List<Category> categories = new ArrayList<>();
+            while (rs.next()) {
+                Category category = Category.builder()
+                        .id(rs.getLong("cat_id"))
+                        .name(rs.getString("cat_name"))
+                        .build();
+                categories.add(category);
+            }
+            return categories;
+        });
     }
 
     @Override

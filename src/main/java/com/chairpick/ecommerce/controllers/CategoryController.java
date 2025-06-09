@@ -1,5 +1,6 @@
 package com.chairpick.ecommerce.controllers;
 
+import com.chairpick.ecommerce.model.Category;
 import com.chairpick.ecommerce.projections.OrderReportByCategory;
 import com.chairpick.ecommerce.services.CategoryService;
 import org.springframework.http.ResponseEntity;
@@ -25,5 +26,10 @@ public class CategoryController {
             @RequestParam(name = "startDate", defaultValue = "#{T(java.time.LocalDate).now().minusMonths(1)}")
             LocalDate startDate, @RequestParam(name = "endDate", defaultValue = "#{T(java.time.LocalDate).now()}") LocalDate endDate) {
         return ResponseEntity.ok(categoryService.findOrderReportsByCategory(startDate, endDate));
+    }
+
+    @GetMapping("/admin/categories")
+    public ResponseEntity<List<Category>> findAllCategories() {
+        return ResponseEntity.ok(categoryService.findAllCategories());
     }
 }

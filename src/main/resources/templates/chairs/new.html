@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/styles.css">
+    <title>Cadastro de cadeira</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<h1>Cadastrar nova cadeira</h1>
+<main>
+    <a class="action__button" th:href="@{/admin/chairs}">Voltar</a>
+    <section>
+        <form id="main">
+            <section class="border">
+                <h2>Informações descritivas</h2>
+                <label for="name">Nome</label>
+                <input type="text" name="name" id="name">
+                <label for="description">Descrição</label>
+                <textarea name="description" id="description" cols="30" rows="10"></textarea>
+                <label>Categorias</label>
+                <select class="input" type="select" name="categories" id="categories" multiple>
+                </select>
+            </section>
+            <section class="border">
+                <h2>Dimensões</h2>
+                <label for="length">Comprimento</label>
+                <input type="number" name="length" id="length" min="0" step="0.1">
+                <label for="width">Largura</label>
+                <input type="number" name="width" id="width" min="0" step="0.1">
+                <label for="height">Altura</label>
+                <input type="number" name="height" id="height" min="0" step="0.1">
+                <label for="weight">Peso</label>
+                <input type="number" name="weight" id="weight" min="0" step="0.1">
+            </section>
+            <section class="border">
+                <h2>Preços</h2>
+                <label for="pricing_group">Grupo de precificação</label>
+                <select name="pricing_group" id="pricing_group">
+
+                </select>
+            </section>
+            <section class="border">
+                <h2>Outros dados</h2>
+                <label for="rating">Avaliação média</label>
+                <input type="number" name="rating" id="rating" min="0" max="5" step="0.1">
+                <label class="action__button" for="image">Imagem
+                    <p></p>
+                </label>
+                <input type="file" name="image" id="image" accept="image/*" required>
+            </section>
+            <button class="disabled" type="submit" disabled>Cadastrar</button>
+        </form>
+    </section>
+</main>
+<script>
+    document.querySelector("input[type='file']").addEventListener("change", function() {
+        const label = document.querySelector("label[for='image'] p")
+        label.textContent = this.files[0].name
+    })
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" /><script th:src="@{/js/chairs/new/index.js}" type="module"></script>
+</body>
+</html>

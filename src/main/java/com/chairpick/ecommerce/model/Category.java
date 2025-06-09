@@ -1,11 +1,11 @@
 package com.chairpick.ecommerce.model;
 
-import lombok.Builder;
 import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
 import java.util.Objects;
 
-@Builder
+@SuperBuilder
 @Getter
 public class Category extends DomainEntity {
 

@@ -22,8 +22,8 @@ import java.util.List;
 public class DAOProvider {
 
     @Bean
-    PaginatedProjectionDAO<Chair, ChairAvailableProjection> provideChairDAO(NamedParameterJdbcTemplate jdbcTemplate, ResultSetExtractor<List<Chair>> extractor, GeneralObjectQueryMapper<ChairAvailableProjection> projectionMapper) {
-        return new ChairDAO(jdbcTemplate, extractor, projectionMapper);
+    PaginatedProjectionDAO<Chair, ChairAvailableProjection> provideChairDAO(NamedParameterJdbcTemplate jdbcTemplate, ResultSetExtractor<List<Chair>> extractor, ObjectQueryMapper<Chair> chairQueryMapper, GeneralObjectQueryMapper<ChairAvailableProjection> projectionMapper) {
+        return new ChairDAO(jdbcTemplate, extractor, chairQueryMapper, projectionMapper);
     }
 
     @Bean
@@ -84,6 +84,11 @@ public class DAOProvider {
     @Bean
     SemanticDAO<Chair> provideSemanticChairDAO(QdrantClient qdrantClient) {
         return new SemanticChairDAO(qdrantClient);
+    }
+
+    @Bean
+    GenericDAO<PricingGroup> providePricingGroupDAO(NamedParameterJdbcTemplate jdbcTemplate) {
+        return new PricingGroupDAO(jdbcTemplate);
     }
 
 }

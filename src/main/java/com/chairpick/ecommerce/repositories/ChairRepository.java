@@ -8,6 +8,7 @@ import com.chairpick.ecommerce.model.Chair;
 import com.chairpick.ecommerce.model.Item;
 import com.chairpick.ecommerce.projections.ChairAvailableProjection;
 import com.chairpick.ecommerce.projections.SemanticResultProjection;
+import com.chairpick.ecommerce.utils.filter.FilterObject;
 import com.chairpick.ecommerce.utils.pagination.PageInfo;
 import com.chairpick.ecommerce.utils.pagination.PageOptions;
 import org.springframework.stereotype.Repository;
@@ -26,6 +27,10 @@ public class ChairRepository {
         this.chairDAO = chairDAO;
         this.semanticChairDAO = semanticChairDAO;
         this.itemDAO = itemDAO;
+    }
+
+    public List<Chair> findAllChairs() {
+        return chairDAO.findAll();
     }
 
     public Map<Category, List<ChairAvailableProjection>> findAllChairsAvailableGroupingByCategory() {
@@ -60,6 +65,16 @@ public class ChairRepository {
     public List<ChairAvailableProjection> findBySemanticSearch(float[] vector) {
         List<SemanticResultProjection> results = semanticChairDAO.findByVector(vector);
 
+        return getProjectionsByResults(results);
+    }
+
+    public List<ChairAvailableProjection> findBySemanticSearch(float[] vector, FilterObject filterObject) {
+        List<SemanticResultProjection> results = semanticChairDAO.findByVector(vector, filterObject);
+
+        return getProjectionsByResults(results);
+    }
+
+    private List<ChairAvailableProjection> getProjectionsByResults(List<SemanticResultProjection> results) {
         if (results.isEmpty()) {
             return List.of();
         }
