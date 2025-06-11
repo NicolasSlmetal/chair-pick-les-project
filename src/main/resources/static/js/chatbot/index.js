@@ -164,7 +164,7 @@ function generateTextAnswerBasedInUserInput(prompt) {
             saveMessageToSessionStorage({type: "not-found", text: "Desculpe, não consegui encontrar cadeiras para a sua solicitação."})
             chatContainer.appendChild(errorMessage);
             activeElement(errorMessage, 100);
-            chatContainer.scrollIntoView({ behavior: "smooth" });
+            errorMessage.scrollIntoView({ behavior: "smooth" });
         } else {
             saveMessageToSessionStorage({ type: "product-group", products: Array.from(displayedChairs.values()) });
         }

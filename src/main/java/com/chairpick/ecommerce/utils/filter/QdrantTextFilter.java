@@ -102,7 +102,7 @@ public class QdrantTextFilter implements TextQueryFilter {
         List<String> dividedString = Arrays.asList(text.split("\\s+"));
         int numberIndex = dividedString.indexOf(number);
 
-        if (numberIndex + 1 > dividedString.size()) return number;
+        if (numberIndex + 1 >= dividedString.size()) return number;
 
         String unity = dividedString.get(numberIndex + 1);
 

@@ -3,6 +3,7 @@ package com.chairpick.ecommerce.services;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.model.ModelOptionsUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -21,7 +22,13 @@ public class TextGenerationService {
     }
 
     public String generateResponse(String prompt) {
-        return chatClient.call(prompt);
+
+        Prompt promptOptions = new Prompt(prompt, ChatOptions.builder()
+                .maxTokens(5)
+                .temperature(0.0)
+                .stopSequences(List.of("\n"))
+                .build());
+        return chatClient.call(promptOptions).getResult().getOutput().getText();
     }
 
     public Flux<String> generateAsyncResponse(String prompt) {

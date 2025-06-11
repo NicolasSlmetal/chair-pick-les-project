@@ -94,9 +94,9 @@ public class SemanticChairDAO implements SemanticDAO<Chair> {
 
         Points.Filter qdrantFilter = filterBuilder.build();
 
-        float limitScore = 0.70f;
+        float limitScore = 0.80f;
         try {
-            float targetScore = 0.8f;
+            float targetScore = 0.9f;
 
             List<Float> vectorList = new ArrayList<>();
             for (float v : vector) {

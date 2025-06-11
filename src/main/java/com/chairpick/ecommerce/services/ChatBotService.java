@@ -11,6 +11,7 @@ import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 @Service
 public class ChatBotService {
@@ -28,6 +29,17 @@ public class ChatBotService {
     }
 
     public Flux<ChatBotResponse> recommendChairByPrompt(String prompt) {
+        String validationPrompt = generateValidationAnalysisPrompt(prompt);
+        String validationResponse = generationService.generateResponse(validationPrompt).toLowerCase();
+
+        System.out.println(validationResponse);
+        if (validationResponse.contains("não")) {
+
+            Logger.getGlobal().finer("Prompt não atende aos critérios de busca: " + prompt);
+            return Flux.just(ChatBotResponse.builder()
+                    .message("O prompt fornecido não atende aos critérios necessários para busca de cadeiras. Por favor, reformule o prompt.")
+                    .build());
+        }
         float[] embedding = embeddingService.generateEmbedding(prompt);
         FilterObject filter = textQueryFilter.filterByText(prompt);
 
@@ -57,13 +69,28 @@ public class ChatBotService {
     }
 
     private List<ChairAvailableProjection> getEitherWithFilterOrNot(float[] embedding, FilterObject filter) {
-        System.out.println(filter);
+
         if (filter.hasFilters() && !filter.hasUndefinedFilters()) {
 
             return chairRepository.findBySemanticSearch(embedding, filter);
         }
 
         return chairRepository.findBySemanticSearch(embedding);
+    }
+
+    private static String generateValidationAnalysisPrompt(String prompt) {
+        String template = """
+            Você é um especialista em análise de texto para e-commerce de cadeiras. Sua tarefa é analisar o seguinte prompt considerando que ele será usado para buscar cadeiras em um e-commerce especializado em móveis residenciais e corporativos. O e-commerce NÃO vende cadeiras de veículos, cadeiras de rodas, cadeiras esportivas, nem itens para uso extremo, como trilhas ou montanhas.
+            Prompt do usuário:
+           "%s"
+           Analise o prompt e verifique se ele atende aos seguintes critérios:
+           1. Clareza: O prompt é claro e fácil de entender?
+           2. Relevância: O prompt é relevante para o contexto de um e-commerce que vende apenas cadeiras para escritórios, salas de jantar, cozinha, varanda e ambientes internos?
+           3. Linguagem: O prompt está escrito em português correto e adequado para o público-alvo?
+
+           A resposta deve ser apenas "Sim" ou "Não", indicando se o prompt atende a todos os critérios acima. Se algum critério não for atendido — especialmente o de relevância — responda "Não".
+           """;
+        return String.format(template, prompt);
     }
 
 

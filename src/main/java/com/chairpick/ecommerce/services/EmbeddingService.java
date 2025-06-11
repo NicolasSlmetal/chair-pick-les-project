@@ -28,13 +28,13 @@ public class EmbeddingService {
                 chair.getDescription(),
                 chair.getCategories().stream()
                         .map(Category::getName)
-                        .reduce((a, b) -> a + ", " + b));
+                        .reduce((a, b) -> a + ", " + b)).toLowerCase();
     }
 
     private static String generateEmbeddingTemplate(String prompt) {
         return String.format("Name: %s\nDescription: %s\nCategories: %s",
                 prompt,
                 prompt,
-                prompt);
+                prompt).toLowerCase();
     }
 }
