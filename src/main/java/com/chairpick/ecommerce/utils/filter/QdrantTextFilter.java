@@ -61,12 +61,12 @@ public class QdrantTextFilter implements TextQueryFilter {
 
             String field = fieldOpt.get();
             Optional<String> operatorOpt = extractOperator(clause);
-
+            String nextClause = null;
             List<String> numbers = extractNumbers(clause);
             if (operatorOpt.isEmpty() && containsBetweenOperator(clause)) {
                 int actualIndex = clauses.indexOf(clause);
                 if (actualIndex + 1 < clauses.size()) {
-                    String nextClause = clauses.get(actualIndex + 1);
+                    nextClause = clauses.get(actualIndex + 1);
                     List<String> nextNumbers = extractNumbers(nextClause);
                     if (!nextNumbers.isEmpty()) {
                         numbers.addAll(nextNumbers);
@@ -85,9 +85,9 @@ public class QdrantTextFilter implements TextQueryFilter {
                     String operator = comparisonOperators.get(operatorOpt.get());
                     String normalizedNumber = processUnitCases(clause, numbers.getFirst());
                     builder.operator(operator).value(normalizedNumber);
-                } else if (containsBetweenOperator(clause) && numbers.size() >= 2) {
+                } else if (containsBetweenOperator(clause) && numbers.size() >= 2 && nextClause != null) {
                     numbers.set(0, processUnitCases(clause, numbers.get(0)));
-                    numbers.set(1, processUnitCases(clause, numbers.get(1)));
+                    numbers.set(1, processUnitCases(nextClause, numbers.get(1)));
                     builder.operator("between").value(numbers.get(0) + "," + numbers.get(1));
                 } else {
                     builder.operator("=").value(numbers.getFirst());

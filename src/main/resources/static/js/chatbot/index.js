@@ -67,20 +67,23 @@ function restoreChatFromSessionStorage() {
     let lastContainer = null;
     for (const item of history) {
         if (item.type === "user") {
-            const container = createMessageElement(item.text, "USER");
-            chatContainer.appendChild(container);
-            activeElement(container, 10);
+            lastContainer = createMessageElement(item.text, "USER");
+            chatContainer.appendChild(lastContainer);
+            activeElement(lastContainer, 10);
         } else if (item.type === "product-group") {
             const messageGroup = document.createElement("p");
             for (const product of item.products) {
                 const productCard = buildProductCard(product, product.description);
                 messageGroup.appendChild(productCard);
             }
-            const container = createMessageElement(messageGroup, "BOT");
-            chatContainer.appendChild(container);
-            activeElement(container, 10);
+            lastContainer = createMessageElement(messageGroup, "BOT");
+            chatContainer.appendChild(lastContainer);
+            activeElement(lastContainer, 10);
+        } else {
+            lastContainer = createMessageElement(item.text, "BOT");
+            chatContainer.appendChild(lastContainer);
+            activeElement(lastContainer, 10);
         }
-        lastContainer = container;
     }
     if (lastContainer) {
         lastContainer.scrollIntoView({ behavior: "smooth" });
@@ -158,8 +161,10 @@ function generateTextAnswerBasedInUserInput(prompt) {
         console.error("SSE connection error:", error);
         if (displayedChairs.size === 0) {
             const errorMessage = createMessageElement("Desculpe, não consegui encontrar cadeiras para a sua solicitação.", "BOT");
+            saveMessageToSessionStorage({type: "not-found", text: "Desculpe, não consegui encontrar cadeiras para a sua solicitação."})
             chatContainer.appendChild(errorMessage);
             activeElement(errorMessage, 100);
+            chatContainer.scrollIntoView({ behavior: "smooth" });
         } else {
             saveMessageToSessionStorage({ type: "product-group", products: Array.from(displayedChairs.values()) });
         }

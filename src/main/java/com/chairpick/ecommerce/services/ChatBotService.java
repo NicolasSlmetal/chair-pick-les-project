@@ -29,9 +29,9 @@ public class ChatBotService {
 
     public Flux<ChatBotResponse> recommendChairByPrompt(String prompt) {
         float[] embedding = embeddingService.generateEmbedding(prompt);
-        var result = textQueryFilter.filterByText(prompt);
+        FilterObject filter = textQueryFilter.filterByText(prompt);
 
-        return Flux.fromIterable(getEitherWithFilterOrNot(embedding, result))
+        return Flux.fromIterable(getEitherWithFilterOrNot(embedding, filter))
                 .flatMap(chair -> {
                     String template = generateResponseTemplate(chair, prompt);
 
@@ -57,6 +57,7 @@ public class ChatBotService {
     }
 
     private List<ChairAvailableProjection> getEitherWithFilterOrNot(float[] embedding, FilterObject filter) {
+        System.out.println(filter);
         if (filter.hasFilters() && !filter.hasUndefinedFilters()) {
 
             return chairRepository.findBySemanticSearch(embedding, filter);
