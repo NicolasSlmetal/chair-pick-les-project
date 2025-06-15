@@ -32,7 +32,6 @@ public class ChatBotService {
         String validationPrompt = generateValidationAnalysisPrompt(prompt);
         String validationResponse = generationService.generateResponse(validationPrompt).toLowerCase();
 
-        System.out.println(validationResponse);
         if (validationResponse.contains("não")) {
 
             Logger.getGlobal().finer("Prompt não atende aos critérios de busca: " + prompt);
@@ -46,7 +45,6 @@ public class ChatBotService {
         return Flux.fromIterable(getEitherWithFilterOrNot(embedding, filter))
                 .flatMap(chair -> {
                     String template = generateResponseTemplate(chair, prompt);
-
 
                     ChatBotResponse metadata = ChatBotResponse.builder()
                             .message(null)

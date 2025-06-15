@@ -102,6 +102,11 @@ public class CartDAO implements ProjectionDAO<Cart, CartItemSummaryProjection> {
                 key = entry.getKey();
             }
 
+            if (entry.getKey().equals("chairId")) {
+                key = "itm_chair_id";
+                value = entry.getValue();
+            }
+
             if (value.matches("0|[1-9]\\d*")) {
                 where.equals(key, value);
 

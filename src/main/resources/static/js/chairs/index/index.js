@@ -1,3 +1,5 @@
+import { updateChairStatus } from "./updateChairStatus.js";
+
 const activateOptions = document.querySelectorAll(".option.success");
 const deactivateOptions = document.querySelectorAll(".option.danger");
 const statusChangeDialog = document.querySelector("#status_change_dialog");
@@ -7,7 +9,6 @@ statusChangeDialogCancelButton.onclick = () => {
 }
 const statusChangeDialogConfirmButton = statusChangeDialog.querySelector("#confirm_button");
 
-
 activateOptions.forEach((option) => {
     option.addEventListener("click", () => {
         const row = option.closest("tr");
@@ -15,14 +16,13 @@ activateOptions.forEach((option) => {
         const name = row.querySelector("td:nth-child(1)").innerText;
         const errorMessage = statusChangeDialog.querySelector("p#error");
         errorMessage.innerText = "";
-        const action = () => {
+        const action = async () => {
             const reason = statusChangeDialog.querySelector("input[name='reason']").value;
             if (!reason) {
                 errorMessage.innerText = "Por favor, informe o motivo da ativação";
                 return;
             }
-            errorMessage.innerText = "";
-            console.log(`Activating product ${id}`);
+            await updateChairStatus(id, { active: true, reason});
         }
         const p = statusChangeDialog.querySelector("p#message");
         p.innerText = `Ativação do produto ${name}`;
@@ -39,14 +39,14 @@ deactivateOptions.forEach((option) => {
         const name = row.querySelector("td:nth-child(1)").innerText;
         const errorMessage = statusChangeDialog.querySelector("p#error");
         errorMessage.innerText = "";
-        const action = () => {
+        const action = async () => {
             const reason = statusChangeDialog.querySelector("input[name='reason']").value;
             if (!reason) {
                 errorMessage.innerText = "Por favor, informe o motivo da desativação";
                 return;
             }
             errorMessage.innerText = "";
-            console.log(`Deactivating product ${id}`);
+            await updateChairStatus(id, { active: false, reason});
         }
         const p = statusChangeDialog.querySelector("p#message");
         p.innerText = `Desativação do produto ${name}`;

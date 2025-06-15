@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,12 +10,12 @@
 <h1>Gerenciamento de produtos</h1>
 <main>
     <div class="button__group">
-        <a class="action__button customers" th:href="@{/admin/customers}">Clientes</a>
-        <a class="action__button dashboard" th:href="@{/admin/orders/dashboard}">Dashboard</a>
-        <a class="action__button orders " th:href="@{/admin/orders}">Pedidos</a>
+        <a class="action__button customers" th:href="@{/admin/customers}" sec:authorize="hasAuthority('ADMIN')">Clientes</a>
+        <a class="action__button dashboard" th:href="@{/admin/orders/dashboard}" sec:authorize="hasAuthority('ADMIN')">Dashboard</a>
+        <a class="action__button orders " th:href="@{/admin/orders}" sec:authorize="hasAuthority('ADMIN')">Pedidos</a>
         <a class="action__button logout" th:href="@{/logout}">Sair</a>
     </div>
-    <a class="action__button" th:href="@{/admin/chairs/new}">Cadastrar cadeira</a>
+    <a class="action__button" th:href="@{/admin/chairs/new}" sec:authorize="hasAuthority('ADMIN')">Cadastrar cadeira</a>
     <table>
         <thead>
         <th>Nome</th>
@@ -57,11 +57,12 @@
             <td>
                 <img class="actions_button action__button" th:src="'/assets/dots.png'" alt="Mais ações">
                 <div class="menu">
-                    <input type="hidden" name="product_id" value="1">
-                    <a class="option" th:href="@{/admin/chairs/{id}/edit(id=${chair.id})}">Editar</a>
-                    <a class="option" th:href="@{/admin/chairs/{id}/price-changes(id=${chair.id})}">Alterações de preço</a>
-                    <a class="option" th:href="@{/admin/chairs/{id}/items/new(id=${chair.id})}">Entrada no estoque</a>
-                    <a class="option danger">Inativar</a>
+                    <input type="hidden" name="product_id" th:value="${chair.id}">
+                    <a class="option" th:href="@{/admin/chairs/{id}/edit(id=${chair.id})}" sec:authorize="hasAuthority('ADMIN')">Editar</a>
+                    <a class="option" th:href="@{/admin/chairs/{id}/price-change-requests(id=${chair.id})}" >Alterações de preço</a>
+                    <a class="option" th:href="@{/admin/chairs/{id}/items/new(id=${chair.id})}" sec:authorize="hasAuthority('ADMIN')">Entrada no estoque</a>
+                    <a th:if="${chair.isActive}" class="option danger" sec:authorize="hasAuthority('ADMIN')">Inativar</a>
+                    <a th:unless="${chair.isActive}" class="option success" sec:authorize="hasAuthority('ADMIN')">Ativar</a>
                 </div>
             </td>
         </tr>
@@ -78,6 +79,11 @@
         </div>
         <p id="error"></p>
     </div>
+</dialog>
+<dialog id="error__dialog" class="error__dialog">
+    <h1>Erro ao atualizar o status</h1>
+    <p></p>
+    <button class="action__button dialog__ok">Ok</button>
 </dialog>
 <script th:src="@{/js/chairs/index/index.js}" type="module"></script>
 </body>

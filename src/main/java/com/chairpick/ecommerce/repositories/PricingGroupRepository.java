@@ -5,6 +5,7 @@ import com.chairpick.ecommerce.model.PricingGroup;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class PricingGroupRepository {
@@ -18,5 +19,9 @@ public class PricingGroupRepository {
 
     public List<PricingGroup> findAllPricingGroups() {
         return pricingGroupDAO.findAll();
+    }
+
+    public Optional<PricingGroup> findById(Long id) {
+        return pricingGroupDAO.findById(id);
     }
 }

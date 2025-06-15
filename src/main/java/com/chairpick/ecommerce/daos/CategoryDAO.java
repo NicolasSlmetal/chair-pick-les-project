@@ -15,10 +15,12 @@ import java.util.Optional;
 public class CategoryDAO implements ProjectionDAO<Category, OrderReportByCategory> {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final ObjectQueryMapper<Category> categoryQueryMapper;
     private final ObjectQueryMapper<OrderReportByCategory> projectionQueryMapper;
 
-    public CategoryDAO(NamedParameterJdbcTemplate jdbcTemplate, ObjectQueryMapper<OrderReportByCategory> projectionQueryMapper) {
+    public CategoryDAO(NamedParameterJdbcTemplate jdbcTemplate, ObjectQueryMapper<Category> categoryQueryMapper, ObjectQueryMapper<OrderReportByCategory> projectionQueryMapper) {
         this.jdbcTemplate = jdbcTemplate;
+        this.categoryQueryMapper = categoryQueryMapper;
         this.projectionQueryMapper = projectionQueryMapper;
     }
 
@@ -74,7 +76,18 @@ public class CategoryDAO implements ProjectionDAO<Category, OrderReportByCategor
 
     @Override
     public List<Category> findBy(Map<String, String> parameters) {
-        return List.of();
+        QueryResult sql = categoryQueryMapper.parseParameters(parameters);
+        return jdbcTemplate.query(sql.query(), sql.parameters(), (rs) -> {;
+            List<Category> categories = new ArrayList<>();
+            while (rs.next()) {
+                Category category = Category.builder()
+                        .id(rs.getLong("cat_id"))
+                        .name(rs.getString("cat_name"))
+                        .build();
+                categories.add(category);
+            }
+            return categories;
+        });
     }
 
     @Override

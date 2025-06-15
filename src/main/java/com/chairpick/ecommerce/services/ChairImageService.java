@@ -1,10 +1,12 @@
 package com.chairpick.ecommerce.services;
 
 import com.chairpick.ecommerce.exceptions.EntityNotFoundException;
+import com.chairpick.ecommerce.model.Chair;
 import com.chairpick.ecommerce.projections.ChairAvailableProjection;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.*;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +14,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 @Service
-public class ChairImageLocatorService {
+public class ChairImageService {
 
     private static final String BASE_DIR = System.getProperty("user.dir");
 
@@ -35,12 +37,18 @@ public class ChairImageLocatorService {
         }
     }
 
-    public Map<Long, Path> getImagesForChairs(List<ChairAvailableProjection> chairs) {
-        Map<Long, Path> images = new HashMap<>();
-        for (ChairAvailableProjection chair : chairs) {
-            Path imagePath = getChairImage(chair.getId());
-            images.put(chair.getId(), imagePath);
+    public void saveChairImage(Chair chair, InputStream inputStream, String fileName) {
+        if (fileName == null || fileName.isEmpty()) {
+            fileName = "default.png";
         }
-        return images;
+        String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
+        Path imagePath = Path.of(BASE_DIR + IMAGE_DIR + chair.getId() + "." + fileExtension);
+
+        try {
+            Files.copy(inputStream, imagePath, StandardCopyOption.REPLACE_EXISTING);
+            inputStream.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

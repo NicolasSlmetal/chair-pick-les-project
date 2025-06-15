@@ -1,6 +1,5 @@
 import { $ } from "../../consts.js";
 
-
 export function configureDynamicInputs() {
     $(document).ready(function() {
         $('#categories').select2({

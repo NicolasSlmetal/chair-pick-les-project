@@ -1,7 +1,7 @@
 package com.chairpick.ecommerce.controllers;
 
 import com.chairpick.ecommerce.io.output.AvailableChairDTO;
-import com.chairpick.ecommerce.services.ChairImageLocatorService;
+import com.chairpick.ecommerce.services.ChairImageService;
 import com.chairpick.ecommerce.services.ChairService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
@@ -15,14 +15,13 @@ public class IndexController {
 
     private final ChairService chairService;
 
-    public IndexController(ChairService chairService, ChairImageLocatorService chairImageLocatorService) {
+    public IndexController(ChairService chairService, ChairImageService chairImageService) {
         this.chairService = chairService;
     }
 
     @GetMapping()
     public ModelAndView redirectToIndex(HttpServletRequest request) {
         AvailableChairDTO availableChairs = chairService.findAllChairsAvailableGroupingByCategory();
-
         ModelAndView view = new ModelAndView("index/index.html");
         view.addObject("pageTitle", "Home");
         if (request.getAttribute("customerId") != null) {

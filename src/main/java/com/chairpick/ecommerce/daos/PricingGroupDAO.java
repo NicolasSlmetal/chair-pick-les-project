@@ -42,8 +42,16 @@ public class PricingGroupDAO implements GenericDAO<PricingGroup> {
 
     @Override
     public Optional<PricingGroup> findById(Long id) {
+        String sql = "SELECT * FROM tb_pricing_group WHERE pgr_id = :id";
+        Map<String, Object> params = Map.of("id", id);
+        List<PricingGroup> pricingGroups = jdbcTemplate.query(sql, params, (rs, rowNum) -> PricingGroup
+                .builder()
+                .id(rs.getLong("pgr_id"))
+                .name(rs.getString("pgr_name"))
+                .percentageValue(rs.getDouble("pgr_percent_value"))
+                .build());
 
-        return Optional.empty();
+        return pricingGroups.isEmpty() ? Optional.empty() : Optional.of(pricingGroups.getFirst());
     }
 
     @Override

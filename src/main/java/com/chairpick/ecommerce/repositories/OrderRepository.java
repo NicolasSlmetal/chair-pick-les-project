@@ -117,6 +117,11 @@ public class OrderRepository {
         return paginatedOrders;
     }
 
+    public List<Order> findAllOrdersWithChair(Chair chair) {
+        Map<String, String> parameters = Map.of("chairId", chair.getId().toString());
+        return orderDAO.findBy(parameters);
+    }
+
     public List<OrderReportByChairs> findAllOrderReportsByChair(LocalDate startDate, LocalDate endDate) {
         Map<String, String> parameters = Map.of(
                 "start_date", startDate.toString(),

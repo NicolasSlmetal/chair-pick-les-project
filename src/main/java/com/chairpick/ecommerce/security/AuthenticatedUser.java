@@ -27,6 +27,10 @@ public class AuthenticatedUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (user.getType().equals(UserType.SALES_MANAGER)) {
+            return List.of(UserType.SALES_MANAGER::name, UserType.CUSTOMER::name);
+        }
+
         if (user.getType().equals(UserType.ADMIN)) {
             return List.of(UserType.ADMIN::name, UserType.CUSTOMER::name);
         }

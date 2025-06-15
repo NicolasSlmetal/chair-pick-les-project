@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar cadeira</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<h1 th:text="'Editar cadeira ' + ${chair.name}"></h1>
+<main>
+    <a class="action__button" th:href="@{/admin/chairs}">Voltar</a>
+    <section>
+        <form id="main">
+            <input type="hidden" name="id" th:value="${chair.id}">
+            <section class="border">
+                <h2>Informações descritivas</h2>
+                <label for="name">Nome</label>
+                <input type="text" name="name" id="name" th:value="${chair.name}" required>
+                <label for="description">Descrição</label>
+                <textarea name="description" id="description" cols="30" rows="10" th:text="${chair.description}" required>
+                    </textarea>
+                <label for="categories">Categorias</label>
+                <select name="categories" id="categories" multiple>
+                    <option th:each="category : ${chair.categories}" th:value="${category.id}" th:text="${category.name}" selected></option>
+                </select>
+            </section>
+            <section class="border">
+                <h2>Dimensões</h2>
+                <label for="length">Comprimento</label>
+                <input type="number" name="length" id="length" min="0" step="0.1" th:value="${chair.length}">
+                <label for="width">Largura</label>
+                <input type="number" name="width" id="width" min="0" step="0.1" th:value="${chair.width}">
+                <label for="height">Altura</label>
+                <input type="number" name="height" id="height" min="0" step="0.1" th:value="${chair.height}">
+                <label for="weight">Peso</label>
+                <input type="number" name="weight" id="weight" min="0" step="0.1" th:value="${chair.weight}">
+            </section>
+            <section class="border">
+                <h2>Preços</h2>
+                <label for="pricing_group">Grupo de precificação</label>
+                <select name="pricing_group" id="pricing_group">
+                    <option th:value="${chair.pricingGroup.id}" th:text="${chair.pricingGroup.name}"></option>
+                </select>
+                <label>Alterar preço</label>
+                <select name="alter_price" id="alter_price">
+                    <option value="no">Não</option>
+                    <option value="yes">Sim</option>
+                </select>
+                <section id="alter_price_section" style="display: none;">
+                    <label for="price">Preço</label>
+                    <input type="number" name="price" id="price" min="0" step="0.01" th:value="${chair.sellPrice}">
+                    <label for="reason">Justificativa de alteração
+                    </label>
+                    <textarea name="reason" id="reason" cols="30" rows="10"></textarea>
+                </section>
+            </section>
+            <section class="border">
+                <h2>Outros dados</h2>
+                <label for="rating">Avaliação média</label>
+                <input type="number" name="rating" id="rating" min="0" max="5" step="0.1" value="4.5">
+                Imagem
+                <label class="action__button" for="image" th:text="${imageFile}"></label>
+                <input type="file" name="image" id="image" accept="image/*">
+            </section>
+            <button type="submit" class="disabled" disabled>Editar</button>
+        </form>
+    </section>
+</main>
+<dialog class="error__dialog">
+    <h1>Erro ao editar</h1>
+    <p></p>
+    <button class="action__button dialog__ok">Ok</button>
+</dialog>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
+<script th:src="@{/js/chairs/edit/index.js}" type="module"></script>
+<script>
+    $(document).ready(function() {
+        $("#alter_price").on("input",function() {
+            if ($(this).val() == "yes") {
+                $("#alter_price_section").show()
+            } else {
+                $("#alter_price_section").hide()
+            }
+        })
+    })
+</script>
+</body>
+</html>

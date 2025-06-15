@@ -49,9 +49,15 @@ public class ChairAvailableProjectionQueryMapper implements GeneralObjectQueryMa
         Where where = selectTable.where();
         int size = parameters.size();
         for (Map.Entry<String, String> entry : parameters.entrySet()) {
+
+            String value = entry.getValue();
             if (entry.getKey().equals("ids")) {
                 String[] ids = entry.getValue().split(",");
                 where.integerIn("chr_id", ids);
+            }
+
+            if (entry.getKey().equals("active")) {
+                where.equals("chr_active", value.equals("true") ? "1" : "0");
             }
 
             if (--size > 0) {
@@ -168,6 +174,10 @@ public class ChairAvailableProjectionQueryMapper implements GeneralObjectQueryMa
             if (entry.getKey().equals("categories")) {
                 String[] categories = value.split(",");
                 where.in("cat_name", categories);
+            }
+
+            if (entry.getKey().equals("active")) {
+                where.equals("chr_active", value.equals("true") ? "1" : "0");
             }
 
             if (--size > 0) {

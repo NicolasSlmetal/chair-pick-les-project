@@ -14,17 +14,29 @@ import {
 } from './consts.js'
 import { $ } from "../../consts.js";
 
+import { createChair } from "./createChair.js";
+
 const form = document.querySelector("form#main");
 
-form.addEventListener("submit", (event) => {
+form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
-    const categories = $("#categories").select2("data");
+    const categories = $("#categories").select2("data").map(category => Number(category.id));
     data.categories = categories;
-    const pricingGroup = $("#pricing_group").select2("data");
-    data.pricing_group = pricingGroup;
-    console.log({data});
+    const [ pricingGroup ] = $("#pricing_group").select2("data").map(group => Number(group.id));
+    data.pricingGroupId = pricingGroup;
+
+    data.averageRating = data.rating;
+    delete data.rating;
+
+    const postData = new FormData();
+    postData.append("image", data.image);
+    delete data.image;
+
+    postData.append("input", new Blob([JSON.stringify(data)], { type: "application/json" }));
+
+    await createChair(postData);
 })
 
 

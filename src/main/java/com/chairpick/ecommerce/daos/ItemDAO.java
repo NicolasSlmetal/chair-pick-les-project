@@ -23,7 +23,23 @@ public class ItemDAO implements GenericDAO<Item> {
 
     @Override
     public Item save(Item entity) {
-        return null;
+        String sql = """
+                INSERT INTO tb_item (itm_amount, itm_reserved, itm_version, itm_chair_id, itm_supplier_id, itm_unit_cost, itm_entry_date)
+                VALUES (:amount, :reserved, 0, :chairId, :supplierId, :unitCost, :entryDate)
+                RETURNING itm_id;
+                """;
+        Map<String, Object> parameters = Map.of(
+                "amount", entity.getAmount(),
+                "reserved", entity.getReservedAmount(),
+                "chairId", entity.getChair().getId(),
+                "entryDate", entity.getEntryDate(),
+                "supplierId", entity.getSupplier().getId(),
+                "unitCost", entity.getUnitCost()
+        );
+
+        Long id = jdbcTemplate.queryForObject(sql, parameters, Long.class);
+        entity.setId(id);
+        return entity;
     }
 
     @Override

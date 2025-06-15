@@ -17,7 +17,7 @@ public class ChairQueryMapper implements ObjectQueryMapper<Chair> {
         SelectTable selectTable = SqlQueryBuilder.create()
                 .selectingAllFromTable("tb_chair")
                 .join("tb_item")
-                .innerJoinOn("chr_id", "itm_chair_id")
+                .leftJoinOn("chr_id", "itm_chair_id")
                 .join("tb_pricing_group")
                 .innerJoinOn("chr_pricing_group_id", "pgr_id");
         return selectTable.endingOptions().orderBy("chr_active").build();

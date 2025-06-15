@@ -1,9 +1,6 @@
 package com.chairpick.ecommerce.config;
 
-import com.chairpick.ecommerce.exceptions.AmountExceedsException;
-import com.chairpick.ecommerce.exceptions.AuthenticationException;
-import com.chairpick.ecommerce.exceptions.DomainValidationException;
-import com.chairpick.ecommerce.exceptions.EntityNotFoundException;
+import com.chairpick.ecommerce.exceptions.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
@@ -72,6 +69,11 @@ public class DefaultExceptionHandler {
         view.setViewName("notFound.html");
         view.addObject("message", e.getMessage());
         return view;
+    }
+
+    @ExceptionHandler(InvalidRequestException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidRequestException(InvalidRequestException e) {
+        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
 }
 

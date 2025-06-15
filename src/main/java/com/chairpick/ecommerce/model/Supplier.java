@@ -1,7 +1,12 @@
 package com.chairpick.ecommerce.model;
 
+import lombok.Getter;
+import lombok.experimental.SuperBuilder;
+
 import java.util.Objects;
 
+@SuperBuilder
+@Getter
 public class Supplier extends DomainEntity {
     private String name;
 

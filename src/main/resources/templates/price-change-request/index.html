@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <title>Solicitações de alteração de preço</title>
+</head>
+<body>
+<main>
+    <input type="hidden" name="chairId" th:value="${chairId}">
+    <h1>Solicitações de alteração de preço para Cadeira Gamer</h1>
+    <a class="action__button" th:href="@{/admin/chairs}">Voltar</a>
+    <table>
+        <thead>
+            <th>Preço de venda proposto</th>
+            <th>Justificativa</th>
+            <th>Status</th>
+            <th>Ações</th>
+        </thead>
+        <tr th:each="requestPrice : ${priceChangeRequests}">
+            <input type="hidden" name="request_price_id" th:value="${requestPrice.id}">
+            <td th:with="formattedPrice=${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(requestPrice.requestedPrice)}"
+                th:text="${formattedPrice}">
+
+
+
+            </td>
+            <td th:text="${requestPrice.reason}">
+            </td>
+            <td th:text="${requestPrice.status.getDescription()}">
+
+            </td>
+            <td>
+                <div sec:authorize="hasAuthority('SALES_MANAGER')" th:if="${requestPrice.status.name() == 'PENDING'}" class="row">
+                    <button class="action__button accept fill" >Aprovar</button>
+                    <button  class="action__button danger reject">Reprovar</button>
+                </div>
+                <p th:if="${requestPrice.status.name() == 'PENDING'}" sec:authorize="hasAuthority('ADMIN')"> Sem ações</p>
+                <p th:if="${requestPrice.status.name() == 'APPROVED'}"> Sem ações </p>
+                <p th:if="${requestPrice.status.name() == 'REPROVED'}"> Sem ações</p>
+            </td>
+        </tr>
+    </table>
+</main>
+<dialog id="confirm_action">
+    <h2>Confirmação</h2>
+    <div class="modal__content">
+        <p></p>
+        <div class="actions">
+            <button id="confirm_button" class="action__button fill">Sim</button>
+            <button id="cancel_button" class="action__button danger fill">Não</button>
+        </div>
+    </div>
+</dialog>
+<dialog id="error__modal">
+    <div class="modal__content">
+        <h2>Erro</h2>
+        <p id="error__message"></p>
+        <div class="modal__actions row">
+            <button class="action__button" style="width: 100%;" id="ok__button">OK</button>
+        </div>
+    </div>
+</dialog>
+<script th:src="@{/js/price-change-request/index.js}" type="module"></script>
+</body>
+</html>

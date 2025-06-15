@@ -27,8 +27,8 @@ public class DAOProvider {
     }
 
     @Bean
-    ProjectionDAO<Category, OrderReportByCategory> provideCategoryDAO(NamedParameterJdbcTemplate jdbcTemplate, ObjectQueryMapper<OrderReportByCategory> projectionQueryMapper) {
-        return new CategoryDAO(jdbcTemplate, projectionQueryMapper);
+    ProjectionDAO<Category, OrderReportByCategory> provideCategoryDAO(NamedParameterJdbcTemplate jdbcTemplate, ObjectQueryMapper<Category> categoryQueryMapper, ObjectQueryMapper<OrderReportByCategory> projectionQueryMapper) {
+        return new CategoryDAO(jdbcTemplate, categoryQueryMapper ,projectionQueryMapper);
     }
 
     @Bean
@@ -89,6 +89,26 @@ public class DAOProvider {
     @Bean
     GenericDAO<PricingGroup> providePricingGroupDAO(NamedParameterJdbcTemplate jdbcTemplate) {
         return new PricingGroupDAO(jdbcTemplate);
+    }
+
+    @Bean
+    GenericDAO<Supplier> provideSupplierDAO(NamedParameterJdbcTemplate jdbcTemplate) {
+        return new SupplierDAO(jdbcTemplate);
+    }
+
+    @Bean
+    GenericDAO<PriceChangeRequest> providePriceChangeRequestDAO(NamedParameterJdbcTemplate jdbcTemplate) {
+        return new PriceChangeRequestDAO(jdbcTemplate);
+    }
+
+    @Bean
+    GenericDAO<ChairStatusChange> provideChairStatusChangeDAO(NamedParameterJdbcTemplate jdbcTemplate) {
+        return new ChairStatusChangeDAO(jdbcTemplate);
+    }
+
+    @Bean
+    WriteRelationDAO<Chair, Category> provideChairCategoryDAO(NamedParameterJdbcTemplate jdbcTemplate) {
+        return new ChairCategoryDAO(jdbcTemplate);
     }
 
 }

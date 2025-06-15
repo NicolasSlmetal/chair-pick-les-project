@@ -35,17 +35,65 @@ public class ChairDAO implements PaginatedProjectionDAO<Chair, ChairAvailablePro
 
     @Override
     public Chair save(Chair entity) {
-        return null;
+        String sql = """
+                INSERT INTO tb_chair (chr_name, chr_description, chr_width, chr_height, chr_length, chr_weight, chr_average_rating, chr_sell_price, chr_active, chr_pricing_group_id)
+                VALUES (:name, :description, :width, :height, :length, :weight, :averageRating, :sellPrice, :isActive, :pricingGroupId)
+                RETURNING chr_id;
+                """;
+        Map<String, Object> parameters = getParameters(entity);
+
+        Long id = jdbcTemplate.queryForObject(sql, parameters, Long.class);
+        if (id != null) {
+            entity.setId(id);
+            entity.getCategories()
+                    .forEach(category -> {
+                        String sqlCategory = """
+                                INSERT INTO tb_chair_category (chc_chair_id, chc_category_id)
+                                VALUES (:chairId, :categoryId);
+                                """;
+                        Map<String, Object> categoryParameters = new HashMap<>();
+
+                        categoryParameters.put("chairId", entity.getId());
+                        categoryParameters.put("categoryId", category.getId());
+                        jdbcTemplate.update(sqlCategory, categoryParameters);
+                    });
+        }
+        return entity;
+    }
+
+    private static Map<String, Object> getParameters(Chair entity) {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("name", entity.getName());
+        parameters.put("description", entity.getDescription());
+        parameters.put("width", entity.getWidth());
+        parameters.put("height", entity.getHeight());
+        parameters.put("length", entity.getLength());
+        parameters.put("weight", entity.getWeight());
+        parameters.put("averageRating", entity.getAverageRating());
+        parameters.put("sellPrice", entity.getSellPrice());
+        parameters.put("isActive", entity.isActive() ? 1 : 0);
+        parameters.put("pricingGroupId", entity.getPricingGroup().getId());
+        return parameters;
     }
 
     @Override
     public Chair update(Chair entity) {
-        return null;
+        String sql = """
+                UPDATE tb_chair SET chr_name = :name, chr_description = :description, chr_width = :width,
+                chr_height = :height, chr_length = :length, chr_weight = :weight, chr_average_rating = :averageRating,
+                chr_sell_price = :sellPrice, chr_active = :isActive, chr_pricing_group_id = :pricingGroupId
+                WHERE chr_id = :id;
+                """;
+        Map<String, Object> parameters = getParameters(entity);
+        parameters.put("id", entity.getId());
+        jdbcTemplate.update(sql, parameters);
+        return entity;
     }
 
     @Override
     public List<Chair> findAll() {
         QueryResult sql = chairQueryMapper.parseParameters(Collections.emptyMap());
+
         return jdbcTemplate.query(sql.query(), (rs) -> {
             Set<Chair> chairs = new HashSet<>();
             Set<PricingGroup> pricingGroups = new HashSet<>();
@@ -80,25 +128,29 @@ public class ChairDAO implements PaginatedProjectionDAO<Chair, ChairAvailablePro
                         .build();
                 chair.setItems(new ArrayList<>());
 
-                Item item = Item.builder()
-                        .id(rs.getLong("itm_id"))
-                        .entryDate(rs.getDate("itm_entry_date").toLocalDate())
-                        .unitCost(rs.getDouble("itm_unit_cost"))
-                        .version(rs.getInt("itm_version"))
-                        .reservedAmount(rs.getInt("itm_reserved"))
-                        .amount(rs.getInt("itm_amount"))
-                        .chair(chair)
-                        .build();
+                rs.getLong("itm_id");
+                if (!rs.wasNull()) {
+                    Item item = Item.builder()
+                            .id(rs.getLong("itm_id"))
+                            .entryDate(rs.getDate("itm_entry_date").toLocalDate())
+                            .unitCost(rs.getDouble("itm_unit_cost"))
+                            .version(rs.getInt("itm_version"))
+                            .reservedAmount(rs.getInt("itm_reserved"))
+                            .amount(rs.getInt("itm_amount"))
+                            .chair(chair)
+                            .build();
 
-                if (!chairs.contains(chair)) {
-                    chair.getItems().add(item);
-                    chairs.add(chair);
+                    if (!chairs.contains(chair)) {
+                        chair.getItems().add(item);
+                        chairs.add(chair);
+                    } else {
+                        chairs.stream()
+                        .filter(c -> c.equals(chair))
+                        .forEach(c -> c.getItems().add(item));
+                    }
                 } else {
-                    chairs.stream()
-                            .filter(c -> c.equals(chair))
-                            .forEach(c -> c.getItems().add(item));
+                    chairs.add(chair);
                 }
-
 
             }
 
@@ -109,7 +161,8 @@ public class ChairDAO implements PaginatedProjectionDAO<Chair, ChairAvailablePro
     @Override
     public Optional<Chair> findById(Long id) {
         String sql = """
-                SELECT * FROM tb_chair INNER JOIN tb_item ON chr_id = itm_chair_id WHERE chr_id = :id;
+                SELECT * FROM tb_chair LEFT JOIN tb_item ON chr_id = itm_chair_id
+                 INNER JOIN tb_pricing_group pg ON chr_pricing_group_id = pg.pgr_id WHERE chr_id = :id;
                 """;
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("id", id);
@@ -126,7 +179,6 @@ public class ChairDAO implements PaginatedProjectionDAO<Chair, ChairAvailablePro
     @Override
     public List<ChairAvailableProjection> findAndMapForProjection(Map<String, String> parameters) {
         QueryResult sql = projectionQueryMapper.parseParameters(parameters);
-
         return jdbcTemplate.query(sql.query(), sql.parameters(), (rs) -> {
             Set<ChairAvailableProjection> projections = new HashSet<>();
             while (rs.next()) {
@@ -208,7 +260,11 @@ public class ChairDAO implements PaginatedProjectionDAO<Chair, ChairAvailablePro
 
     @Override
     public void delete(Long id) {
+        String sql = "UPDATE tb_chair SET chr_active = 0 WHERE chr_id = :id;";
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("id", id);
 
+        jdbcTemplate.update(sql, parameters);
     }
 
     @Override

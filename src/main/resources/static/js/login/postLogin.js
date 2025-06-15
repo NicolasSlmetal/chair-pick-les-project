@@ -19,8 +19,14 @@ export async function postLogin(data) {
     }
 
     const json = await body.json();
+
     if (json.role == "ADMIN") {
         window.location.href = "/admin/customers";
+        return;
+    }
+
+    if (json.role == "SALES_MANAGER") {
+        window.location.href = "/admin/chairs";
         return;
     }
 

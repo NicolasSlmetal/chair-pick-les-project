@@ -6,6 +6,16 @@ export async function get(endpoint, expectedStatus = 200) {
 }
 
 export async function post(endpoint, body, expectedStatus = 201) {
+
+    if (body instanceof FormData) {
+        const response = await fetch(`${API_URL}/${endpoint}`, {
+            method: "POST",
+            body: body,
+        });
+
+        return response;
+
+    }
     const response = await fetch(`${API_URL}/${endpoint}`, {
         method: "POST",
         headers: {
@@ -17,6 +27,16 @@ export async function post(endpoint, body, expectedStatus = 201) {
 }
 
 export async function put(endpoint, body, expectedStatus = 200) {
+
+    if (body instanceof FormData) {
+        const response = await fetch(`${API_URL}/${endpoint}`, {
+            method: "PUT",
+            body: body,
+        });
+
+        return response;
+
+    }
     const response = await fetch(`${API_URL}/${endpoint}`, {
         method: "PUT",
         headers: {

@@ -4,7 +4,6 @@ import com.chairpick.ecommerce.model.Order;
 import com.chairpick.ecommerce.utils.pagination.PageOptions;
 import com.chairpick.ecommerce.utils.query.*;
 import com.chairpick.ecommerce.utils.query.mappers.interfaces.GeneralObjectQueryMapper;
-import com.chairpick.ecommerce.utils.query.mappers.interfaces.ObjectQueryMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -42,6 +41,10 @@ public class OrderQueryMapper implements GeneralObjectQueryMapper<Order> {
 
             if (key.equals("ord_customer_id")) {
                 where.equals("ord_customer_id", value);
+            }
+
+            if (entry.getKey().equals("chairId")) {
+                where.equals("chr_id", value);
             }
 
             if (--size > 0) {

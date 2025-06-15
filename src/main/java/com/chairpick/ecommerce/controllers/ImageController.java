@@ -1,7 +1,6 @@
 package com.chairpick.ecommerce.controllers;
 
-import com.chairpick.ecommerce.services.ChairImageLocatorService;
-import jdk.jfr.ContentType;
+import com.chairpick.ecommerce.services.ChairImageService;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -12,9 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.awt.*;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -22,15 +19,15 @@ import java.nio.file.Path;
 @RequestMapping("/images")
 public class ImageController {
 
-    private final ChairImageLocatorService chairImageLocatorService;
+    private final ChairImageService chairImageService;
 
-    public ImageController(ChairImageLocatorService chairImageLocatorService) {
-        this.chairImageLocatorService = chairImageLocatorService;
+    public ImageController(ChairImageService chairImageService) {
+        this.chairImageService = chairImageService;
     }
 
     @GetMapping("/chairs/{id}")
     public ResponseEntity<Resource> getImageForChair(@PathVariable Long id) throws IOException {
-        Path imagePath = chairImageLocatorService.getChairImage(id);
+        Path imagePath = chairImageService.getChairImage(id);
         Resource resource = new UrlResource(imagePath.toUri());
         String contentType = Files.probeContentType(imagePath);
         if (contentType == null) {

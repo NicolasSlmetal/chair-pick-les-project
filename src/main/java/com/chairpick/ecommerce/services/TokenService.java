@@ -28,10 +28,12 @@ public class TokenService {
     public TokenResponseDTO generateToken(AuthenticatedUser user) {
         Instant now = Instant.now();
         Instant afterOneHour = now.plus(1, ChronoUnit.HOURS);
+        UserType userType = user.getUser().getType();
 
         String role = user.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
+                .filter(authority -> authority.equals(userType.name()))
                 .findFirst()
                 .orElseGet(UserType.CUSTOMER::name);
         JWTCreator.Builder jwtBuilder = JWT.create()

@@ -15,4 +15,12 @@ public class PricingGroup extends DomainEntity {
     public void validate() {
 
     }
+
+    @Override
+    public String toString() {
+        return "PricingGroup{" +
+                "name='" + name + '\'' +
+                ", percentageValue=" + percentageValue +
+                '}';
+    }
 }
