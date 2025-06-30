@@ -8,6 +8,11 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 public class PricingGroup extends DomainEntity {
+
+    public PricingGroup() {
+
+    }
+
     private String name;
     private double percentageValue;
 

@@ -4,6 +4,7 @@ import com.chairpick.ecommerce.model.Customer;
 import com.chairpick.ecommerce.model.enums.Genre;
 import com.chairpick.ecommerce.model.enums.PhoneType;
 import com.chairpick.ecommerce.model.User;
+import com.chairpick.ecommerce.model.enums.UserType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -33,6 +34,8 @@ public class CustomerRowMapper extends CustomRowMapper<Customer> {
         PhoneType phoneType = phoneTypeMap.get(rs.getString(getColumn("phone type")));
 
         User user = User.builder()
+                .password(rs.getString(getRelatedTableColumn("password", "usr")))
+                .type(UserType.CUSTOMER)
                 .email(rs.getString(getRelatedTableColumn("email", "usr"))).build();
         user.setId(rs.getLong(getRelatedTableColumn("id", "usr")));
         return Customer
@@ -40,6 +43,7 @@ public class CustomerRowMapper extends CustomRowMapper<Customer> {
                 .id(rs.getLong(getColumn("id")))
                 .name(rs.getString(getColumn("name")))
                 .phoneType(phoneType)
+                .active(rs.getBoolean("cus_active"))
                 .phoneDDD(rs.getString(getColumn("phone ddd")))
                 .phone(rs.getString(getColumn("phone")))
                 .user(user)

@@ -65,11 +65,10 @@
             <th>Gênero</th>
             <th>Data de nascimento</th>
             <th>Email</th>
-            <th>Transações</th>
-            <th>Remover</th>
+            <th>Status</th>
         </thead>
-        <tr th:each="customer : ${customers}">
-            <td th:text="${customer.id}">
+        <tr th:each="projection : ${customers}" th:with="customer=${projection.customer}">
+            <td th:text="${projection.rank}">
 
             </td>
             <td th:text="${{customer.name}}">
@@ -87,11 +86,8 @@
             </td>
             <td th:text="${customer.user.email}">
             </td>
-            <td>
-                <a class="action__button">Transações</a>
-            </td>
-            <td>
-                <a id="remove_button" class="action__button danger"  th:attr="entity-id=${customer.id}, entity-name=${customer.name}">Remover</a>
+            <td th:text="${customer.active ? 'Ativo' : 'Inativo'}">
+
             </td>
         </tr>
     </table>

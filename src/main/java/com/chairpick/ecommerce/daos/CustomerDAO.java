@@ -1,7 +1,13 @@
 package com.chairpick.ecommerce.daos;
 
 import com.chairpick.ecommerce.daos.interfaces.GenericDAO;
+import com.chairpick.ecommerce.daos.interfaces.ProjectionDAO;
 import com.chairpick.ecommerce.model.Customer;
+import com.chairpick.ecommerce.model.User;
+import com.chairpick.ecommerce.model.enums.Genre;
+import com.chairpick.ecommerce.projections.CustomerRankProjection;
+import com.chairpick.ecommerce.utils.query.QueryResult;
+import com.chairpick.ecommerce.utils.query.mappers.interfaces.ObjectQueryMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -11,14 +17,16 @@ import java.util.Map;
 import java.util.Optional;
 
 @Repository
-public class CustomerDAO implements GenericDAO<Customer> {
+public class CustomerDAO implements ProjectionDAO<Customer, CustomerRankProjection> {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final RowMapper<Customer> rowMapper;
+    private final ObjectQueryMapper<CustomerRankProjection> projectionQueryMapper;
 
-    public CustomerDAO(NamedParameterJdbcTemplate jdbcTemplate, RowMapper<Customer> rowMapper) {
+    public CustomerDAO(NamedParameterJdbcTemplate jdbcTemplate, RowMapper<Customer> rowMapper, ObjectQueryMapper<CustomerRankProjection> projectionQueryMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.rowMapper = rowMapper;
+        this.projectionQueryMapper = projectionQueryMapper;
     }
 
     @Override
@@ -71,7 +79,7 @@ public class CustomerDAO implements GenericDAO<Customer> {
     @Override
     public List<Customer> findAll() {
         String sql = """
-                SELECT * FROM tb_customer c JOIN tb_user u ON u.usr_id = c.cus_user_id WHERE cus_active = 1;
+                SELECT * FROM tb_customer c JOIN tb_user u ON u.usr_id = c.cus_user_id;
                 """;
         return jdbcTemplate.getJdbcTemplate().query(sql, rowMapper);
     }
@@ -93,7 +101,10 @@ public class CustomerDAO implements GenericDAO<Customer> {
     }
 
     private String parseParameters(Map<String, String> parameters) {
-        StringBuilder baseSql = new StringBuilder("SELECT * FROM tb_customer c JOIN tb_user u ON u.usr_id = c.cus_user_id WHERE cus_active = 1");
+        StringBuilder baseSql = new StringBuilder("SELECT * FROM tb_customer c JOIN tb_user u ON u.usr_id = c.cus_user_id");
+        if (!parameters.isEmpty()) {
+            baseSql.append(" WHERE 1 = 1");
+        }
         for (Map.Entry<String, String> entry : parameters.entrySet()) {
             Object value = "'%"+entry.getValue()+"%'";
             String operator = " ILIKE ";
@@ -117,6 +128,11 @@ public class CustomerDAO implements GenericDAO<Customer> {
                 operator = "= ";
             }
 
+            if (entry.getKey().equals("active")) {
+                value = entry.getValue().equals("true") ? "1" : "0";
+                operator = "= ";
+            }
+
             baseSql.append(" AND ").append(key).append(operator).append(value);
         }
         return baseSql.toString();
@@ -128,5 +144,17 @@ public class CustomerDAO implements GenericDAO<Customer> {
                 UPDATE tb_customer SET cus_active = 0 WHERE cus_id = :id;
                 """;
         jdbcTemplate.update(sql, Map.of("id", id));
+    }
+
+    @Override
+    public List<CustomerRankProjection> findAndMapForProjection(Map<String, String> parameters) {
+        QueryResult sql = projectionQueryMapper.parseParameters(parameters);
+        return jdbcTemplate.query(sql.query(), sql.parameters(), (rs, rowNum) -> {
+            Customer customer = rowMapper.mapRow(rs, rowNum);
+
+            return CustomerRankProjection.builder()
+                    .customer(customer)
+                    .rank(rs.getInt("rank")).build();
+        });
     }
 }

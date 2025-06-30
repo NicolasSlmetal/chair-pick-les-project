@@ -28,10 +28,10 @@
         </div>
         <div class="column border">
             <h2>Ações</h2>
-            <a th:href="@{/customers/{customerId}/edit(customerId=${customer.id})}" class="action__button" style="width: 100%;">Editar</a>
-            <a th:href="@{/customers/{customerId}/alter-password(customerId=${customer.id})}" class="action__button" style="width: 100%;">Alterar senha</a>
-            <a th:href="@{/customers/{customerId}/addresses(customerId=${customer.id})}" class="action__button" style="width: 100%;">Endereços</a>
-            <a th:href="@{/customers/{customerId}/credit-cards(customerId=${customer.id})}"class="action__button" style="width: 100%;">Cartões de crédito</a>
+            <a th:href="@{/customers/{customerId}/edit(customerId=${customer.id})}" class="action__button edit__customer" style="width: 100%;">Editar</a>
+            <a th:href="@{/customers/{customerId}/alter-password(customerId=${customer.id})}" class="action__button edit__password" style="width: 100%;">Alterar senha</a>
+            <a th:href="@{/customers/{customerId}/addresses(customerId=${customer.id})}" class="action__button addresses" style="width: 100%;">Endereços</a>
+            <a th:href="@{/customers/{customerId}/credit-cards(customerId=${customer.id})}"class="action__button credit__cards" style="width: 100%;">Cartões de crédito</a>
             <button id="delete_account" class="action__button danger">Remover conta</button>
         </div>
     </section>

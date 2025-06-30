@@ -2,6 +2,7 @@
 import { inputText, chatContainer, button } from "./constants.js";
 const descriptionMap = new Map();
 const messageContainerMap = new Map();
+const cardToIdMap = new Map();
 const loadingIntervalMap = new Map();
 
 const classMapping = new Map([
@@ -79,6 +80,10 @@ function restoreChatFromSessionStorage() {
             lastContainer = createMessageElement(messageGroup, "BOT");
             chatContainer.appendChild(lastContainer);
             activeElement(lastContainer, 10);
+            cardToIdMap.forEach((card, id) => {
+                card.href = `/chairs/${id}`;
+            });
+            cardToIdMap.clear();
         } else {
             lastContainer = createMessageElement(item.text, "BOT");
             chatContainer.appendChild(lastContainer);
@@ -166,6 +171,10 @@ function generateTextAnswerBasedInUserInput(prompt) {
             activeElement(errorMessage, 100);
             errorMessage.scrollIntoView({ behavior: "smooth" });
         } else {
+            cardToIdMap.forEach((card, id) => {
+                card.href = `/chairs/${id}`;
+            });
+            cardToIdMap.clear();
             saveMessageToSessionStorage({ type: "product-group", products: Array.from(displayedChairs.values()) });
         }
         eventSource.close();
@@ -185,8 +194,6 @@ function buildProductCard(product, descriptionText) {
     const description = document.createElement("p");
     description.innerText = descriptionText || "";
     card.appendChild(description);
-
-    card.href = "/chairs/" + product.id;
     container.appendChild(card);
     descriptionMap.set(product.id, description);
 
@@ -208,6 +215,7 @@ function buildProductCard(product, descriptionText) {
         loadingIntervalMap.set(product.id, interval);
     }
 
+    cardToIdMap.set(product.id, card);
     return container;
 }
 

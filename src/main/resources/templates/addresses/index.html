@@ -12,7 +12,7 @@
 <main>
     <div class="button__group">
         <a id="back-button" data-test="back-button" class="action__button" th:href="@{/customers/{id}(id=${customer.id})}">Voltar</a>
-        <a class="action__button" th:href="'/customers/' + ${customer.id} + '/addresses/new?customerName=' + ${customer.name}">Cadastrar endereço</a>
+        <a class="action__button create__address" th:href="'/customers/' + ${customer.id} + '/addresses/new?customerName=' + ${customer.name}">Cadastrar endereço</a>
     </div>
     <table class="table">
         <thead>
@@ -27,7 +27,6 @@
         <th>País</th>
         <th>Observações</th>
         <th>Edição</th>
-        <th>Remover</th>
         </thead>
         <tr th:each="address : ${addresses}">
 
@@ -61,9 +60,6 @@
 
             <td>
                 <a class="action__button" th:href="'/customers/' + ${customer.id} + '/addresses/edit/'  + ${address.id} + '?customerName=' + ${customer.name}">Editar</a>
-            </td>
-            <td>
-                <a class="action__button danger" th:classappend="${address.isDefault ? 'disabled' : ''}">Remover</a>
             </td>
         </tr>
     </table>

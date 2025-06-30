@@ -20,11 +20,7 @@
             <form id="main">
                 <label for="category">Categorias</label>
                 <select class="select2" id="category" name="category" multiple>
-                    <option th:each="category: ${chairsByCategories.keySet()}"
-                    th:text="${category.getName()}"
-                    th:id="${category.getName()}"
-                    th:value="${category.getName()}"
-                    ></option>
+
                 </select>
                 <label>Preço</label>
                 <div class="min_max_group">
@@ -65,35 +61,19 @@
         </aside>
         <section class="products">
             <h2>Produtos</h2>
-            <div class="products__container" >
-                <a class="product_card" th:each="chair : ${chairs}" th:href="@{/chairs/{id}(id=${chair.id})}">
-                    <img class="product_image" th:src="@{/images/chairs/{id}(id=${chair.id})}" th:alt="${chair.name}">
-                    <h3 class="product_title" th:text="${chair.name}"></h3>
-                    <p th:text="${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(chair.price)}"></p>
-                </a>
+            <div class="products__container">
+
             </div>
-            <div class="page">
-                <a class="active"> <strong><</strong> </a>
-                <a class="active">1</a>
-                <a>2</a>
-                <a>3</a>
-                <a><strong>></strong></a>
+            <div id="products_pagination_container" class="pagination">
+
             </div>
+
         </section>
     </section>
     <hr>
-    <div th:each="category : ${chairsByCategories.keySet()}" style="width: 100%;">
-        <h2 th:text="'Linha ' + ${category.getName()}"></h2>
-        <section class="category_container">
-            <section class="row bg_second">
-                <a class="product_card" th:each="chair : ${chairsByCategories.get(category)}" th:href="@{/chairs/{id}(id=${chair.id})}">
-                    <img class="product_image" th:src="@{/images/chairs/{id}(id=${chair.id})}" th:alt="${chair.name}">
-                    <h3 th:text="${chair.name}"></h3>
-                    <p th:text="${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(chair.price)}"></p>
-                </a>
-            </section>
-            <hr>
-        </section>
+    <div class="all_products_by_category" style="width: 100%;">
+
+
     </div>
     <div th:replace="fragments/bot-button :: a"></div>
 </main>
@@ -108,6 +88,8 @@
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<link rel="stylesheet" href="https://unpkg.com/paginationjs@2.1.5/dist/pagination.css">
+<script src="https://unpkg.com/paginationjs@2.1.5/dist/pagination.min.js"></script>
 <script th:src="@{/js/index/index.js}" type="module"></script>
 <script type="importmap">
     {

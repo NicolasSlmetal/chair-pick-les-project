@@ -32,4 +32,9 @@ public class CategoryController {
     public ResponseEntity<List<Category>> findAllCategories() {
         return ResponseEntity.ok(categoryService.findAllCategories());
     }
+
+    @GetMapping("/categories")
+    public ResponseEntity<List<Category>> findAllCategoriesForPublic() {
+        return ResponseEntity.ok(categoryService.findAllCategories());
+    }
 }

@@ -31,7 +31,11 @@ function setupSearchButton() {
                 const splitPhone = input.value.split(" ");
                 const ddd = splitPhone[0].replace("(", "").replace(")", "");
                 const phone = splitPhone[1].replace("-", "").replace("_", "");
-                querySearch += `phone_ddd=${ddd}&phone=${phone}&`;
+                const unformattedPhone = phone.replace(/\D/g, "");
+                if (unformattedPhone.length < 1) {
+                    return;
+                }
+                querySearch += `phone_ddd=${ddd}&phone=${unformattedPhone}&`;
                 return;
             }
 
@@ -42,8 +46,8 @@ function setupSearchButton() {
         querySearch = querySearch.replace("male", "m");
         querySearch = querySearch.replace("female", "f");
         querySearch = querySearch.slice(0, -1);
-        window.location.href = `/customers${querySearch}`;
-        });
+        window.location.href = `/admin/customers${querySearch}`;
+    });
 }
 export function prepareDialogButtons() {
     dialogCancelButton.addEventListener("click", (event) => {

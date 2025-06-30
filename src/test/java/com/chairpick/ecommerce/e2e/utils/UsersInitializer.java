@@ -86,6 +86,42 @@ public class UsersInitializer {
         return this;
     }
 
+    public UsersInitializer createDefaultAdminAndSalesManager() {
+        String adminQuery = "INSERT INTO tb_user (usr_email, usr_password, usr_type) VALUES (:username, :password, :role) RETURNING usr_id;";
+        String userSalesManagerQuery = "INSERT INTO tb_user (usr_email, usr_password, usr_type) VALUES (:username, :password, :role) RETURNING usr_id;";
+        String hashedSalesManagerPassword = BCrypt.hashpw("SalesManager123!", BCrypt.gensalt());
+        String hashedAdminPassword = BCrypt.hashpw("Admin123!", BCrypt.gensalt());
+
+        Map<String, Object> adminParams = Map.of(
+                "username", "admin@email.com",
+                "password", hashedAdminPassword,
+                "role", "ADMIN"
+        );
+        Map<String, Object> salesManagerParams = Map.of(
+            "username", "sales@email.com",
+            "password",  hashedSalesManagerPassword,
+            "role", "SALES_MANAGER"
+        );
+
+        Long adminId = seeder.executeReturningId(adminQuery, adminParams);
+        Long salesManagerId = seeder.executeReturningId(userSalesManagerQuery, salesManagerParams);
+
+        users.put(UserType.SALES_MANAGER, User.builder()
+                        .email("sales@email.com")
+                        .id(salesManagerId)
+                        .password("SalesManager123!")
+                        .type(UserType.SALES_MANAGER)
+                .build());
+        users.put(UserType.ADMIN, User
+                .builder()
+                .id(adminId)
+                .type(UserType.ADMIN)
+                .email("admin@email.com")
+                .password("Admin123!")
+                .build());
+        return this;
+    }
+
     private void insertAddressAndCardForCustomer(Long customerId) {
         String addressQuery = """
                 INSERT INTO tb_address (add_street, add_default, add_name, add_street_type, add_number, add_observation, add_neighborhood, add_city, add_state, add_cep, add_country, add_customer_id)
@@ -127,19 +163,32 @@ public class UsersInitializer {
     public void authWithCustomer(WebDriver driver, WebDriverWait wait) {
         driver.get("http://localhost:8080/login");
         LoginPage loginPage = new LoginPage(driver);
-        loginPage.enterEmail(users.get(UserType.CUSTOMER).getEmail());
-        loginPage.enterPassword(users.get(UserType.CUSTOMER).getPassword());
-        loginPage.clickSubmit();
+        loginPage.fillEmail(users.get(UserType.CUSTOMER).getEmail());
+        loginPage.fillPassword(users.get(UserType.CUSTOMER).getPassword());
+        loginPage.submit();
         wait.until(ExpectedConditions.not(ExpectedConditions.titleIs("Login")));
     }
 
     public void authWithAdmin(WebDriver driver, WebDriverWait wait) {
         driver.get("http://localhost:8080/login");
         LoginPage loginPage = new LoginPage(driver);
-        loginPage.enterEmail(users.get(UserType.ADMIN).getEmail());
-        loginPage.enterPassword(users.get(UserType.ADMIN).getPassword());
-        loginPage.clickSubmit();
+        loginPage.fillEmail(users.get(UserType.ADMIN).getEmail());
+        loginPage.fillPassword(users.get(UserType.ADMIN).getPassword());
+        loginPage.submit();
         wait.until(ExpectedConditions.not(ExpectedConditions.titleIs("Login")));
+    }
+
+    public void authWithSalesManager(WebDriver driver, WebDriverWait wait) {
+        driver.get("http://localhost:8080/login");
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.fillEmail(users.get(UserType.SALES_MANAGER).getEmail());
+        loginPage.fillPassword(users.get(UserType.SALES_MANAGER).getPassword());
+        loginPage.submit();
+        wait.until(ExpectedConditions.not(ExpectedConditions.titleIs("Login")));
+    }
+
+    public Long getCustomerId() {
+        return customers.values().stream().findFirst().map(Customer::getId).orElse(null);
     }
 
 

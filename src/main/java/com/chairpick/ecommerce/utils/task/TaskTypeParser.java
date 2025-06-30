@@ -9,7 +9,7 @@ public class TaskTypeParser {
             return null;
         }
 
-        String[] parts = serializedTask.replaceAll("\"", "").split(":");
+        String[] parts = serializedTask.toUpperCase().replaceAll("\"", "").split(":");
         for (String part: parts) {
             if (part.startsWith("CHECK_CART")) {
                 return TaskType.CHECK_CART;

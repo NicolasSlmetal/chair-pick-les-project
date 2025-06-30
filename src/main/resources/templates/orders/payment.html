@@ -49,9 +49,9 @@
                         <div th:each="coupon : ${coupons.get(couponType)}" class="card without_cursor selectable">
                             <input type="hidden" name="couponId" th:value="${coupon.id}">
                             <input type="hidden" name="couponValue" th:value="${coupon.value}">
-                            <input type="radio" name="coupon" id="promoCouponId" th:value="${coupon.id}}">
+                            <input type="radio" name="coupon" id="promoCouponId" th:value="${coupon.id}">
                             <p th:with="id=${coupon.id}"
-                                    th:utext="'<strong>Id: </strong>' + ${id}"></p>
+                                    th:utext="'<strong>Número do cupom: </strong>' + ${id}"></p>
                             <p th:with="value=${T(com.chairpick.ecommerce.utils.format.CurrencyFormat).format(coupon.value)}"
                              th:utext="'<strong>Valor: </strong>' + ${value}"></p>
                             <button class="action__button danger" style="display: none;">Retirar</button>

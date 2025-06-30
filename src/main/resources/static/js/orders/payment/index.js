@@ -52,7 +52,7 @@ initializeSwapCouponEvents();
 function calculateOriginalValue() {
     return Array.from(inputs).slice(0, 1).reduce((acc, input) => {
     const value = input.value.replace('R$ ', '').replace('.', '').replace(',', '.');
-        if (isNaN(value)) {
+        if (isNaN(value) || value <= 0) {
             return originalTotalValue;
         }
         return acc + value;
@@ -315,7 +315,9 @@ function distributeValuesForCustom(cards, remainingCents) {
 
 function verifyIfExceedsTheTotal(coupon) {
     const couponsValue = getCouponsValue();
-    const difference = -(calculateOriginalValue() - couponsValue);
+    const totalValue = calculateOriginalValue();
+
+    const difference = -(totalValue - couponsValue);
     if (difference > 0) {
         handleExcessCouponValue(coupon, difference);
     } else {
@@ -334,6 +336,9 @@ function handleNormalCouponValue(coupon, difference) {
     couponGenerateMessage.textContent = '';
     enableAllCoupons(coupon);
     updateCreditCardSelections(-difference);
+    if (difference == 0) {
+        disableUnselectedCoupons();
+    }
 }
 
 function disableUnselectedCoupons(coupon) {
@@ -382,8 +387,10 @@ function showCouponGenerationMessage(difference) {
 }
 
 function updateCreditCardSelections(remainingValue) {
+
     const selectedCards = getSelectedCreditCards();
     if (selectedCards.length === 0) {
+        cardCentsMap.clear();
         selectDefaultCard(remainingValue);
         return;
     }
@@ -405,10 +412,15 @@ function updateCreditCardSelections(remainingValue) {
 }
 
 function selectDefaultCard(value) {
+    if (value <= 0) {
+        return;
+    }
+    const formattedValue = Math.round(value * 100)
+
     const defaultCard = document.querySelector('.card.default');
+    cardCentsMap.set(defaultCard, formattedValue);
+    defaultCard.querySelector('input.payment_value').value = formatCurrency(formattedValue / 100);
     defaultCard.querySelector('input[type="checkbox"]').checked = true;
-    defaultCard.querySelector('input.payment_value').value = formatCurrency(value);
-    cardCentsMap.set(defaultCard, Math.round(value * 100));
 }
 
 function updateSelectedCardsValues(cards, value) {
@@ -421,6 +433,9 @@ function limitCreditCardsIfNecessary() {
     let selectedCards = getSelectedCreditCards();
     if (selectedCards.length === 0) {
         return;
+    }
+    if (totalValue <= 0) {
+        totalValue = originalTotalValue - getCouponsValue();
     }
     let dividedValue = Math.trunc((totalValue / selectedCards.length) * 100) / 100;
     const promoCoupons = getSelectedPromoCoupon();
@@ -435,7 +450,7 @@ function limitCreditCardsIfNecessary() {
         selectedCards.splice(selectedCards.indexOf(last), 1);
         dividedValue = totalValue / selectedCards.length;
     }
-
+    console.log({ dividedValue, totalValue, selectedCards });
     distributeValuesPrecisely(totalValue, selectedCards);
     applyCardValuesFromMap();
 }
@@ -501,8 +516,11 @@ function distributeValuesPrecisely(totalValue, selectedCards) {
 
 function applyCardValuesFromMap() {
     for (const [card, cents] of cardCentsMap.entries()) {
+
         const input = card.querySelector('input.payment_value');
-        input.value = formatCurrency(cents / 100);
+        const value = cents / 100;
+
+        input.value = formatCurrency(value);
     }
 }
 

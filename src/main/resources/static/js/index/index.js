@@ -2,8 +2,9 @@ import { configureSearch } from "../utils/configureSearch.js";
 import { $ } from "../consts.js";
 import { productCards } from "./consts.js"
 import { countCart } from "../utils/countCart.js";
+import { configureCategoriesProperties } from "./configureCategoriesProperties.js";
 
-
+const paginationGlobal = $.fn.pagination;
 const form = document.querySelector("form");
 form.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -56,20 +57,52 @@ cleanButton.addEventListener("click", () => {
 });
 
 $(document).ready(function() {
-    $('.select2').select2({
-        placeholder: "Selecione uma ou mais categorias",
-        allowClear: true,
-        width: "100%",
-        language: {
-            noResults: function (){
 
-                return `Categoria não encontrada`;
-            }
+    $("#products_pagination_container").pagination({
+        dataSource: "/chairs/search",
+        pageSize: 8,
 
+        locator: 'entitiesInPage',
+        alias: {
+            pageNumber: 'page',
+            pageSize: 'limit',
         },
-        selectionCssClass: "multi_selected",
+        pageNumber: 1,
+        totalNumberLocator: function(response) {
+            return response.totalResults;
+        },
+        style: {
+            className: "pagination"
+        },
+        callback: function(data, pagination) {
+            const container = $(".products__container");
+            container.empty();
+            if (data.length === 0) {
+                container.append("<p>Nenhum produto encontrado.</p>");
+                return;
+            }
+            data.forEach(product => {
+                    const cardAnchor = document.createElement("a");
+                    cardAnchor.classList.add("product_card");
+                    cardAnchor.href = `/chairs/${product.id}`;
+                    const img = document.createElement("img");
+                    img.src = `/images/chairs/${product.id}`;
+                    img.alt = product.name;
+                    img.classList.add("product_image");
+                    cardAnchor.appendChild(img);
+                    const title = document.createElement("h3");
+                    title.innerText = product.name;
+                    cardAnchor.appendChild(title);
+                    const price = document.createElement("p");
+                    price.innerText = `R$ ${product.price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                    cardAnchor.appendChild(price);
+                    container.append(cardAnchor);
+                });
 
+        }
     })
+
+    configureCategoriesProperties();
     configureSearch();
 });
 

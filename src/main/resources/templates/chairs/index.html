@@ -15,7 +15,7 @@
         <a class="action__button orders " th:href="@{/admin/orders}" sec:authorize="hasAuthority('ADMIN')">Pedidos</a>
         <a class="action__button logout" th:href="@{/logout}">Sair</a>
     </div>
-    <a class="action__button" th:href="@{/admin/chairs/new}" sec:authorize="hasAuthority('ADMIN')">Cadastrar cadeira</a>
+    <a class="action__button create_chair" th:href="@{/admin/chairs/new}" sec:authorize="hasAuthority('ADMIN')">Cadastrar cadeira</a>
     <table>
         <thead>
         <th>Nome</th>

@@ -21,6 +21,7 @@ public class Customer extends DomainEntity {
     private String cpf;
     private PhoneType phoneType;
     private String phoneDDD;
+    private boolean active;
     private String phone;
     private LocalDate bornDate;
     private List<Address> addresses;

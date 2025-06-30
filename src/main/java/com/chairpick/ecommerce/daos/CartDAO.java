@@ -3,6 +3,8 @@ package com.chairpick.ecommerce.daos;
 import com.chairpick.ecommerce.daos.interfaces.ProjectionDAO;
 import com.chairpick.ecommerce.model.Cart;
 import com.chairpick.ecommerce.model.Chair;
+import com.chairpick.ecommerce.model.Customer;
+import com.chairpick.ecommerce.model.Item;
 import com.chairpick.ecommerce.model.enums.CartItemStatus;
 import com.chairpick.ecommerce.projections.CartItemSummaryProjection;
 import com.chairpick.ecommerce.utils.query.*;
@@ -77,7 +79,32 @@ public class CartDAO implements ProjectionDAO<Cart, CartItemSummaryProjection> {
 
         Map<String, Object> parameters = Map.of("id", id);
 
-        List<Cart> carts = jdbcTemplate.query(sql, parameters, rowMapper);
+        List<Cart> carts = jdbcTemplate.query(sql, parameters, (rs, rowNumber) -> {
+            Cart cart = Cart.builder()
+                    .id(rs.getLong("car_id"))
+                    .amount(rs.getInt("car_item_amount"))
+                    .price(rs.getDouble("car_item_price"))
+                    .entryDate(rs.getTimestamp("car_item_entry_datetime").toLocalDateTime())
+                    .status(CartItemStatus.valueOf(rs.getString("car_item_status")))
+                    .limit(rs.getInt("car_item_limit"))
+                    .customer(Customer.builder()
+                            .id(rs.getLong("car_customer_id"))
+                            .build())
+                    .build();
+            Chair chair = Chair.builder()
+                    .id(rs.getLong("itm_chair_id"))
+                    .build();
+            Item item = Item.builder()
+                    .amount(rs.getInt("itm_amount"))
+                    .reservedAmount(rs.getInt("itm_reserved"))
+                    .unitCost(rs.getDouble("itm_unit_cost"))
+                    .version(rs.getInt("itm_version"))
+                    .entryDate(rs.getDate("itm_entry_date").toLocalDate())
+                    .chair(chair)
+                    .build();
+            cart.setItem(item);
+            return cart;
+        });
         return carts.isEmpty() ? Optional.empty() : Optional.of(carts.getFirst());
     }
 

@@ -24,9 +24,6 @@ public class TextGenerationService {
     public String generateResponse(String prompt) {
 
         Prompt promptOptions = new Prompt(prompt, ChatOptions.builder()
-                .maxTokens(5)
-                .temperature(0.0)
-                .stopSequences(List.of("\n"))
                 .build());
         return chatClient.call(promptOptions).getResult().getOutput().getText();
     }

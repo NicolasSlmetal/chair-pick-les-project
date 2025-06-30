@@ -1,4 +1,6 @@
 import { postLogin } from "./postLogin.js";
+import { postRequestResetPassword } from "./postRequestResetPassword.js";
+import { parseErrorMessages } from "../utils/errorMessage.js";
 
 const email = document.getElementById('email');
 const password = document.getElementById('password');
@@ -6,6 +8,13 @@ const password = document.getElementById('password');
 const submitButton = document.querySelector('button[type="submit"]');
 const forgetPasswordButton = document.querySelector('button#forget');
 const forgetPasswordDialog = document.querySelector('dialog#forget__modal');
+const resultModal = document.querySelector('dialog#result__modal');
+const okResultModal = resultModal.querySelector('button');
+okResultModal.addEventListener("click", () => {
+    resultModal.close();
+    const input = forgetPasswordDialog.querySelector("input");
+    input.value = "";
+});
 
 function configureCancelButton(dialog) {
     const cancelButton = dialog.querySelector("button#dialog__cancel__button");
@@ -20,9 +29,21 @@ function configureConfirmButton(dialog, action) {
 }
 
 configureCancelButton(forgetPasswordDialog);
-configureConfirmButton(forgetPasswordDialog, () => {
+configureConfirmButton(forgetPasswordDialog, async () => {
     forgetPasswordDialog.close();
     const input = forgetPasswordDialog.querySelector("input");
+    const emailValue = input.value.trim();
+    input.value = "";
+    const response = await postRequestResetPassword(emailValue);
+    const pStatus = resultModal.querySelector("p");
+    if (response.status === 200) {
+        pStatus.innerText = "Se o e-mail estiver cadastrado, você receberá um link para redefinir sua senha.";
+    }
+    if (response.status === 400) {
+        const messages = await response.json();
+        pStatus.innerText = parseErrorMessages(messages);
+    }
+    resultModal.showModal();
 });
 
 

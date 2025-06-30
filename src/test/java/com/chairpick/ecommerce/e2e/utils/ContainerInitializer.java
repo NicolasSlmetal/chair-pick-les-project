@@ -10,13 +10,7 @@ public class ContainerInitializer {
                 .directory(new File(DIRNAME))
                 .start();
 
-        BufferedReader readerProcess = new BufferedReader(process.inputReader());
-        StringBuilder sb = new StringBuilder();
-        while (readerProcess.read() != -1) {
-            sb.append(readerProcess.readLine());
-        }
-        System.out.println(sb.toString());
-        readerProcess.close();
+
         process.waitFor();
 
         if (process.exitValue() != 0) {

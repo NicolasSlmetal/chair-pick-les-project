@@ -4,6 +4,7 @@ import com.chairpick.ecommerce.model.Customer;
 import com.chairpick.ecommerce.io.input.NewCustomerInput;
 import com.chairpick.ecommerce.io.input.NewPasswordInput;
 import com.chairpick.ecommerce.io.output.TokenResponseDTO;
+import com.chairpick.ecommerce.projections.CustomerRankProjection;
 import com.chairpick.ecommerce.security.AuthenticatedUser;
 import com.chairpick.ecommerce.services.CustomerService;
 import com.chairpick.ecommerce.services.TokenService;
@@ -57,15 +58,6 @@ public class CustomerController {
         return view;
     }
 
-    @GetMapping("/admin/customers/{id}/transactions")
-    public ModelAndView redirectToCustomerTransactions(@PathVariable Long id) {
-        Customer customer = customerService.findById(id);
-        ModelAndView view = new ModelAndView();
-        view.setViewName("transactions/index.html");
-        view.addObject("customer", customer);
-        return view;
-    }
-
     @GetMapping("/customers/{id}/edit")
     public ModelAndView redirectToEditCustomer(@PathVariable Long id) {
         Customer customer = customerService.findById(id);
@@ -77,7 +69,7 @@ public class CustomerController {
 
     @GetMapping("/admin/customers")
     public ModelAndView getCustomers(@RequestParam Map<String, String> params) {
-        List<Customer> customers = customerService.findAllActiveCustomers(params);
+        List<CustomerRankProjection> customers = customerService.findAllActiveCustomers(params);
         ModelAndView view = new ModelAndView();
         view.setViewName("customers/index.html");
         view.addObject("customers", customers);

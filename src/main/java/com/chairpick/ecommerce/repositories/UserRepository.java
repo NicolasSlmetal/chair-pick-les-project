@@ -23,4 +23,8 @@ public class UserRepository {
                 .stream()
                 .findFirst();
     }
+
+    public void update(User user) {
+        userDAO.update(user);
+    }
 }

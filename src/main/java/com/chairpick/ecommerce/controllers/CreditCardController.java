@@ -66,12 +66,6 @@ public class CreditCardController {
         CreditCard updatedCreditCard = creditCardService.updateCreditCard(customerId, creditCard);
         return new ResponseEntity<>(updatedCreditCard, HttpStatus.OK);
     }
-
-    @DeleteMapping("/customers/{customerId}/credit-cards/{creditCardId}")
-    public ResponseEntity<Void> deleteCreditCard(@PathVariable("customerId") Long customerId, @PathVariable("creditCardId") Long creditCardId) {
-        creditCardService.deleteCreditCard(customerId, creditCardId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
 }
 
 

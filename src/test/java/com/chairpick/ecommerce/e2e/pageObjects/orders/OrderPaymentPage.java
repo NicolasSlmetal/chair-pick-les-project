@@ -31,6 +31,54 @@ public class OrderPaymentPage extends IndexPage {
                 .reduce(0.0, Double::sum);
     }
 
+    public List<WebElement> getAllPromotionalCoupons() {
+        return driver.findElements(By.cssSelector("#promo_coupons .card"));
+    }
+
+    public double getPromotionalCouponsValues() {
+        return getAllPromotionalCoupons()
+                .stream().map(
+                        coupon -> coupon.findElement(By.cssSelector("input[name='couponValue']"))
+                ).map(input -> Double.parseDouble(input.getAttribute("value")))
+                .reduce(0.0, Double::sum);
+    }
+
+    public double getSwapCouponsValues() {
+        return getAllSwapCoupons()
+                .stream().map(
+                        coupon -> coupon.findElement(By.cssSelector("input[name='couponValue']"))
+                ).map(input -> Double.parseDouble(input.getAttribute("value")))
+                .reduce(0.0, Double::sum);
+    }
+
+    public void selectPromotionalCouponWithId(Long id) {
+        List<WebElement> promoCoupons = getAllPromotionalCoupons();
+
+        promoCoupons.stream()
+                .filter(c -> getIdOfPayableComponent(c).equals(String.valueOf(id)))
+                .findFirst().ifPresent(WebElement::click);
+    }
+
+    public void selectSwapCouponWithId(Long id) {
+        List<WebElement> swapCoupons = getAllSwapCoupons();
+        swapCoupons.stream()
+                .filter(c -> getIdOfPayableComponent(c).equals(String.valueOf(id)))
+                .findFirst().ifPresent(WebElement::click);
+    }
+
+    private static String getIdOfPayableComponent(WebElement c) {
+        return c.findElement(By.cssSelector("input[type='hidden']")).getDomAttribute("value");
+    }
+
+    public String getExcessCouponValueMessage() {
+        WebElement excessCouponMessage = driver.findElement(By.cssSelector("#generate_swap_coupon_message"));
+        return excessCouponMessage.getText();
+    }
+
+    public List<WebElement> getAllSwapCoupons() {
+        return driver.findElements(By.cssSelector("#swap_coupons .card"));
+    }
+
     public ProfilePage confirmOrder() {
         driver.findElement(confirmButton).click();
         return new ProfilePage(driver);

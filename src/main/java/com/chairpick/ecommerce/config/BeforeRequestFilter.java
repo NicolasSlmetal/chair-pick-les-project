@@ -64,7 +64,7 @@ public class BeforeRequestFilter extends OncePerRequestFilter {
     private void verifyProvidedToken(HttpServletRequest request, HttpServletResponse response, String token) {
         try {
             AuthenticatedUser authenticatedUser = tokenService.decodeToken(token);
-            Authentication authentication = new UsernamePasswordAuthenticationToken(authenticatedUser.getUsername(), null, authenticatedUser.getAuthorities());
+            Authentication authentication = new UsernamePasswordAuthenticationToken(authenticatedUser, null, authenticatedUser.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             if (authenticatedUser.getCustomer() != null) {

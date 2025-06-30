@@ -1,6 +1,23 @@
 services:
-  rabbit-mq:
-    container_name: rabbit-mq
+  test-qdrant:
+    container_name: test-qdrant
+    image: qdrant/qdrant:v1.14.1
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - test-qdrant-storage:/qdrant/storage
+  test-chat-bot:
+    container_name: test-chat-bot
+    image: ollama/ollama:0.8.0
+    ports:
+      - "11434:11434"
+    environment:
+      OLLAMA_HOST: 0.0.0.0
+    volumes:
+      - test-ollama-models:/models
+  test-rabbit-mq:
+    container_name: test-rabbit-mq
     image: rabbitmq:4.0.1-management
     ports:
       - "15672:15672"
@@ -23,6 +40,10 @@ services:
           - test-database
 volumes:
   test-database:
+  test-ollama-models:
+    external: true
+    name: test-ollama-models
+  test-qdrant-storage:
 networks:
   test-network:
     driver: bridge

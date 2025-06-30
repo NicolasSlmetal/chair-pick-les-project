@@ -336,6 +336,12 @@ img.star.not_filled {
     cursor: default;
 }
 
+.product__container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
 .product_card.without_cursor:hover {
     cursor: default;
     background-color: white;
@@ -749,7 +755,7 @@ aside.enhanced__search {
 section.products {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     text-align: center;
     flex-wrap: wrap;
     gap: 10px;
@@ -759,6 +765,50 @@ section.products {
     color: black;
     width: 100%;
 }
+
+#products_pagination_container .paginationjs-pages {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    width: 100%;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    justify-content: center;
+}
+
+#products_pagination_container .paginationjs-pages li {
+    flex: 1 1 0;
+    display: flex;
+
+}
+
+#products_pagination_container .paginationjs-pages li > a {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: var(--blue-color);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    width: 100%;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#products_pagination_container .paginationjs-pages li > a.active {
+    background-color: var(--lighter-blue-color);
+    color: white;
+}
+
+#products_pagination_container .paginationjs-pages li > a:hover {
+    background-color: var(--lighter-blue-color);
+    color: black;
+}
+
 
 section.products.search {
     width: 100%;

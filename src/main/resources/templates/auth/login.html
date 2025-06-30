@@ -17,7 +17,7 @@
             <label for="password">Senha</label>
             <input id="password" type="password" placeholder="Digite a senha" name="password">
             <div class="button__container">
-                <a class="action__button" th:href="@{/customers/new}">Cadastre-se</a>
+                <a class="action__button create_customer" th:href="@{/customers/new}">Cadastre-se</a>
                 <button id="forget" class="action__button">Esqueceu a senha?</button>
             </div>
         </section>
@@ -27,14 +27,22 @@
 <dialog id="forget__modal">
     <div class="modal__content">
         <h2>Esqueceu a senha?</h2>
-        <p>Digite o email para recuperar a senha</p>
+        <p>Digite o email para criar uma nova senha</p>
         <input class='input' type="email" id="forget__email" placeholder="Digite o email">
+
         <div class="actions">
             <button id="dialog__cancel__button" class="action__button">Cancelar</button>
-            <button id="dialog__confirm__button" class="action__button">Recuperar</button>
+            <button id="dialog__confirm__button" class="action__button">Enviar</button>
         </div>
     </div>
 
+</dialog>
+<dialog id="result__modal">
+    <div class="modal__content">
+        <h2>Resultado</h2>
+        <p id="result__message"></p>
+        <button id="result__close__button" class="dialog__ok">Fechar</button>
+    </div>
 </dialog>
 <dialog id="error__modal">
     <div class="modal__content">
@@ -42,6 +50,7 @@
         <p id="error__message"></p>
         <button id="error__close__button" class="dialog__ok">Fechar</button>
     </div>
+</dialog>
 <script th:src="@{/js/login/index.js}" type="module"></script>
 </body>
 </html>

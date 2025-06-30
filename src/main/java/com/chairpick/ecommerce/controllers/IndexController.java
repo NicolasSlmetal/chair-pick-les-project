@@ -21,15 +21,13 @@ public class IndexController {
 
     @GetMapping()
     public ModelAndView redirectToIndex(HttpServletRequest request) {
-        AvailableChairDTO availableChairs = chairService.findAllChairsAvailableGroupingByCategory();
+
         ModelAndView view = new ModelAndView("index/index.html");
         view.addObject("pageTitle", "Home");
         if (request.getAttribute("customerId") != null) {
             Long customerId = (Long) request.getAttribute("customerId");
             view.addObject("customerId", customerId);
         }
-        view.addObject("chairsByCategories", availableChairs.chairsByCategory());
-        view.addObject("chairs", availableChairs.allChairs());
         return view;
     }
 

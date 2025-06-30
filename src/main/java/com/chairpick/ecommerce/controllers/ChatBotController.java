@@ -27,6 +27,7 @@ public class ChatBotController {
 
     @GetMapping
     public ModelAndView redirectToChatbot() {
+        chatBotService.warmModel();
         ModelAndView view = new ModelAndView();
         view.addObject("pageTitle", "Chatbot");
         view.setViewName("chatbot/index.html");

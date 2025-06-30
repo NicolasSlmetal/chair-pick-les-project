@@ -15,7 +15,7 @@ import java.util.Objects;
 
 public class CreditCardHomePage extends PageObject {
     private final static String URL = "http://localhost:8080/customers/([1-9]+)/credit-cards";
-    private final By anchorCreateCreditCard = By.cssSelector("a[data-test='create-credit-card-button']");
+    private final By anchorCreateCreditCard = By.cssSelector(".create__credit__card");
     private final By tableCreditCard = By.cssSelector("table");
     private final By searchMenuButton = By.cssSelector("img#search_options");
     private final By deleteConfirmDialog = By.cssSelector("dialog#remove__modal");
@@ -25,6 +25,11 @@ public class CreditCardHomePage extends PageObject {
 
     public CreditCardHomePage(WebDriver driver) {
         super(driver);
+    }
+
+    public CreateCreditCardPage goToCreateCreditCardPage() {
+        driver.findElement(anchorCreateCreditCard).click();
+        return new CreateCreditCardPage(driver);
     }
 
     public Map<String, Object> getValuesForLastRow() {
@@ -41,8 +46,7 @@ public class CreditCardHomePage extends PageObject {
                 "brand", columns.get(2).getText(),
                 "cvv", columns.get(3).getText(),
                 "default", columns.get(4).getText(),
-                "edit", columns.get(5).findElement(editRowButton),
-                "delete", columns.get(6).findElement(deleteRowButton)
+                "edit", columns.get(5).findElement(editRowButton)
         );
     }
 

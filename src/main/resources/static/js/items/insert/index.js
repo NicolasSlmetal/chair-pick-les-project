@@ -115,7 +115,6 @@ function showErrorForInput(input) {
 }
 
 function updateSubmitButton() {
-    console.log({globalErrors});
     if (globalErrors.size === 0) {
         submitButton.removeAttribute("disabled");
         submitButton.classList.remove("disabled");
@@ -142,16 +141,17 @@ allInputs.forEach(input =>
     })
 );
 
+$(`#${supplierInput.id}`).on("change", (event) => {
 
-$(`#${supplierInput.id}`).on("select2:select", (event) => {
     const selected = $(`#${supplierInput.id}`).select2("data");
     if (selected === null || selected.length === 0) {
         globalErrors.set(supplierInput.id, "Selecione ou adicione um fornecedor.");
+        showErrorForInput(supplierInput);
         updateSubmitButton();
         return;
     }
-
     globalErrors.delete(supplierInput.id);
+    supplierInput.setCustomValidity("");
     updateSubmitButton();
-
 });
+

@@ -10,7 +10,7 @@
 <main>
     <input type="hidden" name="chairId" th:value="${chairId}">
     <h1>Solicitações de alteração de preço para Cadeira Gamer</h1>
-    <a class="action__button" th:href="@{/admin/chairs}">Voltar</a>
+    <a class="action__button back" th:href="@{/admin/chairs}">Voltar</a>
     <table>
         <thead>
             <th>Preço de venda proposto</th>
@@ -48,8 +48,8 @@
     <div class="modal__content">
         <p></p>
         <div class="actions">
-            <button id="confirm_button" class="action__button fill">Sim</button>
-            <button id="cancel_button" class="action__button danger fill">Não</button>
+            <button id="confirm__button" class="action__button fill">Sim</button>
+            <button id="cancel__button" class="action__button danger fill">Não</button>
         </div>
     </div>
 </dialog>

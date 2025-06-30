@@ -134,15 +134,31 @@ public class ChairService {
     }
 
     public PageInfo<ChairAvailableProjection> searchForChairs(Map<String, String> parameters) {
-        if (!parameters.containsKey("limit")) {
+        if (!parameters.containsKey("limit") || !isNumber(parameters.get("limit"))) {
             parameters.put("limit", "5");
 
         }
-        if (!parameters.containsKey("page")) {
+        if (!parameters.containsKey("page") || !isNumber(parameters.get("page"))) {
             parameters.put("page", "1");
         }
 
+        if (parameters.containsKey("_")) {
+            parameters.remove("_");
+        }
+
         return chairRepository.searchForPaginatedChairs(parameters);
+    }
+
+    public boolean isNumber(String str) {
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
     public Chair save(ChairInput input) {

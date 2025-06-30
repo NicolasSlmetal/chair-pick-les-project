@@ -280,9 +280,9 @@ public class Where {
         long occurrences = selectTable.getSqlQueryBuilder().countParameterOccurrences(column);
         selectTable.append(column)
                 .append(" = ")
-                .append("TO_DATE('")
+                .append("TO_DATE(")
                 .append(String.format(":%s", column + occurrences))
-                .append("', 'YYYY-MM-DD')");
+                .append(", 'YYYY-MM-DD')");
 
         selectTable.appendValue(column + occurrences, value);
         return this;

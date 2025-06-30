@@ -3,13 +3,11 @@ package com.chairpick.ecommerce.config;
 import com.chairpick.ecommerce.daos.*;
 import com.chairpick.ecommerce.daos.interfaces.*;
 import com.chairpick.ecommerce.model.*;
-import com.chairpick.ecommerce.projections.CartItemSummaryProjection;
-import com.chairpick.ecommerce.projections.ChairAvailableProjection;
-import com.chairpick.ecommerce.projections.OrderReportByCategory;
-import com.chairpick.ecommerce.projections.OrderReportByChairs;
+import com.chairpick.ecommerce.projections.*;
 import com.chairpick.ecommerce.utils.query.mappers.interfaces.GeneralObjectQueryMapper;
 import com.chairpick.ecommerce.utils.query.mappers.interfaces.ObjectQueryMapper;
 import io.qdrant.client.QdrantClient;
+import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -32,8 +30,8 @@ public class DAOProvider {
     }
 
     @Bean
-    GenericDAO<Customer> provideCustomerDAO(NamedParameterJdbcTemplate jdbcTemplate, RowMapper<Customer> rowMapper) {
-        return new CustomerDAO(jdbcTemplate, rowMapper);
+    ProjectionDAO<Customer, CustomerRankProjection> provideCustomerDAO(NamedParameterJdbcTemplate jdbcTemplate, RowMapper<Customer> rowMapper, ObjectQueryMapper<CustomerRankProjection> projectionQueryMapper) {
+        return new CustomerDAO(jdbcTemplate, rowMapper, projectionQueryMapper);
     }
 
     @Bean
@@ -109,6 +107,11 @@ public class DAOProvider {
     @Bean
     WriteRelationDAO<Chair, Category> provideChairCategoryDAO(NamedParameterJdbcTemplate jdbcTemplate) {
         return new ChairCategoryDAO(jdbcTemplate);
+    }
+
+    @Bean
+    LoggerDAO provideLoggerDAO(NamedParameterJdbcTemplate jdbcTemplate) {
+        return new JdbcLoggerDAO(jdbcTemplate);
     }
 
 }

@@ -1,6 +1,8 @@
 package com.chairpick.ecommerce.e2e.pageObjects.customers;
 
+import com.chairpick.ecommerce.e2e.pageObjects.addresses.AddressHomePage;
 import com.chairpick.ecommerce.e2e.pageObjects.components.ConfirmModal;
+import com.chairpick.ecommerce.e2e.pageObjects.creditCards.CreditCardHomePage;
 import com.chairpick.ecommerce.e2e.pageObjects.index.IndexPage;
 import com.chairpick.ecommerce.model.enums.OrderStatus;
 import lombok.Builder;
@@ -11,11 +13,17 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 
-
+import java.util.List;
 
 
 public class ProfilePage extends IndexPage {
 
+    private final By h2Selector = By.cssSelector(".profile__info h2");
+    private final By editCustomerButton = By.cssSelector(".edit__customer");
+    private final By editPasswordButton = By.cssSelector(".edit__password");
+    private final By addressesButton = By.cssSelector(".addresses");
+    private final By creditCardsButton = By.cssSelector(".credit__cards");
+    private final By deleteAccountButton = By.id("delete_account");
     @Builder
     @Getter
     @ToString
@@ -36,6 +44,7 @@ public class ProfilePage extends IndexPage {
         private final By swapButton = By.cssSelector("#confirm__button__swap");
         private final By cancelButton = By.cssSelector("#cancel__button__swap");
 
+
         public SwapModal(WebElement modal) {
             this.modal = modal;
         }
@@ -51,6 +60,8 @@ public class ProfilePage extends IndexPage {
         public void clickCancelButton() {
             modal.findElement(cancelButton).click();
         }
+
+
 
     }
     public enum OrdersStatus {
@@ -71,6 +82,79 @@ public class ProfilePage extends IndexPage {
 
     public ProfilePage(WebDriver driver) {
         super(driver);
+    }
+
+    public String getCustomerName() {
+        List<WebElement> titleElements = driver.findElements(h2Selector);
+        if (!titleElements.isEmpty()) {
+            return titleElements.getFirst().getText().trim();
+        }
+        return null;
+    }
+
+    public String getCustomerEmail() {
+        List<WebElement> titleElements = driver.findElements(h2Selector);
+        if (titleElements.size() > 1) {
+            return titleElements.get(1).getText().trim();
+        }
+        return null;
+    }
+
+    public String getCustomerCPF() {
+        List<WebElement> titleElements = driver.findElements(h2Selector);
+        if (titleElements.size() > 2) {
+            return titleElements.get(2).getText().trim();
+        }
+        return null;
+    }
+
+    public String getCustomerPhone() {
+        List<WebElement> titleElements = driver.findElements(h2Selector);
+        if (titleElements.size() > 3) {
+            return titleElements.get(3).getText().trim();
+        }
+        return null;
+    }
+
+    public String getCustomerCpf() {
+        List<WebElement> titleElements = driver.findElements(h2Selector);
+        if (titleElements.size() > 2) {
+            return titleElements.get(2).getText().trim();
+        }
+        return null;
+    }
+
+    public String getCustomerPhoneType() {
+        List<WebElement> titleElements = driver.findElements(h2Selector);
+        if (titleElements.size() > 4) {
+            return titleElements.get(4).getText().trim();
+        }
+        return null;
+    }
+
+    public EditCustomerPage accessEditCustomerPage() {
+        WebElement editButton = driver.findElement(editCustomerButton);
+        editButton.click();
+        return new EditCustomerPage(driver);
+    }
+
+    public AddressHomePage accessAddressesPage() {
+        WebElement addressesButtonElement = driver.findElement(addressesButton);
+        addressesButtonElement.click();
+        return new AddressHomePage(driver);
+    }
+
+    public CreditCardHomePage accessCreditCardsPage() {
+        WebElement creditCardsButtonElement = driver.findElement(creditCardsButton);
+        creditCardsButtonElement.click();
+        return new CreditCardHomePage(driver);
+    }
+
+    public ConfirmModal clickToDeleteAcount() {
+        By confirmActionModal = By.cssSelector("#confirm__dialog");
+        WebElement deleteButton = driver.findElement(deleteAccountButton);
+        deleteButton.click();
+        return new ConfirmModal(driver.findElement(confirmActionModal));
     }
 
     public ConfirmModal clickToCancelOrder(OrdersStatus status, int index) {
@@ -99,6 +183,22 @@ public class ProfilePage extends IndexPage {
         WebElement itemDescription = card.findElement(itemDescriptionSelector);
         return createCard(itemDescription);
 
+    }
+
+    public Card getCardOfSection(OrdersStatus status, int index, int itemIndex) {
+        String className = status.getStatus();
+        By cardSelector = By.cssSelector("section.profile." + className + " .card");
+        List<WebElement> cards = driver.findElements(cardSelector);
+        if (cards.isEmpty()) {
+            return null;
+        }
+        By itemDescriptionSelector = By.cssSelector(".item_description");
+        List<WebElement> itemDescriptions = cards.get(index).findElements(itemDescriptionSelector);
+        if (itemDescriptions.isEmpty() || itemIndex < 0 || itemIndex >= itemDescriptions.size()) {
+            return null;
+        }
+        WebElement itemDescription = itemDescriptions.get(itemIndex);
+        return createCard(itemDescription);
     }
 
     public String getAmountToBeSwapped(int index, int itemIndex) {

@@ -7,6 +7,7 @@ import com.chairpick.ecommerce.io.input.NewPasswordInput;
 import com.chairpick.ecommerce.model.enums.Genre;
 import com.chairpick.ecommerce.model.enums.PhoneType;
 import com.chairpick.ecommerce.model.enums.UserType;
+import com.chairpick.ecommerce.projections.CustomerRankProjection;
 import com.chairpick.ecommerce.repositories.AddressRepository;
 import com.chairpick.ecommerce.repositories.CreditCardRepository;
 import com.chairpick.ecommerce.repositories.CustomerRepository;
@@ -32,9 +33,9 @@ public class CustomerService {
         this.creditCardRepository = creditCardRepository;
     }
 
-    public List<Customer> findAllActiveCustomers(Map<String, String> params) {
-        List<Customer> customers = customerRepository.findAllCustomers(params);
-        customers.forEach(customer -> CpfFormater.format(customer.getCpf()));
+    public List<CustomerRankProjection> findAllActiveCustomers(Map<String, String> params) {
+        List<CustomerRankProjection> customers = customerRepository.findAllCustomers(params);
+        customers.stream().map(CustomerRankProjection::getCustomer).forEach(customer -> CpfFormater.format(customer.getCpf()));
         return customers;
     }
 

@@ -66,10 +66,4 @@ public class AddressController {
         return new ResponseEntity<>(savedAddress, HttpStatus.OK);
     }
 
-    @DeleteMapping("/customers/{customerId}/addresses/{addressId}")
-    public ResponseEntity<Void> deleteAddress(@PathVariable("customerId") Long customerId, @PathVariable("addressId") Long addressId) {
-        service.deleteAddress(customerId, addressId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
 }

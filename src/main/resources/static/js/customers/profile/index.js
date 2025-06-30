@@ -6,6 +6,7 @@ import { constructPaginatedOrderSection } from "./orderSectionBuilder.js";
 import { postSwap } from "./postSwap.js";
 import { deleteOrder } from "./deleteOrder.js";
 import { parseErrorMessages } from "../../utils/errorMessage.js";
+import { deleteCustomer } from "./deleteCustomer.js";
 
 const statusMap = {
     "PENDING": "Pedidos em processamento",
@@ -46,9 +47,19 @@ const $ = window.jQuery;
 //});
 
 deleteAccountButton.addEventListener("click", () => {
-    configureModalAction(() => {
+    configureModalAction(async () => {
         $(dialog).modal(":hide")
-        alert("Conta deletada com sucesso!");
+        const response = await deleteCustomer();
+        if (response.status !== 204) {
+            const errorJson = await response.json();
+            const errorMessage = errorJson.message;
+            const pError = errorDialog.querySelector("p#error__message");
+            pError.innerHTML = parseErrorMessages(errorMessage);
+            errorDialog.showModal();
+            return;
+        }
+        window.location.href = "/";
+
     }, "Deletar conta", "Tem certeza que deseja deletar sua conta?");
 })  ;
 
@@ -71,7 +82,7 @@ async function getOrderAndBuildSection(status, page=1   ) {
     if (orders.length === 0) {
        return;
     }
-    console.log({orders});
+
     const totalPages = json.totalResults;
     mapFoundResultsByStatus[status] += orders.length;
 

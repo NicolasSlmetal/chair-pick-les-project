@@ -15,7 +15,7 @@ import java.util.Objects;
 
 public class AddressHomePage extends PageObject {
     private final static String URL = "http://localhost:8080/customers/([1-9]+)/addresses";
-    private final By anchorCreateAddress = By.cssSelector("a[data-test='create-credit-card-button']");
+    private final By anchorCreateAddress = By.cssSelector(".create__address");
     private final By tableAddress = By.cssSelector("table");
     private final By searchMenuButton = By.cssSelector("img#search_options");
     private final By deleteConfirmDialog = By.cssSelector("dialog#remove__modal");
@@ -24,6 +24,11 @@ public class AddressHomePage extends PageObject {
 
     public AddressHomePage(WebDriver driver) {
         super(driver);
+    }
+
+    public CreateAddressPage goToCreateAddressPage() {
+        driver.findElement(anchorCreateAddress).click();
+        return new CreateAddressPage(driver);
     }
 
     public Map<String, Object> getValuesForLastRow() {
@@ -50,7 +55,6 @@ public class AddressHomePage extends PageObject {
         address.put("country", columns.get(8).getText());
         address.put("observations", columns.get(9).getText());
         address.put("edit", columns.get(10).findElement(editRowButton));
-        address.put("delete", columns.get(11).findElement(deleteRowButton));
         return address;
     }
 }

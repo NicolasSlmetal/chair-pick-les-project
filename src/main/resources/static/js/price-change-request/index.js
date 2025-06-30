@@ -1,14 +1,14 @@
 import { updatePriceChangeRequest } from './updatePriceChangeRequest.js';
 
 const dialog = document.querySelector("#confirm_action");
-const cancelButton = dialog.querySelector("#cancel_button");
+const cancelButton = dialog.querySelector("#cancel__button");
 cancelButton.onclick = () => {
     dialog.close();
 }
 
 const chairId = document.querySelector("input[name='chairId']").value;
 
-const confirmButton = dialog.querySelector("#confirm_button");
+const confirmButton = dialog.querySelector("#confirm__button");
 
 const acceptButtons = document.querySelectorAll("button.accept");
 const rejectButtons = document.querySelectorAll("button.reject");

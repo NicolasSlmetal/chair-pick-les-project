@@ -12,7 +12,7 @@
 <main>
     <div class="button__group">
         <a data-test="back-button" class="action__button" th:href="@{/customers/{id}(id=${customer.id})}">Voltar</a>
-        <a class="action__button" th:href="'/customers/' + ${customer.id} + '/credit-cards/new?customerName=' + ${customer.name}">Cadastrar cartão</a>
+        <a class="action__button create__credit__card" th:href="'/customers/' + ${customer.id} + '/credit-cards/new?customerName=' + ${customer.name}">Cadastrar cartão</a>
     </div>
     <table class="table">
         <thead>
@@ -22,7 +22,6 @@
         <th>CVV</th>
         <th>Padrão</th>
         <th>Edição</th>
-        <th>Remover</th>
         </thead>
         <tr th:each="creditCard : ${creditCards}">
             <input type="hidden" name="id" th:value="${creditCard.id}">
@@ -43,9 +42,6 @@
             </td>
             <td>
                 <a class="action__button" th:href="'credit-cards/edit/' + ${creditCard.id} + '?customerName=' + ${customer.name}">Editar</a>
-            </td>
-            <td>
-                <a th:classappend="${creditCard.isDefault ? 'disabled' : ''}" class="action__button danger" id="remove__button">Remover</a>
             </td>
         </tr>
     </table>
