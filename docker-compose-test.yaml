@@ -41,8 +41,6 @@ services:
 volumes:
   test-database:
   test-ollama-models:
-    external: true
-    name: test-ollama-models
   test-qdrant-storage:
 networks:
   test-network:

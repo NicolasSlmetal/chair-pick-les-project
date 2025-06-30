@@ -1,6 +1,7 @@
 package com.chairpick.ecommerce.config;
 
 import jakarta.mail.Authenticator;
+import jakarta.mail.MessagingException;
 import jakarta.mail.PasswordAuthentication;
 import jakarta.mail.Session;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +26,7 @@ public class MailInitializer {
     private String mailPassword;
 
     @Bean
-    public JavaMailSender mailSender() {
+    public JavaMailSender mailSender() throws MessagingException {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost(mailHost);
         mailSender.setPort(mailPort);
@@ -35,11 +36,10 @@ public class MailInitializer {
         properties.put("mail.transport.protocol", "smtp");
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.smtp.ssl.enable", "false");
-        properties.put("mail.smtp.localaddress", "127.0.1.0");
-        properties.put("mail.smtp.localhost", "localhost");
-        properties.put("mail.debug", "true");
-        properties.put("mail.test-connection", "true");
+        properties.put("mail.smtp.starttls.required", "true");
+        properties.put("mail.smtp.timeout", "10000");
+        properties.put("mail.smtp.connectiontimeout", "10000");
+        properties.put("mail.smtp.writetimeout", "10000");
 
         Session session = Session.getInstance(properties, new Authenticator() {
             @Override
@@ -48,7 +48,6 @@ public class MailInitializer {
             }
         });
         mailSender.setJavaMailProperties(properties);
-
         mailSender.setSession(session);
         return mailSender;
     }

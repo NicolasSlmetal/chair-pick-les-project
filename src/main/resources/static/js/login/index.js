@@ -40,8 +40,14 @@ configureConfirmButton(forgetPasswordDialog, async () => {
         pStatus.innerText = "Se o e-mail estiver cadastrado, você receberá um link para redefinir sua senha.";
     }
     if (response.status === 400) {
-        const messages = await response.json();
-        pStatus.innerText = parseErrorMessages(messages);
+        const messages = await response.text();
+
+        if (messages === "A reset password is still in progress in this device") {
+            pStatus.innerText = "Um pedido de redefinição de senha já está em progresso"
+        } else {
+            pStatus.innerText = parseErrorMessages(messages);
+
+        }
     }
     resultModal.showModal();
 });

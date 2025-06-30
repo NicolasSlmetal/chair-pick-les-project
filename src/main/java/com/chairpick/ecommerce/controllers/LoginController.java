@@ -6,6 +6,7 @@ import com.chairpick.ecommerce.io.output.TokenResponseDTO;
 import com.chairpick.ecommerce.security.AuthenticatedUser;
 import com.chairpick.ecommerce.services.LoginService;
 import com.chairpick.ecommerce.services.TokenService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseCookie;
@@ -56,8 +57,9 @@ public class LoginController {
     @PostMapping("/request-reset-password")
     public ResponseEntity<?> requestResetPassword(@RequestBody String email, HttpServletRequest request, HttpServletResponse response) {
         loginService.sendRequestPassword(email);
-        if (Arrays.stream(request.getCookies()).anyMatch(cookie -> cookie.getName().equals("resetPassword"))) {
-            return ResponseEntity.badRequest().body("A reset password request is already in progress.");
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null && Arrays.stream(cookies).anyMatch(c -> c.getName().equals("resetPassword"))) {
+            return ResponseEntity.badRequest().body("A reset password is still in progress in this device");
         }
         ResponseCookie cookie = ResponseCookie.from("resetPassword", email)
                 .httpOnly(true)
