@@ -3,10 +3,8 @@ package com.chairpick.ecommerce.e2e.pages.customers;
 
 import com.chairpick.ecommerce.e2e.factories.WebDriverFactory;
 import com.chairpick.ecommerce.e2e.pageObjects.components.ConfirmModal;
-import com.chairpick.ecommerce.e2e.pageObjects.customers.CreateCustomerPage;
-import com.chairpick.ecommerce.e2e.pageObjects.customers.CustomerHomePage;
-import com.chairpick.ecommerce.e2e.pageObjects.customers.EditCustomerPage;
-import com.chairpick.ecommerce.e2e.pageObjects.customers.ProfilePage;
+import com.chairpick.ecommerce.e2e.pageObjects.components.InfoModal;
+import com.chairpick.ecommerce.e2e.pageObjects.customers.*;
 import com.chairpick.ecommerce.e2e.pageObjects.index.IndexPage;
 import com.chairpick.ecommerce.e2e.pageObjects.auth.LoginPage;
 import com.chairpick.ecommerce.e2e.utils.ContainerInitializer;
@@ -14,6 +12,7 @@ import com.chairpick.ecommerce.e2e.utils.DatabaseSeeder;
 import com.chairpick.ecommerce.e2e.utils.UsersInitializer;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.TestWatcher;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -166,6 +165,39 @@ public class CustomerTest implements TestWatcher {
         wait.until(ExpectedConditions.urlToBe(BASE_URL));
         //Try to login with the inactivated customer
         Assertions.assertThrows(RuntimeException.class, () -> usersInitializer.authWithCustomer(driver, wait));
+    }
+
+    @Test
+    public void shouldAlterCustomerPassword() {
+        usersInitializer.createDefaultAdminAndCustomer().authWithCustomer(driver, wait);
+        driver.get(BASE_URL);
+        IndexPage indexPage = new IndexPage(driver);
+        indexPage.accessHeaderOption(IndexPage.HeaderOptions.PROFILE);
+        ProfilePage profilePage = new ProfilePage(driver);
+        CustomerAlterPasswordPage alterPasswordPage = profilePage.accessEditPasswordPage();
+        wait.until(ExpectedConditions.urlContains("/alter-password"));
+        String newPassword = alterPasswordPage.fillPassword("NewCustomer123!");
+        Assertions.assertEquals("NewCustomer123!", newPassword);
+        String confirmPassword = alterPasswordPage.fillPasswordConfirmation("NewCustomer123!");
+        Assertions.assertEquals("NewCustomer123!", confirmPassword);
+        InfoModal modal = alterPasswordPage.submit();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("dialog")));
+        Assertions.assertEquals("Senha alterada", modal.getTitle());
+        Assertions.assertEquals("Você já pode fazer login com a nova senha.", modal.getMessage());
+        modal.clickOkButton();
+        wait.until(ExpectedConditions.urlToBe(BASE_URL + "customers/1"));
+        profilePage.accessHeaderOption(IndexPage.HeaderOptions.LOGOUT);
+        indexPage.accessHeaderOption(IndexPage.HeaderOptions.LOGIN);
+        LoginPage loginPage = new LoginPage(driver);
+        String email = loginPage.fillEmail("customer@email.com");
+        Assertions.assertEquals("customer@email.com", email);
+        String password = loginPage.fillPassword("NewCustomer123!");
+        Assertions.assertEquals("NewCustomer123!", password);
+        loginPage.submit();
+        wait.until(ExpectedConditions.not(ExpectedConditions.titleIs("Login")));
+        indexPage.accessHeaderOption(IndexPage.HeaderOptions.PROFILE);
+        email = profilePage.getCustomerEmail();
+        Assertions.assertEquals("Email: customer@email.com", email);
     }
 
     @Test

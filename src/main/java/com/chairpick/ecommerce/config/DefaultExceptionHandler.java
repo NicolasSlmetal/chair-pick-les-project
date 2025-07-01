@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingRequestCookieException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -74,6 +75,22 @@ public class DefaultExceptionHandler {
     @ExceptionHandler(InvalidRequestException.class)
     public ResponseEntity<ErrorResponse> handleInvalidRequestException(InvalidRequestException e) {
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(MissingRequestCookieException.class)
+    public ModelAndView handleMissingRequestCookieException(MissingRequestCookieException e) {
+        ModelAndView view = new ModelAndView();
+        view.setViewName("notFound.html");
+        view.addObject("message", "Required cookie is missing: " + e.getCookieName());
+        return view;
+    }
+
+    @ExceptionHandler(ExpiredTokenException.class)
+    public ModelAndView handleExpiredTokenException(ExpiredTokenException e) {
+        ModelAndView view = new ModelAndView();
+        view.setViewName("notFound.html");
+        view.addObject("message", e.getMessage());
+        return view;
     }
 }
 

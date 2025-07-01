@@ -55,27 +55,10 @@ public class LoginController {
     }
 
     @PostMapping("/request-reset-password")
-    public ResponseEntity<?> requestResetPassword(@RequestBody String email, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> requestResetPassword(@RequestBody String email) {
         loginService.sendRequestPassword(email);
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null && Arrays.stream(cookies).anyMatch(c -> c.getName().equals("resetPassword"))) {
-            return ResponseEntity.badRequest().body("A reset password is still in progress in this device");
-        }
-        ResponseCookie cookie = ResponseCookie.from("resetPassword", email)
-                .httpOnly(true)
-                .sameSite("Strict")
-                .path("/")
-                .maxAge(Duration.ofDays(1))
-                .build();
-        return ResponseEntity.ok().header("Set-cookie", cookie.toString()).build();
+
+        return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestBody NewPasswordInput input, @CookieValue("resetPassword") String email) {
-        if (email == null || email.isEmpty()) {
-            return ResponseEntity.badRequest().body("No reset password request found.");
-        }
-        loginService.resetPassword(email, input);
-        return ResponseEntity.ok().body("Password reset successfully. Please check your email for further instructions.");
-    }
 }

@@ -1,8 +1,10 @@
 package com.chairpick.ecommerce.e2e.pageObjects.customers;
 
 import com.chairpick.ecommerce.e2e.pageObjects.PageObject;
+import com.chairpick.ecommerce.e2e.pageObjects.components.InfoModal;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import java.util.Objects;
 
@@ -26,8 +28,10 @@ public class CustomerAlterPasswordPage extends PageObject {
         return driver.findElement(passwordConfirmationInput).getDomProperty("value");
     }
 
-    public void submit() {
+    public InfoModal submit() {
         driver.findElement(submitButton).click();
+        WebElement modal = driver.findElement(By.cssSelector("dialog"));
+        return new InfoModal(modal);
     }
 
 

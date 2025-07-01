@@ -100,6 +100,8 @@ public class ProfilePage extends IndexPage {
         return null;
     }
 
+
+
     public String getCustomerCPF() {
         List<WebElement> titleElements = driver.findElements(h2Selector);
         if (titleElements.size() > 2) {
@@ -136,6 +138,12 @@ public class ProfilePage extends IndexPage {
         WebElement editButton = driver.findElement(editCustomerButton);
         editButton.click();
         return new EditCustomerPage(driver);
+    }
+
+    public CustomerAlterPasswordPage accessEditPasswordPage() {
+        WebElement editPasswordButtonElement = driver.findElement(editPasswordButton);
+        editPasswordButtonElement.click();
+        return new CustomerAlterPasswordPage(driver);
     }
 
     public AddressHomePage accessAddressesPage() {

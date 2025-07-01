@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alteração de senha</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<input type="hidden" name="email" id="email" th:value="${email}">
+<main>
+    <h1>Alterar senha</h1>
+
+    <form id="main">
+        <section class="cards__section password__section">
+            <input type="hidden" name="id" th:value="${customerId}">
+            <label for="password">Nova senha</label>
+            <input name="password" id="password" type="password" placeholder="Digite a nova senha">
+            <label for="password_confirmation">Confirmação de senha</label>
+            <input name="password_confirmation" id="password_confirmation" type="password" placeholder="Confirme a nova senha">
+        </section>
+        <button class="disabled" type="submit" disabled>Alterar senha</button>
+    </form>
+    <dialog class="status__dialog">
+        <h1></h1>
+        <p></p>
+        <button class="action__button dialog__ok">Ok</button>
+    </dialog>
+</main>
+<script th:src="@{/js/reset-password/index.js}" type="module"></script>
+</body>
+</html>

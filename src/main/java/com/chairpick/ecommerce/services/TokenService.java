@@ -5,6 +5,8 @@ import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.chairpick.ecommerce.exceptions.AuthenticationException;
+import com.chairpick.ecommerce.exceptions.ExpiredTokenException;
+import com.chairpick.ecommerce.exceptions.InvalidRequestException;
 import com.chairpick.ecommerce.model.Customer;
 import com.chairpick.ecommerce.model.User;
 import com.chairpick.ecommerce.model.enums.UserType;
@@ -75,5 +77,22 @@ public class TokenService {
         }
 
         return new AuthenticatedUser(user);
+    }
+
+    public String encodeStringToken(String token) {
+        return JWT.create()
+                .withSubject(token)
+                .withIssuedAt(new Date())
+                .withExpiresAt(Date.from(Instant.now().plus(1, ChronoUnit.MINUTES)))
+                .withIssuer("chairpick")
+                .sign(Algorithm.HMAC256(apiKey));
+    }
+
+    public String decodeStringToken(String token) {
+        DecodedJWT decodedJWT = JWT.decode(token);
+        if (decodedJWT.getExpiresAt().before(new Date())) {
+            throw new ExpiredTokenException("Token expired");
+        }
+        return decodedJWT.getSubject();
     }
 }
