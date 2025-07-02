@@ -12,6 +12,7 @@ public class CreditCardPaymentDTO extends PaymentDTO {
 
     public CreditCardPaymentDTO(Long orderId, Map<CreditCard, Double> creditCards) {
         super(orderId, PaymentType.CREDIT_CARD);
+        this.setTotalValue(creditCards.values().stream().reduce(0.0, Double::sum));
         this.creditCards = creditCards;
     }
 

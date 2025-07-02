@@ -101,11 +101,6 @@ public class Order extends DomainEntity {
         return !updatedDate.isAfter(LocalDateTime.now());
     }
 
-    public boolean requiresSwapCoupon() {
-        return payment.validatePayment(totalValue)
-                .contains(ErrorCode.REQUIRE_GENERATE_SWAP_COUPON) &&
-                payment.getTotalValue() > totalValue;
-    }
 
     private boolean validateCreatedDate() {
         if (createdDate == null) {

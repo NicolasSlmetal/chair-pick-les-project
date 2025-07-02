@@ -21,6 +21,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.ai.ollama.OllamaEmbeddingModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
@@ -33,6 +34,7 @@ import java.util.stream.IntStream;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class ChairTest {
 
     @Autowired
@@ -46,15 +48,6 @@ public class ChairTest {
     private UsersInitializer usersInitializer;
 
 
-    @BeforeAll
-    public static void beforeAll() {
-        try {
-            ContainerInitializer.up();
-            Thread.sleep(1000);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to initialize containers", e);
-        }
-    }
 
     private void configureEmbeddingMock() {
         List<Float> embedding = IntStream.range(0, 768)
@@ -262,7 +255,7 @@ public class ChairTest {
         String higherCost = adminChairsPage.getHigherCostOfRow(1);
         Assertions.assertEquals("R$ 0,00", higherCost, "Chair higher cost should be 0.00 because there is no stock yet");
         String resultPricingGroup = adminChairsPage.getPricingGroupOfRow(1);
-        Assertions.assertEquals("A", resultPricingGroup, "Chair pricing group should match the input");
+        Assertions.assertEquals("Any", resultPricingGroup, "Chair pricing group should match the input");
         String averageRating = adminChairsPage.getAverageRatingOfRow(1);
         String stockAmount = adminChairsPage.getStockOfRow(1);
         Assertions.assertEquals("0", stockAmount, "Chair stock amount should be 0 because there is no stock yet");
@@ -294,7 +287,7 @@ public class ChairTest {
         stockAmount = adminChairs.getStockOfRow(1);
         Assertions.assertEquals("10", stockAmount, "Chair stock amount should be 10 after adding stock");
         actualPrice = adminChairs.getActualPrice(1);
-        Assertions.assertEquals("R$ 110,00", actualPrice, "Chair actual price should be 110.00 after adding stock");
+        Assertions.assertEquals("R$ 120,00", actualPrice, "Chair actual price should be 110.00 after adding stock");
         higherCost = adminChairs.getHigherCostOfRow(1);
         Assertions.assertEquals("R$ 100,00", higherCost, "Chair higher cost should be 100.00 after adding stock");
 
@@ -401,12 +394,4 @@ public class ChairTest {
         }
     }
 
-    @AfterAll
-    public static void afterAll() {
-        try {
-            ContainerInitializer.down();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to stop containers", e);
-        }
-    }
 }

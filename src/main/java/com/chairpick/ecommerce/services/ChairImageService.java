@@ -2,16 +2,12 @@ package com.chairpick.ecommerce.services;
 
 import com.chairpick.ecommerce.exceptions.EntityNotFoundException;
 import com.chairpick.ecommerce.model.Chair;
-import com.chairpick.ecommerce.projections.ChairAvailableProjection;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 @Service
@@ -26,17 +22,25 @@ public class ChairImageService {
         Path imagePath = Path.of(BASE_DIR + imageDir);
         try (Stream<Path> imagesDir = Files.list(imagePath)) {
             return imagesDir
-                    .filter(image -> image
-                            .getFileName()
+                    .filter(image -> image.getFileName()
                             .toString()
-                            .split("\\.")
-                            [0]
-                            .endsWith(chairId.toString()))
-                    .findFirst().orElse(Path.of(BASE_DIR + imageDir + "default.png"));
+                            .startsWith("chair"))
+                    .filter(image -> parseChairIdFromFileName(image)
+                            .equals(chairId.toString()))
+                    .findFirst().orElse(Path.of(BASE_DIR + imageDir + "/default.png"));
         } catch (IOException exception) {
             exception.printStackTrace();
             throw new EntityNotFoundException("Image directory not found");
         }
+    }
+
+    private static String parseChairIdFromFileName(Path image) {
+        return image
+                .getFileName()
+                .toString()
+                .split("\\.")
+                [0]
+                .replace("chair", "");
     }
 
     public void saveChairImage(Chair chair, InputStream inputStream, String fileName) {

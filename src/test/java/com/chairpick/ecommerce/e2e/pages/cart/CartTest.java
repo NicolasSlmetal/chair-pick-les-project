@@ -17,12 +17,14 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Duration;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class CartTest {
 
 
@@ -33,15 +35,6 @@ public class CartTest {
     private WebDriverWait wait;
     private UsersInitializer usersInitializer;
 
-    @BeforeAll
-    public static void beforeAll() {
-        try {
-            ContainerInitializer.up();
-            Thread.sleep(1000);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to initialize containers", e);
-        }
-    }
 
     @BeforeEach
     public void setUp() {
@@ -167,18 +160,18 @@ public class CartTest {
         Thread.sleep(2000);
         profilePage.scrollIntoSectionOfOrders(ProfilePage.OrdersStatus.PENDING);
         Thread.sleep(2000);
-        var card = profilePage.getCardOfSection(ProfilePage.OrdersStatus.PENDING, 0, 0);
-        Assertions.assertEquals("2", card.getProductAmount());
-        Assertions.assertEquals("R$ 10,00", card.getProductPrice());
-        Assertions.assertEquals("R$ 8,90", card.getProductFreight());
-        Assertions.assertEquals("R$ 20,00", card.getProductSubtotal());
-        Assertions.assertEquals("R$ 28,90", card.getProductTotal(), "Total price should be R$ 608.90 after confirming the cart with two products");
-        var secondCard = profilePage.getCardOfSection(ProfilePage.OrdersStatus.PENDING, 0, 1);
+        var secondCard = profilePage.getCardOfSection(ProfilePage.OrdersStatus.PENDING, 0, 0);
         Assertions.assertEquals("6", secondCard.getProductAmount());
         Assertions.assertEquals("R$ 10,00", secondCard.getProductPrice());
         Assertions.assertEquals("R$ 8,90", secondCard.getProductFreight());
         Assertions.assertEquals("R$ 60,00", secondCard.getProductSubtotal());
         Assertions.assertEquals("R$ 68,90", secondCard.getProductTotal(), "Total price should be R$ 608.90 after confirming the cart with two products");
+        var card = profilePage.getCardOfSection(ProfilePage.OrdersStatus.PENDING, 0, 1);
+        Assertions.assertEquals("2", card.getProductAmount());
+        Assertions.assertEquals("R$ 10,00", card.getProductPrice());
+        Assertions.assertEquals("R$ 8,90", card.getProductFreight());
+        Assertions.assertEquals("R$ 20,00", card.getProductSubtotal());
+        Assertions.assertEquals("R$ 28,90", card.getProductTotal(), "Total price should be R$ 608.90 after confirming the cart with two products");
 
     }
 
@@ -188,12 +181,4 @@ public class CartTest {
         seeder.truncateAllTables();
     }
 
-    @AfterAll
-    public static void afterAll() {
-        try {
-            ContainerInitializer.down();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to stop containers", e);
-        }
-    }
 }

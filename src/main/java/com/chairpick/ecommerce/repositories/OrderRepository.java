@@ -61,13 +61,6 @@ public class OrderRepository {
     }
 
     @Transactional
-    public Order saveOrder(Order order, List<Cart> cartList, Coupon swapCoupon) {
-        saveOrder(order, cartList);
-        couponDAO.save(swapCoupon);
-        return order;
-    }
-
-    @Transactional
     public Order updateApprovedOrder(Order order) {
         orderDAO.update(order);
         order.getItems()
@@ -77,6 +70,13 @@ public class OrderRepository {
                     itemDAO.update(orderItem.getItem());
                 });
         return order;
+    }
+
+    @Transactional
+    public Order updateApprovedOrder(Order order, Coupon coupon) {
+        Order updatedOrder = updateApprovedOrder(order);
+        couponDAO.save(coupon);
+        return updatedOrder;
     }
 
     public List<Order> findAllOrders(Map<String, String> parameters) {

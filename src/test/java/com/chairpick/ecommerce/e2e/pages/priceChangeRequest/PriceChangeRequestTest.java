@@ -18,6 +18,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.ai.ollama.OllamaEmbeddingModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
@@ -27,6 +28,7 @@ import java.util.stream.IntStream;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class PriceChangeRequestTest {
 
     @Autowired
@@ -38,14 +40,6 @@ public class PriceChangeRequestTest {
     private WebDriverWait wait;
     private UsersInitializer usersInitializer;
 
-    @BeforeAll
-    public static void beforeAll() {
-        try {
-            ContainerInitializer.up();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to initialize containers", e);
-        }
-    }
 
     private void configureEmbeddingMock() {
         List<Float> embedding = IntStream.range(0, 768)
@@ -195,12 +189,5 @@ public class PriceChangeRequestTest {
         seeder.truncateAllTables();
     }
 
-    @AfterAll
-    public static void afterAll() {
-        try {
-            ContainerInitializer.down();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to stop containers", e);
-        }
-    }
+
 }

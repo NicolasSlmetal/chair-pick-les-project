@@ -36,7 +36,7 @@ export async function configureCategoriesProperties() {
 
             $("." + paginationClass).pagination({
                 dataSource: `/chairs/search?categories=${category.name}`,
-                pageSize: 5,
+                pageSize: 4,
                 locator: 'entitiesInPage',
                 alias: {
                     pageNumber: 'page',

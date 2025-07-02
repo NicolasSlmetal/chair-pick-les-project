@@ -18,6 +18,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Duration;
@@ -25,6 +26,7 @@ import java.time.Duration;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class CustomerTest implements TestWatcher {
 
     @Autowired
@@ -34,15 +36,6 @@ public class CustomerTest implements TestWatcher {
     private WebDriverWait wait;
     private UsersInitializer usersInitializer;
 
-    @BeforeAll
-    public static void beforeAll() {
-        try {
-            ContainerInitializer.up();
-            Thread.sleep(1000);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to initialize containers", e);
-        }
-    }
 
     @BeforeEach
     public void setUp() {
@@ -232,14 +225,6 @@ public class CustomerTest implements TestWatcher {
         seeder.truncateAllTables();
     }
 
-    @AfterAll
-    public static void afterAll() {
-        try {
-            ContainerInitializer.down();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to stop containers", e);
-        }
-    }
 
 
 

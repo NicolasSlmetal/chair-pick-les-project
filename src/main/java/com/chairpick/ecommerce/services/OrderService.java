@@ -21,6 +21,8 @@ import com.chairpick.ecommerce.repositories.*;
 import com.chairpick.ecommerce.utils.pagination.PageInfo;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -150,21 +152,6 @@ public class OrderService {
         order.setItems(orderItems);
         order.validate();
 
-        boolean requiresSwapCoupon = order.requiresSwapCoupon();
-
-        if (requiresSwapCoupon) {
-            double value = order.getPayment().getTotalValue() - order.getTotalValue();
-            Coupon swapCoupon = Coupon
-                    .builder()
-                    .type(CouponType.SWAP)
-                    .customer(customer)
-                    .value(value)
-                    .build();
-            swapCoupon.validate();
-
-            return orderRepository.saveOrder(order, cartList, swapCoupon);
-        }
-
         return orderRepository.saveOrder(order, cartList);
     }
 
@@ -176,7 +163,29 @@ public class OrderService {
                     itemToUpdate.setReservedAmount(itemToUpdate.getReservedAmount() - item.getAmount());
                     item.validate();
                 });
+        PaymentDTO paymentDTO = orderRepository.findPaymentByOrder(order)
+                .orElseThrow(() -> new EntityNotFoundException("Payment not found"));
+
+
+        double difference = calculateDifferencePrecisely(order, paymentDTO);
+
+        if (difference > 0) {
+            Coupon coupon = Coupon.builder()
+                    .value(difference)
+                    .type(CouponType.SWAP)
+                    .customer(order.getCustomer())
+                    .build();
+            coupon.validate();
+            return orderRepository.updateApprovedOrder(order, coupon);
+        }
         return orderRepository.updateApprovedOrder(order);
+    }
+
+    private static double calculateDifferencePrecisely(Order order, PaymentDTO paymentDTO) {
+        BigDecimal orderTotalValue = BigDecimal.valueOf(order.getTotalValue());
+        BigDecimal paymentTotalValue = BigDecimal.valueOf(paymentDTO.getTotalValue());
+        BigDecimal difference = paymentTotalValue.subtract(orderTotalValue).setScale(2, RoundingMode.HALF_DOWN);
+        return difference.doubleValue();
     }
 
     public List<Order> findAllOrders(Map<String, String> parameters) {

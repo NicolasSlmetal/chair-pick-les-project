@@ -17,6 +17,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 
@@ -24,6 +25,7 @@ import java.time.Duration;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test-ai")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class ChatBotTest {
 
     @Autowired
@@ -36,15 +38,6 @@ public class ChatBotTest {
     private final String BASE_URL = "http://localhost:8080/";
     private WebDriverWait wait;
 
-    @BeforeAll
-    public static void beforeAll() {
-        try {
-            ContainerInitializer.up();
-            Thread.sleep(1000);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to initialize containers", e);
-        }
-    }
 
     @BeforeEach
     public void setUp() {
@@ -114,12 +107,4 @@ public class ChatBotTest {
         seeder.truncateAllTables();
     }
 
-    @AfterAll
-    public static void afterAll() {
-        try {
-            ContainerInitializer.down();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to stop containers", e);
-        }
-    }
 }

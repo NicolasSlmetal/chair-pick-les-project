@@ -28,7 +28,7 @@ services:
   test-database:
     container_name: test-database
     build:
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.test
       context: .
     volumes:
       - test-database:/var/lib/postgresql/data/
