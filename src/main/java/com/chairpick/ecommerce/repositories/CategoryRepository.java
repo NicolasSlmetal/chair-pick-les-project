@@ -25,8 +25,8 @@ public class CategoryRepository {
 
     public List<OrderReportByCategory> findOrderReportsByCategory(LocalDate startDate, LocalDate endDate) {
         return categoryDAO.findAndMapForProjection(Map.of(
-                "startDate", startDate.toString(),
-                "endDate", endDate.toString()
+                "start_date", startDate.toString(),
+                "end_date", endDate.toString()
         ));
     }
 

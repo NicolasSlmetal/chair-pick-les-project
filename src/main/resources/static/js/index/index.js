@@ -3,6 +3,8 @@ import { $ } from "../consts.js";
 import { productCards } from "./consts.js"
 import { countCart } from "../utils/countCart.js";
 import { configureCategoriesProperties } from "./configureCategoriesProperties.js";
+import { getPaginationStyles } from "./getPaginationStyles.js"
+
 
 const paginationGlobal = $.fn.pagination;
 const form = document.querySelector("form");
@@ -78,7 +80,7 @@ $(document).ready(function() {
             const container = $(".products__container");
             container.empty();
             if (data.length === 0) {
-                container.append("<p>Nenhum produto encontrado.</p>");
+                container.append("<p 'style':'align-self: center;'>Nenhum produto encontrado.</p>");
                 return;
             }
             data.forEach(product => {
@@ -99,7 +101,8 @@ $(document).ready(function() {
                     container.append(cardAnchor);
                 });
 
-        }
+        },
+        ...getPaginationStyles(),
     })
 
     configureCategoriesProperties();

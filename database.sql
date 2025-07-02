@@ -324,6 +324,29 @@ INSERT INTO tb_credit_brand (cbr_id, cbr_name) VALUES (1, 'VISA');
 INSERT INTO tb_credit_brand (cbr_id, cbr_name) VALUES (2, 'MASTERCARD');
 
 INSERT INTO tb_pricing_group (pgr_name, pgr_percent_value) VALUES
-('A', 1.10),
-('B', 1.20),
-('C', 1.50);
+('Básico', 1.10),
+('Standard', 1.20),
+('Premium', 1.50);
+
+INSERT INTO tb_categories VALUES
+(1, 'Escritório'),
+(2, 'Sala de Estar'),
+(3, 'Sala de Jantar'),
+(4, 'Quarto'),
+(5, 'Cozinha'),
+(6, 'Área Externa'),
+(7, 'Infantil'),
+(8, 'Home Office'),
+(9, 'Comercial'),
+(10, 'Industrial'),
+(11, 'Luxo'),
+(12, 'Minimalista'),
+(13, 'Moderno'),
+(14, 'Clássico'),
+(15, 'Rústico'),
+(16, 'Contemporâneo'),
+(17, 'Vintage'),
+(18, 'Escandinavo'),
+(19, 'Boho Chic'),
+(20, 'Art Déco'),
+(21, 'Gamer');

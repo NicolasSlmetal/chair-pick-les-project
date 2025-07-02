@@ -1,5 +1,6 @@
 import { fetchCategories } from "./fetchCategories.js";
 import { $ } from "../consts.js";
+import { getPaginationStyles } from "./getPaginationStyles.js"
 
 const categoriesWithProducts = new Set();
 const divProductsByCategory = $(".all_products_by_category");
@@ -24,7 +25,7 @@ export async function configureCategoriesProperties() {
 
             const paginationContainer = document.createElement("div");
             const paginationClass = "pagination_" + category.id;
-            paginationContainer.classList.add(paginationClass, "bg_second");
+            paginationContainer.classList.add(paginationClass, "bg_second", "products_pagination_container");
 
             categorySection.appendChild(rowSection);
             categorySection.appendChild(paginationContainer);
@@ -43,9 +44,8 @@ export async function configureCategoriesProperties() {
                 },
                 pageNumber: 1,
                 totalNumberLocator: response => response.totalResults,
-                style: {
-                    className: "pagination"
-                },
+                ...getPaginationStyles(),
+
                 callback: function (data) {
                     completedCategories++;
 
@@ -80,7 +80,7 @@ export async function configureCategoriesProperties() {
                         });
                     }
 
-                    // ✅ Só configura select2 depois que TODAS as categorias tiverem sido processadas
+
                     if (completedCategories === totalCategories) {
                         $('.select2').select2({
                             placeholder: "Selecione uma ou mais categorias",

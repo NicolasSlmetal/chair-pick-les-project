@@ -766,50 +766,6 @@ section.products {
     width: 100%;
 }
 
-#products_pagination_container .paginationjs-pages {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    width: 100%;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    justify-content: center;
-}
-
-#products_pagination_container .paginationjs-pages li {
-    flex: 1 1 0;
-    display: flex;
-
-}
-
-#products_pagination_container .paginationjs-pages li > a {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    border-radius: 4px;
-    background-color: var(--blue-color);
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    text-decoration: none;
-    width: 100%;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-#products_pagination_container .paginationjs-pages li > a.active {
-    background-color: var(--lighter-blue-color);
-    color: white;
-}
-
-#products_pagination_container .paginationjs-pages li > a:hover {
-    background-color: var(--lighter-blue-color);
-    color: black;
-}
-
-
 section.products.search {
     width: 100%;
 }
@@ -838,6 +794,55 @@ section.products.search {
     gap: 5px;
     justify-content: flex-start;
     align-items: center;
+}
+
+.products_pagination_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 6px;
+    border-radius: 4px;
+    justify-self: flex-end
+}
+
+.previous_page a{
+    background-color: var(--blue-color) !important;
+    color: white !important;
+}
+
+.disabled_page a{
+    background-color: var(--lighter-blue-color) !important;
+    color: white !important;
+}
+
+.next_page a{
+    background-color: var(--blue-color) !important;
+    color: white !important;
+}
+
+.active_page a{
+    background-color: var(--blue-color) !important;
+    color: white !important;
+}
+
+.previous_page a::hover {
+    background-color: var(--lighter-blue-color) !important;
+    color: white !important;
+}
+
+.next_page a::hover {
+    background-color: var(--lighter-blue-color) !important;
+    color: white !important;
+}
+
+.active_page a::hover {
+    background-color: var(--lighter-blue-color) !important;
+    color: white !important;
+}
+
+.page_container li {
+    border: none !important;
+
 }
 
 .page {

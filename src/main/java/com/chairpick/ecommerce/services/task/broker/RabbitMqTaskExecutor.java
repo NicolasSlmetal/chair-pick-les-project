@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import org.springframework.context.annotation.Primary;
@@ -37,8 +38,12 @@ public class RabbitMqTaskExecutor extends MessageBrokerTaskExecutor {
             String serializedTask = serializeTask(task);
 
             RabbitMqConfig rabbitMqConfig = new RabbitMqConfig();
+            int DURABLE = 2;
+            AMQP.BasicProperties properties = new AMQP.BasicProperties().builder()
+                    .deliveryMode(DURABLE)
+                    .build();
             String routingKey = rabbitMqConfig.getRoutingKey(rabbitMqDestination.getExchangeName(), rabbitMqDestination.getQueueName());
-            channel.basicPublish(rabbitMqDestination.getExchangeName(), routingKey, null, serializedTask.getBytes());
+            channel.basicPublish(rabbitMqDestination.getExchangeName(), routingKey, properties, serializedTask.getBytes());
             System.out.println("Published message with routing key \"" + routingKey + "\"");
         } catch (IOException e) {
             throw new RuntimeException(e);

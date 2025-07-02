@@ -70,8 +70,11 @@ function prepareActionButton(id = "", menuId) {
         actionButton.addEventListener("click", () => {
             removeMenuOnClickOutside(menuId);
             menu.style.display = mapSwitchDisplay[menu.style.display ? menu.style.display : "none"];
-            menu.style.top = `${rectangle.top + window.scrollY}px`;
-            menu.style.left = `${rectangle.left + window.scroll}px`;
+            if (menu.style.display !== "none") {
+                actionButton.classList.add("disabled")
+            } else {
+                actionButton.classList.remove("disabled");
+            }
         });
     });
 }
@@ -92,5 +95,9 @@ function removeMenuOnClickOutside(id) {
     const menu = document.querySelectorAll(`main .${id}`);
     menu.forEach((menu) => {
         menu.style.display = "none";
+        const actionButton = menu.parentElement.querySelector("img.actions_button");
+        if (actionButton) {
+            actionButton.classList.remove("disabled");
+        }
     });
 }
