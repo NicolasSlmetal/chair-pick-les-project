@@ -107,6 +107,13 @@ public class CustomerController {
     @DeleteMapping("/customers/{id}")
     public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
         customerService.deleteCustomer(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        ResponseCookie tokenCookie = ResponseCookie.from("token", "")
+                .httpOnly(true)
+                .path("/")
+                .sameSite("None")
+                .secure(true)
+                .maxAge(Duration.ZERO)
+                .build();
+        return ResponseEntity.noContent().header("Set-Cookie", tokenCookie.toString()).build();
     }
 }
