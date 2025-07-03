@@ -306,8 +306,8 @@ public class SwapTest {
         Assertions.assertEquals("1", swapAmount);
         swapModal.clickSwapButton();
         wait.until(ExpectedConditions.urlToBe(BASE_URL + "customers/1"));
+        Thread.sleep(2000);
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("section.APPROVED")));
-        Thread.sleep(1000);
         profilePage.scrollIntoSectionOfOrders(ProfilePage.OrdersStatus.APPROVED);
 
         ProfilePage.Card swapCard = profilePage.getCardFromSection(ProfilePage.OrdersStatus.APPROVED, 1, 1);

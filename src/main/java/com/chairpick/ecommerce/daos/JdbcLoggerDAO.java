@@ -32,6 +32,8 @@ public class JdbcLoggerDAO implements LoggerDAO {
                     "rowId", entity.getId()
             );
 
+            System.out.println(parameters);
+
             jdbcTemplate.update(sql, parameters);
 
         }
@@ -44,7 +46,11 @@ public class JdbcLoggerDAO implements LoggerDAO {
             Method[] methods = oldObject.getClass().getMethods();
             for (Method method : methods) {
                 String methodName = method.getName();
-                if ((methodName.startsWith("get") || methodName.startsWith("is")) && !methodName.equalsIgnoreCase("getId")) {
+                if ((methodName.startsWith("get") ||
+                        methodName.startsWith("is")) &&
+                        !methodName.equalsIgnoreCase("getId")
+                        && !methodName.equals("getClass")
+                        && method.getParameterCount() == 0) {
                     try {
                         String columnName = methodName.startsWith("get") ? methodName.substring(3) : methodName.substring(2);
                         Object oldValue = method.invoke(oldObject);
@@ -61,7 +67,7 @@ public class JdbcLoggerDAO implements LoggerDAO {
                             newValue = "null";
                         }
 
-                        if (oldValue instanceof Collection<?>) continue;
+                        if (oldValue instanceof Collection<?> || newValue instanceof Collection<?>) continue;
 
                         if (!oldValue.equals(newValue)) {
                             String sql = """

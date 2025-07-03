@@ -13,7 +13,7 @@
         <a id="back_button" th:href="@{/admin/orders}" class="action__button">Voltar</a>
         <section class="border" th:with="typeMap=${payment.paymentsByType}">
             <div th:each="type : ${payment.paymentsByType.keySet()}">
-                <div th:if="${type.name() == 'CREDIT_CARD' && typeMap.get(type).creditCards.size() > 0}">
+                <div th:if="${type.name() == 'CREDIT_CARD' && typeMap.get(type).creditCards.size() > 0}" class="credit_cards">
                     <h2>Cartão de crédito</h2>
                     <div class="cards row without_cursor" th:with="cards=${typeMap.get(type).creditCards}">
                         <div class="card without_cursor" th:each="card : ${cards.keySet()}">
@@ -24,7 +24,7 @@
                         </div>
                     </div>
                 </div>
-                <div th:if="${type.name() == 'COUPON' && typeMap.get(type).coupons.size() > 0}">
+                <div th:if="${type.name() == 'COUPON' && typeMap.get(type).coupons.size() > 0}" class="coupons">
                     <h2>Cupons</h2>
                     <div class="cards row without_cursor" th:with="coupons=${typeMap.get(type).coupons}">
                         <div class="card without_cursor" th:each="coupon : ${coupons}">

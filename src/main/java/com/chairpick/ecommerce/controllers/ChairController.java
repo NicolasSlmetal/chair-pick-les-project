@@ -59,7 +59,6 @@ public class ChairController {
     }
 
     @GetMapping("/admin/chairs")
-    @Cacheable
     public ModelAndView redirectToAdminChairs() {
         ModelAndView view = new ModelAndView("chairs/index.html");
         List<CompleteChairDTO> chairs = chairService.findAllChairs();

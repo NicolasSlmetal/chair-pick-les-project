@@ -104,6 +104,7 @@ public class OrderTest {
 
 
         wait.until(ExpectedConditions.urlToBe(BASE_URL + "admin/orders/1/payment"));
+        System.out.println(driver.getPageSource());
         driver.navigate().refresh();
 
         Assertions.assertFalse(paymentStatusPage.isRejectButtonEnabled());
@@ -310,7 +311,7 @@ public class OrderTest {
         modal.confirm();
 
         wait.until(ExpectedConditions.urlToBe(BASE_URL + "admin/orders/1/payment"));
-        driver.navigate().refresh();
+        Thread.sleep(2000);
 
         Assertions.assertFalse(paymentStatusPage.isRejectButtonEnabled());
         Assertions.assertFalse(paymentStatusPage.isApproveButtonEnabled());
@@ -371,6 +372,7 @@ public class OrderTest {
 
     @AfterEach
     public void setDown() {
+        driver.manage().deleteAllCookies();
         driver.quit();
         seeder.truncateAllTables();
     }

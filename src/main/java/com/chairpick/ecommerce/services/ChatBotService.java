@@ -81,7 +81,7 @@ public class ChatBotService {
         return chairRepository.findBySemanticSearch(embedding, filter);
     }
 
-    private static String generateTemplateJson(String prompt) {
+    private static String  generateTemplateJson(String prompt) {
         String template = """
             Analise o texto abaixo e extraia os dados em formato JSON, seguindo esta estrutura:
             

@@ -139,31 +139,6 @@ INSERT INTO tb_chair_category (chc_chair_id, chc_category_id) VALUES
 (20, 18), (20, 12), (20, 2); -- Poltrona Escandinava
 
 
-
--- ============================
--- SEED COM ORDENS CONCENTRADAS E PREÇOS RANDOMIZADOS
--- Período: Jan 2025 até 02-Jul-2025
--- Produtos focados: IDs 1, 2, 3, 4
--- Preço de venda por item: preço original ± até 10%
--- Frete: valor fixo randômico entre 10 e 20
--- Quantidade por item: 1 a 5 unidades
--- Total da ordem calculado corretamente
--- ============================
-
--- Para facilitar, aqui estão os preços originais das cadeiras 1 a 4:
--- 1: 399.90
--- 2: 429.90
--- 3: 319.90
--- 4: 299.90
-
--- Vamos inserir 15 ordens com essas regras
-
--- Função auxiliar para gerar data random entre duas datas (PostgreSQL)
--- (Não executa aqui, só para entender a lógica)
--- date '2025-01-01' + (random() * (date '2025-07-02' - date '2025-01-01'))::int
-
--- ORDENS:
-
 INSERT INTO tb_order (ord_status, ord_created_date, ord_updated_date, ord_total_amount, ord_total_value, ord_customer_id, ord_billing_address_id, ord_delivery_address_id) VALUES
 ('APPROVED', '2025-01-10', '2025-01-10 10:00:00', 3, 1344.67, 1, 1, 1), -- Order 1
 ('APPROVED', '2025-01-20', '2025-01-20 15:00:00', 2, 909.30, 1, 1, 1), -- Order 2

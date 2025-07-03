@@ -193,7 +193,7 @@ CREATE TABLE tb_insert_log (
 );
 
 CREATE TABLE tb_update_log (
-    ulo_table     VARCHAR(20) NOT NULL,
+    ulo_table     VARCHAR(50) NOT NULL,
     ulo_datetime  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     ulo_column    VARCHAR(50) NOT NULL,
     ulo_row_id    INTEGER NOT NULL,
