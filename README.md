@@ -19,9 +19,9 @@ um e-commerce de cadeiras.
 
 ### Ambientes de testes
 
-# Execute o comando `run-tests.sh` para rodar todos os testes automatizados da aplicação.
+Execute o comando `run-tests.sh` para rodar todos os testes automatizados da aplicação.
 
-# Para executar cada teste individualmente, deve-se executar o comando `docker compose -f docker-compose-test.yml up --build` uma vez antes de executar individualmente.
+Para executar cada teste individualmente, deve-se executar o comando `docker compose -f docker-compose-test.yml up --build` uma vez antes de executar individualmente.
 
 ### Ambientes de desenvolvimento
 
