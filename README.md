@@ -1,11 +1,11 @@
-# PROJETO DE LABORATÓRIO DE ENGENHARIA DE SOFTWARE
+# SOFTWARE ENGINEERING LAB PROJECT
 
-Este repositório contém o código fonte do projeto de laboratório de Engenharia de Software, 
-um e-commerce de cadeiras. 
+This repository contains the source code of a Software Engineering laboratory project,  
+an e-commerce platform for chairs.
 
-## Como rodar
+## How to Run
 
-### Requisitos
+### Requirements
 
 <li>
     Java 21
@@ -17,45 +17,52 @@ um e-commerce de cadeiras.
     Maven
 </li>
 
-### Ambientes de testes
+### Test Environments
 
-Execute o comando `run-tests.sh` para rodar todos os testes automatizados da aplicação.
+Run the `run-tests.sh` command to execute all automated tests of the application.
 
-Para executar cada teste individualmente, deve-se executar o comando `docker compose -f docker-compose-test.yml up --build` uma vez antes de executar individualmente.
+To run tests individually, you must execute the command  
+`docker compose -f docker-compose-test.yml up --build` once before running each test separately.
 
-### Ambientes de desenvolvimento
+### Development Environment
 
-Execute o comando `docker compose -f docker-compose.yaml` para iniciar os containers e criar a estrutura base para usar a aplicação. No arquivo `seed.sql`, pode-se encontrar os logins dos usuários e os dados iniciais do banco de dados.
+Run the command `docker compose -f docker-compose.yaml` to start the containers and create the base structure to use the application.  
+In the `seed.sql` file, you can find user credentials and the initial database data.
 
-#### Administrador
+#### Administrator
 
 <li>Email: admin@exemplo.com</li>
-<li>Senha: Admin1234!</li>
+<li>Password: Admin1234!</li>
 
-#### Cliente
+#### Customer
+
 <li>
 Email: cliente@exemplo.com
 </li>
 <li>
-Senha: Abcd1234!
+Password: Abcd1234!
 </li>
 
-#### Gerente de vendas
+#### Sales Manager
 
 <li>
 Email: vendas@exemplo.com
 </li>
 <li>
-Senha: Sales1234!
+Password: Sales1234!
 </li>
 
-Observações:
+Notes:
 <li>
-    O banco de dados utilizado é o PostgreSQL.
+    The database used is PostgreSQL.
 </li>
 <li>
-O modelo de chatbot pode ficar indisponível em alguns momentos, pois a aplicação busca os modelos ´nomic-embed-text:v1.5´ e ´gemma-3b (Era para ser Deepseek, no entanto, por questões de capacidade de memória, foi decidido utilizar esse modelo)´ no Ollama. Caso não consiga baixar, é possível baixar os modelos manualmente no container ollama.
+    The chatbot model may be unavailable at times, as the application fetches the models 
+    `nomic-embed-text:v1.5` and `gemma-3b` (it was supposed to be Deepseek, but due to memory
+    capacity constraints, this model was chosen instead) from Ollama. If the download fails,
+    the models can be downloaded manually inside the Ollama container.
 </li>
 <li>
-Se os modelos citados não estiverem disponíveis, eles serão buscados na base da Ollama e isso pode causar um atraso na inicialização da aplicação pela primeira vez.
+    If the mentioned models are not available, they will be fetched from the Ollama registry,
+    which may cause a delay during the application's first startup.
 </li>
